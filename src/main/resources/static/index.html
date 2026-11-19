@@ -1783,6 +1783,7 @@
       try {
         const res = await SilbomHttp.request(endpoint, { ...requestOptions, headers });
         updateConnectionBadge(true);
+        if (res.status === 401 && AppState.auth?.header === auth) clearSessionIdentity();
         if (res.status === 429) AppState.pollPauseUntil = Date.now() + res.retryAfter * 1000;
         if (!silentMonitor) updateHttpMonitor(method, endpoint, res.status, HTTP_STATUS_LABELS[res.status]);
         return res;
@@ -1805,6 +1806,7 @@
        AUTENTICACIÓN HTTP BASIC EN MEMORIA Y DETECCIÓN DE ROL
        ========================================================================== */
     function renderAuthUI() {
+      renderSessionAccess();
       const badge = document.getElementById('auth-active-badge');
       const logoutBtn = document.getElementById('btn-auth-logout');
 
@@ -1819,43 +1821,87 @@
     }
 
     async function probeAuthenticatedRole() {
-      if (!AppState.apiOnline || !AppState.auth || !AppState.auth.header) return;
-      try {
-        const res = await apiFetch('/tecnicos', { silentMonitor: true });
-        if (res.ok && Array.isArray(res.data)) {
-          AppState.auth.rol = 'SUPERVISOR';
-          AppState.tecnicosList = res.data;
-          const match = res.data.find(t => t.username === AppState.auth.username);
-          if (match) {
-            AppState.auth.id = match.id;
-            AppState.auth.nombre = match.nombre;
-          }
-          renderSupervisorTecnicos();
-        } else if (res.status === 403) {
-          AppState.auth.rol = 'TECNICO';
-          AppState.tecnicosList = [];
-          renderSupervisorTecnicos();
+      const current = AppState.auth;
+      if (!current?.header) throw new Error('Inicia sesión para verificar tu identidad.');
+      const res = await apiFetch('/sesion', { silentMonitor: true, authHeaderOverride: current.header });
+      if (!res.ok) throw new Error(extractApiError(res.data, res.status));
+      if (AppState.auth !== current) throw new Error('La sesión cambió durante la comprobación.');
+      Object.assign(current, SilbomHttp.sessionIdentity(res.data, current.username));
+    }
+
+    function renderSessionAccess() {
+      const session = AppState.auth;
+      let link = document.getElementById('role-interface-link');
+      const anchor = document.getElementById('auth-active-badge');
+      if (!link && anchor) {
+        link = document.createElement('a');
+        link.id = 'role-interface-link';
+        link.style.cssText = 'color:inherit;text-decoration:underline;padding:10px;display:inline-block';
+        anchor.parentElement.appendChild(link);
+      }
+      if (link) {
+        link.hidden = !session?.rol;
+        if (session?.rol) {
+          const url = new URL(session.rol === 'TECNICO' ? '/app/' : '/index.html',
+            AppState.serverOrigin || location.origin);
+          if (session.rol === 'TECNICO' && AppState.selectedMachineId) url.searchParams.set('maquina', AppState.selectedMachineId);
+          link.href = url.href;
+          link.textContent = session.rol === 'TECNICO' ? 'Abrir interfaz técnica' : 'Abrir consola de supervisión';
+          link.title = 'La otra vista solicita iniciar sesión de nuevo; no se transfieren credenciales.';
         }
-      } catch (err) {
-        // Ignorar error de red en probe de rol
+      }
+      const form = document.getElementById('supervisor-create-tech-form');
+      if (form) {
+        const blocked = !session || session.rol !== 'SUPERVISOR' || session.identidadesSoloLectura;
+        form.hidden = blocked;
+        form.classList.toggle('hidden', blocked);
+        form.querySelectorAll('input,select,button').forEach(control => control.disabled = blocked);
+        let note = document.getElementById('identity-access-note');
+        if (!note) {
+          note = document.createElement('p');note.id = 'identity-access-note';note.setAttribute('role','status');
+          form.before(note);
+        }
+        note.hidden = !blocked;
+        note.textContent = session?.identidadesSoloLectura
+          ? 'Modo demostración: las identidades son de solo lectura. No se pueden crear, editar ni desactivar cuentas.'
+          : 'Inicia sesión como supervisor para administrar identidades.';
       }
     }
+
+    function clearSessionIdentity() {
+      AppState.auth = null;
+      AppState.tickets = [];
+      AppState.auditLogs = [];
+      AppState.tecnicosList = [];
+      document.querySelectorAll('input[type="password"]').forEach(input => input.value = '');
+      ['audit-detail-modal','tech-management-modal'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+      const note = document.getElementById('audit-modal-note');
+      if (note) note.textContent = '';
+      renderAuthUI();
+      if (typeof syncOperationControls === 'function') syncOperationControls();
+      if (typeof renderMobileHistorial === 'function') renderMobileHistorial();
+      if (typeof renderSupervisorDashboard === 'function') renderSupervisorDashboard();
+      if (typeof renderSupervisorTecnicos === 'function') renderSupervisorTecnicos();
+    }
+    window.addEventListener('pagehide', clearSessionIdentity);
 
     async function performLogin(username, password) {
       if (!username || !password) {
         showToast('Ingrese usuario y contraseña para autenticar', '⚠️');
         return false;
       }
-      AppState.auth = { username, header: encodeBasicAuth(username, password), rol: null, id: null, nombre: null };
+      const candidate = { username, header: encodeBasicAuth(username, password), rol: null, id: null, nombre: null };
+      AppState.auth = candidate;
       AppState.tickets = [];
       AppState.auditLogs = [];
       AppState.tecnicosList = [];
       try {
-        const res = await apiFetch('/bloqueos');
+        await probeAuthenticatedRole();
+        const res = await apiFetch('/bloqueos', { authHeaderOverride: candidate.header });
+        if (AppState.auth !== candidate) return false;
         if (!res.ok || !Array.isArray(res.data)) throw new Error(extractApiError(res.data, res.status));
         AppState.tickets = res.data;
         AppState.auditLogs = buildAuditLogsFromTickets(res.data);
-        await probeAuthenticatedRole();
         await loadMachinesFromApi();
         renderAuthUI();
         renderSupervisorDashboard();
@@ -1863,7 +1909,8 @@
         showToast(`Sesión verificada: ${username}`, '👷');
         return true;
       } catch (err) {
-        AppState.auth = null;
+        if (AppState.auth && AppState.auth !== candidate) return false;
+        clearSessionIdentity();
         AppState.tickets = [];
         AppState.auditLogs = [];
         AppState.tecnicosList = [];
@@ -1884,7 +1931,7 @@
     }
 
     function logoutOperator() {
-      AppState.auth = null;
+      clearSessionIdentity();
       AppState.tecnicosList = [];
       AppState.tickets = [];
       AppState.auditLogs = [];
@@ -2406,7 +2453,6 @@
         const res = await apiFetch('/tecnicos');
         if (res.ok && Array.isArray(res.data)) {
           AppState.tecnicosList = res.data;
-          if (AppState.auth) AppState.auth.rol = 'SUPERVISOR';
         } else if (res.status === 403) {
           AppState.tecnicosList = [];
           showToast('Solo un SUPERVISOR puede listar/gestionar cuentas (403)', '🚫');
@@ -2447,7 +2493,7 @@
           <td><span class="kpi-status-tag ${t.rol === 'SUPERVISOR' ? 'tag-blue' : 'tag-green'}" style="margin-top: 0;">${escapeHtml(t.rol)}</span></td>
           <td>${t.activo ? '🟢 Activo' : '⚪ Inactivo'}</td>
           <td>
-            <button type="button" class="btn-danger-outline" ${isSelf ? 'disabled title="No puedes desactivar tu propia cuenta"' : ''} onclick="deactivateTechnician(${Number(t.id)}, '${escapeHtml(t.username)}')">
+            <button type="button" class="btn-danger-outline" ${isSelf || AppState.auth?.identidadesSoloLectura ? 'disabled title="Identidad protegida o modo de solo lectura"' : ''} onclick="deactivateTechnician(${Number(t.id)}, '${escapeHtml(t.username)}')">
               ${isSelf ? 'Tu cuenta' : 'Desactivar'}
             </button>
           </td>
@@ -2457,7 +2503,7 @@
     }
 
     async function deactivateTechnician(id, username) {
-      if (!AppState.apiOnline || !AppState.auth || AppState.auth.rol !== 'SUPERVISOR') return;
+      if (!AppState.apiOnline || !AppState.auth || AppState.auth.rol !== 'SUPERVISOR' || AppState.auth.identidadesSoloLectura) return;
       try {
         const { ok, status, data } = await apiFetch(`/tecnicos/${id}`, { method: 'DELETE' });
         if (ok || status === 204) {
@@ -2472,6 +2518,10 @@
     }
 
     async function createTechnicianFromForm() {
+      if (!AppState.auth || AppState.auth.rol !== 'SUPERVISOR' || AppState.auth.identidadesSoloLectura) {
+        showToast('La gestión de identidades no está permitida en esta sesión.', '🔒');
+        return;
+      }
       const nombreEl = document.getElementById('stech-nombre');
       const usernameEl = document.getElementById('stech-username');
       const passwordEl = document.getElementById('stech-password');

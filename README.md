@@ -95,6 +95,11 @@ incluyen la planta mediante claves foráneas compuestas. El ID de máquina es
 | SILBOM_BOOTSTRAP_USERNAME | Supervisor inicial, solo primera instalación |
 | SILBOM_BOOTSTRAP_PASSWORD | Mínimo 12 caracteres, máximo 72 bytes UTF-8 |
 
+## Demostración universitaria de dos cuentas
+
+Modo opcional, sin contraseñas versionadas: ver [configuración y comprobación local](docs/DEMO_DOS_CUENTAS.md).
+El PR prepara el acceso exclusivo `supervisor`/`tecnico`; no implica que esté activado en otro computador.
+
 ## Identidad, permisos y compatibilidad
 
 HTTP Basic individual y BCrypt costo 12 reemplazan a la API key compartida.

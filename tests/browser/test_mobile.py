@@ -3,6 +3,7 @@ import base64
 import copy
 import json
 import os
+import secrets
 from pathlib import Path
 import socket
 import struct
@@ -29,6 +30,10 @@ class Scenario:
         self.put_fault = None
         self.reads_fail = False
         self.network_down = False
+        self.demo_two_accounts = False
+        self.session_role = "SUPERVISOR"
+        self.session_status = 200
+        self.auth_rejected = False
         self.lock = threading.Lock()
 
 
@@ -77,6 +82,12 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.reply(200, [state.machine])
             if not username:
                 return self.reply(401, {'mensaje': 'Credencial inválida'})
+            if state.auth_rejected:
+                return self.reply(401, {'mensaje': 'Credencial inválida'})
+            if path == '/sesion':
+                if state.session_status != 200:
+                    return self.reply(state.session_status, {'mensaje': 'No se pudo verificar la sesión'})
+                return self.reply(200, {'id': 2 if state.session_role == 'TECNICO' else 1, 'username': username, 'nombre': 'Identidad de prueba', 'rol': state.session_role, 'modoDosCuentas': state.demo_two_accounts, 'identidadesSoloLectura': state.demo_two_accounts})
             if path == '/tecnicos':
                 return self.reply(200, [{'id': 1, 'username': username, 'nombre': 'Supervisor', 'rol': 'SUPERVISOR'}])
             if path == '/bloqueos':
@@ -181,7 +192,9 @@ class MobileTests(unittest.TestCase):
         self.page.set_default_timeout(5000)
         self.errors = []
         self.page.on('pageerror', lambda err: self.errors.append(str(err)))
-        self.page.goto(self.origin + '/app/index.html', wait_until='networkidle')
+        response = self.page.goto(self.origin + '/app/index.html', wait_until='networkidle')
+        self.assertEqual(200, response.status)
+        self.page.wait_for_function('() => typeof performLogin === "function" && typeof AppState === "object"')
 
     def tearDown(self):
         self.context.close()
@@ -209,6 +222,78 @@ class MobileTests(unittest.TestCase):
     def assert_client_active(self):
         self.assertTrue(self.page.evaluate('AppState.machines[0].isLocked'))
         self.assertEqual('ACTIVO', self.page.evaluate('AppState.tickets[0].estado'))
+
+    def test_supervisor_console_uses_verified_role_and_freezes_identities(self):
+        self.state.demo_two_accounts=True
+        self.page.goto(self.origin+'/index.html',wait_until='networkidle')
+        self.assertTrue(self.page.evaluate('(s)=>performLogin("supervisor-test",s)',secrets.token_urlsafe(24)))
+        self.page.evaluate('openTechManagementModal()')
+        expect(self.page.locator('#supervisor-create-tech-form')).to_be_hidden()
+        expect(self.page.locator('#supervisor-tech-table-body button').first).to_be_disabled()
+        before=len(self.state.requests)
+        self.page.evaluate('createTechnicianFromForm()')
+        self.page.evaluate('deactivateTechnician(1,"supervisor-test")')
+        self.assertEqual(before,len(self.state.requests))
+        self.page.evaluate('logoutOperator()')
+        self.assertIsNone(self.page.evaluate('AppState.auth'))
+        self.state.session_role='TECNICO'
+        self.assertTrue(self.page.evaluate('(s)=>performLogin("tecnico-prueba",s)',secrets.token_urlsafe(24)))
+        link=urlsplit(self.page.locator('#role-interface-link').get_attribute('href'))
+        self.assertEqual('/app/',link.path)
+        self.assertNotIn('password',link.query.lower())
+        self.assertEqual('TECNICO',self.page.evaluate('AppState.auth.rol'))
+
+    def test_role_is_authoritative_and_technician_gets_operational_navigation(self):
+        self.state.session_role = 'TECNICO'
+        result = self.page.evaluate('(s) => performLogin("tecnico-prueba", s)', secrets.token_urlsafe(24))
+        self.assertTrue(result)
+        self.assertEqual('TECNICO', self.page.evaluate('AppState.auth.rol'))
+        self.assertEqual(2, self.page.evaluate('AppState.auth.id'))
+        expect(self.page.locator('#role-interface-link')).to_have_attribute('href', self.origin+'/app/')
+        self.assertFalse(any(r['path']=='/tecnicos' for r in self.state.requests))
+        self.page.locator('#mnav-tecnicos').click()
+        expect(self.page.locator('#mobile-create-tech-form')).to_be_hidden()
+
+    def test_unverified_role_never_creates_a_session(self):
+        for role, status in [('DESCONOCIDO',200),('TECNICO',403),('SUPERVISOR',503)]:
+            self.state.session_role, self.state.session_status = role,status
+            self.assertFalse(self.page.evaluate('(s) => performLogin("prueba",s)', secrets.token_urlsafe(24)))
+            self.assertIsNone(self.page.evaluate('AppState.auth'))
+            self.assertEqual([],self.page.evaluate('AppState.tickets'))
+
+    def test_demo_identity_form_disabled_and_direct_handler_does_not_post(self):
+        self.state.demo_two_accounts = True
+        self.login()
+        self.page.locator('#mnav-tecnicos').click()
+        expect(self.page.locator('#mobile-create-tech-form')).to_be_hidden()
+        expect(self.page.locator('#identity-access-note')).to_contain_text('solo lectura')
+        before=len(self.state.requests)
+        self.page.evaluate('createTechnicianFromForm()')
+        self.assertEqual(before,len(self.state.requests))
+
+    def test_logout_clears_credentials_even_with_uncertain_operation(self):
+        self.prepare()
+        self.state.post_fault={'drop_before':True}
+        self.page.locator('#btn-submit-lock').click()
+        expect(self.page.locator('#operation-status')).to_contain_text('Alta sin confirmar')
+        self.page.evaluate('logoutOperator()')
+        self.assertIsNone(self.page.evaluate('AppState.auth'))
+        self.assertIsNotNone(self.page.evaluate('AppState.pendingOperation'))
+        self.assertEqual([],self.page.evaluate('AppState.tickets'))
+        self.assertEqual('',self.page.locator('#mobile-auth-pass').input_value())
+        self.assertEqual('[]',self.page.evaluate('JSON.stringify(Object.keys(localStorage).filter(k=>/auth|password|credential/i.test(k)))'))
+
+    def test_revoked_session_and_pagehide_clear_memory(self):
+        self.login()
+        self.state.auth_rejected=True
+        self.page.evaluate('apiFetch("/sesion")')
+        self.assertIsNone(self.page.evaluate('AppState.auth'))
+        expect(self.page.locator('#btn-submit-lock')).to_be_disabled()
+        self.state.auth_rejected=False
+        self.login()
+        self.page.evaluate('window.dispatchEvent(new PageTransitionEvent("pagehide",{persisted:true}))')
+        self.assertIsNone(self.page.evaluate('AppState.auth'))
+        self.assertEqual([],self.page.evaluate('AppState.tickets'))
 
     def test_offline_creation_has_no_local_success(self):
         self.prepare()
@@ -286,6 +371,8 @@ class MobileTests(unittest.TestCase):
         self.prepare()
         for status in (401, 403, 409):
             with self.subTest(status=status):
+                if not self.page.evaluate('Boolean(AppState.auth)'):
+                    self.login()
                 self.state.post_fault = {'status': status}
                 self.page.locator('#btn-submit-lock').click()
                 expect(self.page.locator('#operation-status')).to_contain_text(f'El servidor respondió {status}')

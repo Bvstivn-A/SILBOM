@@ -89,15 +89,15 @@ public class DataInitializer implements CommandLineRunner {
      * activo cuyo responsable no pertenece a esas dos cuentas.
      */
     private void configureDemoAccounts() {
-        for (Tecnico current : tecnicos.findByPlantaIdAndActivoTrueOrderById(plantaId)) {
-            if (!twoAccounts.allows(current.getUsername())
-                    && bloqueoLotoRepository.existsByTecnicoIdAndEstado(
-                            current.getId(), EstadoBloqueo.ACTIVO)) {
+        if (bloqueoLotoRepository.countActivosSinIdentidadPermitida(plantaId,
+                EstadoBloqueo.ACTIVO, List.of(twoAccounts.supervisorUsername(),
+                        twoAccounts.technicianUsername())) > 0) {
                 throw new IllegalStateException(
-                        "Hay tickets LOTO activos de otros usuarios. Cierre esos tickets"
+                        "Hay tickets LOTO activos sin responsable habilitado en la demo."
+                            + " No se ha modificado el historial. Mantenga el modo desactivado"
+                            + " y resuelva esos tickets"
                             + " mediante el procedimiento autorizado antes de activar"
                             + " SILBOM_DEMO_TWO_USERS_ONLY.");
-            }
         }
         configureDemoIdentity(
                 twoAccounts.supervisorUsername(),
@@ -123,7 +123,11 @@ public class DataInitializer implements CommandLineRunner {
                             + " ya existe con un rol distinto o está desactivada."
                             + " Se requiere revisión administrativa antes de continuar.");
             }
-            user.actualizar(displayName, rol, encoder.encode(password));
+            // No rotar el hash con cada reinicio si la credencial ya coincide.
+            boolean samePassword = encoder.matches(password, user.getPasswordHash());
+            if (!displayName.equals(user.getNombre()) || !samePassword) {
+                user.actualizar(displayName, rol, samePassword ? null : encoder.encode(password));
+            }
         } else {
             tecnicos.save(new Tecnico(
                     username, displayName, encoder.encode(password), rol, plantaId));

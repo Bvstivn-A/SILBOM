@@ -39,6 +39,14 @@ public interface BloqueoLotoRepository extends JpaRepository<BloqueoLoto, Long> 
 
     boolean existsByTecnicoIdAndEstado(Long tecnicoId, EstadoBloqueo estado);
 
+    // Incluye responsables inactivos y tickets legados sin identidad. No los modifica.
+    @Query("select count(b) from BloqueoLoto b where b.plantaId=:planta and b.estado=:estado "
+            + "and (b.tecnicoId is null or b.tecnicoId not in "
+            + "(select t.id from Tecnico t where t.plantaId=:planta and t.activo=true "
+            + "and t.username in :permitidos))")
+    long countActivosSinIdentidadPermitida(@Param("planta") String planta,
+            @Param("estado") EstadoBloqueo estado, @Param("permitidos") List<String> permitidos);
+
     @Query("select b.maquinaId from BloqueoLoto b where b.id=:id and b.plantaId=:planta")
     Optional<String> findMaquinaId(@Param("id") Long id, @Param("planta") String planta);
 

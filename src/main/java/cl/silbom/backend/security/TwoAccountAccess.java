@@ -1,6 +1,7 @@
 package cl.silbom.backend.security;
 
 import java.nio.charset.StandardCharsets;
+import cl.silbom.backend.model.Rol;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -69,6 +70,11 @@ public final class TwoAccountAccess {
 
     public String supervisorUsername() {
         return supervisorUsername;
+    }
+
+    public boolean allowsRole(String username, Rol role) {
+        return !enabled || (supervisorUsername.equals(username) && role == Rol.SUPERVISOR)
+                || (technicianUsername.equals(username) && role == Rol.TECNICO);
     }
 
     public String supervisorPassword() {

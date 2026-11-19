@@ -135,6 +135,7 @@ public class TecnicoService {
     @Transactional
     public void eliminar(Long id) {
         actor.exigirSupervisor();
+        denyChangesInTwoAccountMode();
         var t =
                 repository
                         .findForUpdate(id, planta)

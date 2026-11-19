@@ -44,6 +44,7 @@ public class TecnicoUserDetailsService implements UserDetailsService {
         }
         return repository
                 .findByUsernameAndPlantaId(username, planta)
+                .filter(t -> twoAccounts.allowsRole(t.getUsername(), t.getRol()))
                 .map(TecnicoPrincipal::new)
                 .orElseThrow(() -> new UsernameNotFoundException("Credencial inválida"));
     }

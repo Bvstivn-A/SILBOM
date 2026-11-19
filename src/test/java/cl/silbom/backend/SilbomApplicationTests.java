@@ -28,7 +28,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest @AutoConfigureMockMvc @ActiveProfiles("test") @Transactional
+@SpringBootTest(properties={"silbom.demo.two-users-only=false", "silbom.demo.supervisor.password=", "silbom.demo.technician.password="}) @AutoConfigureMockMvc @ActiveProfiles("test") @Transactional
 @WithUserDetails("supervisor-test")
 class SilbomApplicationTests {
     @Autowired WebApplicationContext context;
