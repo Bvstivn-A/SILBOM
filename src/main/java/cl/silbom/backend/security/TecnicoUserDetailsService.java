@@ -20,10 +20,14 @@ public class TecnicoUserDetailsService implements UserDetailsService {
 
     private final String planta;
 
+    private final TwoAccountAccess twoAccounts;
+
     public TecnicoUserDetailsService(
-            TecnicoRepository repository, @Value("${silbom.security.planta-id}") String planta) {
+            TecnicoRepository repository, @Value("${silbom.security.planta-id}") String planta,
+            TwoAccountAccess twoAccounts) {
         this.repository = repository;
         this.planta = planta;
+        this.twoAccounts = twoAccounts;
     }
 
     /**
@@ -35,6 +39,9 @@ public class TecnicoUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) {
+        if (!twoAccounts.allows(username)) {
+            throw new UsernameNotFoundException("Credencial inválida");
+        }
         return repository
                 .findByUsernameAndPlantaId(username, planta)
                 .map(TecnicoPrincipal::new)
