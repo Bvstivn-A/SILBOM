@@ -32,8 +32,8 @@ Sigue esta secuencia para levantar el entorno desde cero en una máquina limpia:
 Abre una terminal y descarga el código fuente del proyecto:
 
 ```bash
-git clone https://github.com/Bvstivn-A/Silbom_Pruebas.git
-cd Silbom_Pruebas
+git clone https://github.com/Bvstivn-A/Silbom.git
+cd Silbom
 ```
 
 ### Paso 2: Configurar la base de datos PostgreSQL
@@ -100,7 +100,7 @@ Abre en tu navegador **`http://localhost:8080/`**. Debes observar en el extremo 
 ### Paso 5: Instalación de la aplicación móvil Android
 Para probar el cliente en un teléfono Android físico:
 1. Accede desde el teléfono a la pestaña de entregas en GitHub:  
-   👉 **[Descargar instalador en GitHub Releases](https://github.com/Bvstivn-A/Silbom_Pruebas/releases)**
+   👉 **[Descargar instalador en GitHub Releases](https://github.com/Bvstivn-A/Silbom/releases)**
 2. Descarga el paquete `silbom-tecnico.apk` correspondiente a la Pre-release de pruebas.
 3. Abre el archivo descargado y autoriza la instalación de aplicaciones de orígenes desconocidos en tu navegador móvil.
 4. Una vez instalada, abre **SILBOM Técnico** y pulsa el botón **⚙️ IP** en la barra superior.

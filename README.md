@@ -23,7 +23,7 @@
 - **Controles de Seguridad y Protección de Datos:** [docs/controles-seguridad.md](docs/controles-seguridad.md)
 - **Modelo de Datos y Esquema SQL:** [db/modelo_datos.md](db/modelo_datos.md) | [db/schema.sql](db/schema.sql) | [db/migrations/V2__integridad_loto.sql](db/migrations/V2__integridad_loto.sql)
 - **Diagramas del Sistema:** [Diagrama de Arquitectura](docs/diagrama-arquitectura.png) | [Mapa del Producto](docs/mapa-producto.png)
-- **Instalador Móvil Android (`.apk`):** [GitHub Releases](https://github.com/Bvstivn-A/Silbom_Pruebas/releases)
+- **Instalador Móvil Android (`.apk`):** [GitHub Releases](https://github.com/Bvstivn-A/Silbom/releases)
 - **Video Promocional (máx. 2:00 min):** *Pendiente de insertar enlace público sin permisos antes del cierre final.*
 
 ### Trazabilidad de Hitos Anteriores (Conservados en `docs/`)
@@ -75,7 +75,7 @@ La aplicación móvil de terreno `SILBOM Técnico` está enfocada de forma **exc
 
 > **Distribución oficial de la aplicación:**
 > El instalador ejecutable `.apk` se distribuye exclusivamente a través de la pestaña de Releases del repositorio:
-> 👉 **[Descargar SILBOM Técnico en GitHub Releases](https://github.com/Bvstivn-A/Silbom_Pruebas/releases)**
+> 👉 **[Descargar SILBOM Técnico en GitHub Releases](https://github.com/Bvstivn-A/Silbom/releases)**
 >
 > Actualmente está disponible una **Pre-release de pruebas** con el binario compilado y firmado (`silbom-tecnico.apk`). De acuerdo con el **Anexo B (Reglas del repositorio)** de la asignatura, los archivos binarios compilados no se almacenan en las ramas de código fuente de Git para evitar el engrosamiento del historial y prevenir conflictos de fusión.
 
@@ -87,7 +87,7 @@ Se descartó de manera formal el soporte para terminales iOS (iPhone / iPad) por
 4. **Realidad de planta industrial:** En plantas productivas chilenas predominan ampliamente los terminales rugerizados y smartphones corporativos Android con chips NFC integrados.
 
 ### Instalación y conexión en teléfono Android
-1. Descarga el archivo `silbom-tecnico.apk` desde [GitHub Releases](https://github.com/Bvstivn-A/Silbom_Pruebas/releases).
+1. Descarga el archivo `silbom-tecnico.apk` desde [GitHub Releases](https://github.com/Bvstivn-A/Silbom/releases).
 2. Abre el archivo en tu teléfono Android y permite la instalación de aplicaciones de orígenes desconocidos.
 3. Abre la aplicación y pulsa el botón **⚙️ IP** en la barra superior para indicar la dirección IP de tu servidor backend (por ejemplo: `http://192.168.1.100:8080`).
 4. Si estás en una red Wi-Fi institucional con aislamiento de clientes (AP Isolation), puedes conectar el teléfono por cable USB con depuración activada y ejecutar en tu PC:
