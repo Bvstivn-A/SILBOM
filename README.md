@@ -1,5 +1,38 @@
 # SILBOM — Sistema LOTO (Hito 3: Producto Funcional e Integración Full-Stack)
 
+> **Promesa de valor:** Para equipos de mantención industrial que gestionan bloqueos de maquinaria sin trazabilidad confiable, SILBOM entrega un sistema de control digital LOTO con lectura NFC/QR y auditoría inmutable que garantiza seguridad operativa bajo el DS 594.
+
+## Integrantes del Equipo
+
+| Integrante (orden alfabético por apellido) | Usuario de GitHub |
+|---|---|
+| Alveal, Belén | @lenbbee |
+| Ancacoy, Bastián | @Bvstivn-A |
+| González Quezada, Benjamín | @Jokerzo206 (BenjaHK) |
+| Palma Ruiz, Vicente | @Vicente-PR |
+
+> **Nota sobre autoría en el historial de Git (Anexo C):** Los 17 commits registrados bajo el nombre `Nicolle Tirado` corresponden a tareas ejecutadas y verificadas por **Bastián Ancacoy (`@Bvstivn-A`)** mediante la integración de OpenAI Codex desde una cuenta compartida de ChatGPT (la plataforma firma automáticamente los commits con el nombre y correo del perfil de ChatGPT). No se reescribió el historial para preservar la integridad del repositorio; el uso y verificación de esta herramienta se detalla en el Anexo de Inteligencia Artificial.
+
+
+## Documentación, Trazabilidad y Video Promocional
+
+### Entregables Hito 3 (Producto Final)
+- **Manual de Uso e Instalación:** [docs/MANUAL_USO_INSTALACION.md](docs/MANUAL_USO_INSTALACION.md)
+- **Decisiones de Arquitectura y Limitación iOS:** [docs/decisiones-arquitectura-android.md](docs/decisiones-arquitectura-android.md)
+- **Registro de Uso y Verificación de IA:** [docs/REGISTRO_AUDITORIA_GEMINI.md](docs/REGISTRO_AUDITORIA_GEMINI.md)
+- **Controles de Seguridad y Protección de Datos:** [docs/controles-seguridad.md](docs/controles-seguridad.md)
+- **Modelo de Datos y Esquema SQL:** [db/modelo_datos.md](db/modelo_datos.md) | [db/schema.sql](db/schema.sql) | [db/migrations/V2__integridad_loto.sql](db/migrations/V2__integridad_loto.sql)
+- **Diagramas del Sistema:** [Diagrama de Arquitectura](docs/diagrama-arquitectura.png) | [Mapa del Producto](docs/mapa-producto.png)
+- **Instalador Móvil Android (`.apk`):** [GitHub Releases](https://github.com/Bvstivn-A/Silbom_Pruebas/releases)
+- **Video Promocional (máx. 2:00 min):** *Pendiente de insertar enlace público sin permisos antes del cierre final.*
+
+### Trazabilidad de Hitos Anteriores (Conservados en `docs/`)
+- **Hito 1 (Propuesta y Presentación):** `docs/SILBOM_Propuesta_Hito1 (5).pdf`, `docs/SILBOM_Presentacion_Hito1 (1).pdf`, `docs/Carta_Gantt_SILBOM.pdf`
+- **Hito 2 (API, Colección de Pruebas y Auditoría):** [docs/SILBOM_Postman_Collection.json](docs/SILBOM_Postman_Collection.json), [docs/auditoria-backend.md](docs/auditoria-backend.md), [docs/MEJORAS_BACKEND.md](docs/MEJORAS_BACKEND.md)
+
+---
+
+
 API REST universitaria y clientes frontend integrados para gestión de maquinaria e intervenciones de seguridad LOTO (*Lockout / Tagout*). Proyecto desarrollado con Java 21, Spring Boot 3.5.16, Maven, JPA/Hibernate, Spring Security y PostgreSQL 15–17 (probado en PostgreSQL 17).
 
 > **Aviso de seguridad industrial:** El estado `bloqueada` en SILBOM constituye un **registro digital de control y trazabilidad**. SILBOM no coloca candados físicos, no desenergiza actuadores ni certifica automáticamente energía cero; la confirmación del bloqueo es una declaración de responsabilidad del técnico autenticado bajo la normativa chilena DS 594.
@@ -107,7 +140,7 @@ ENCRYPTION_SECRET=pega_aqui_la_clave_base64_generada
 PLANTA_ID=PLANTA-SAN-JOAQUIN
 SERVER_PORT=8080
 SILBOM_BOOTSTRAP_USERNAME=supervisor-local
-SILBOM_BOOTSTRAP_PASSWORD=SilbomSup_7674a15c5e37d628
+SILBOM_BOOTSTRAP_PASSWORD=SupervisorDemo2026!
 ```
 
 ### 4. Compilar y arrancar la aplicación
@@ -137,7 +170,7 @@ Para evaluar el sistema completo punta a punta en un computador de revisión sin
 2. Observa la insignia de estado superior: debe indicar **`🟢 API Conectada (PostgreSQL)`**.
 3. En la barra de autenticación, inicia sesión con las credenciales de supervisor:
    - **Usuario:** `supervisor-local`
-   - **Contraseña:** `SilbomSup_7674a15c5e37d628` *(o la definida en tu `.env`)*
+   - **Contraseña:** `SupervisorDemo2026!` *(o la definida en tu `.env`)*
 4. En el panel podrás ver la grilla de las 6 máquinas de la planta (`EQ-ENV-01`, `EQ-PR-04`, `EQ-EXT-02`, `EQ-MEZ-01`, `EQ-COM-03`, `EQ-TR-01`), el cálculo dinámico de horas operativas y MTBF, y el historial de tickets.
 5. Haz clic en **👥 Técnicos** y registra un nuevo técnico para la prueba:
    - **Username:** `tecnico1`
@@ -222,3 +255,16 @@ mvn -B -ntp clean test
 La suite ejecuta **42 pruebas automatizadas** sin fallos:
 - Pruebas de dominio y cálculo de MTBF (`MaquinaTests`).
 - Pruebas de controladores, aspect RLS, transacciones concurrentes, control de acceso IDOR y filtros de seguridad HTTP (`SilbomApplicationTests`).
+
+---
+
+## Fallas Frecuentes y Solución Rápida
+
+| Falla frecuente | Solución rápida |
+|---|---|
+| Error de conexión a PostgreSQL (`Connection refused` o falla de autenticación) | Verificar que el servicio `postgresql` esté activo en el puerto `5432` y que `DB_USERNAME=silbom_app` y `DB_PASSWORD` en `.env` coincidan con el usuario creado. |
+| Spring Boot no inicia por `.env` ausente o `ENCRYPTION_SECRET` inválida | Copiar `.env.example` a `.env` sin comillas en los valores y generar una clave Base64 exacta de 32 bytes con `openssl rand -base64 32`. |
+| El teléfono Android no conecta al servidor en Wi-Fi universitario | Usar Zona Wi-Fi (Hotspot) compartida o conectar por USB con `adb reverse tcp:8080 tcp:8080` y elegir `Localhost (8080)` en la app. |
+| Error `403 Forbidden` al intentar liberar un bloqueo LOTO | Comportamiento esperado por regla de seguridad: solo el técnico propietario del candado puede liberarlo desde su propia sesión en `/app/`. |
+
+Para ver el diagnóstico detallado paso a paso, consulta [docs/MANUAL_USO_INSTALACION.md](docs/MANUAL_USO_INSTALACION.md).
