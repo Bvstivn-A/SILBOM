@@ -1,6 +1,8 @@
 package cl.silbom.backend.security;
 
 import java.util.List;
+import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,6 +31,9 @@ public class SecurityConfig {
 
     private final RateLimitFilter rate;
 
+    @Value("${silbom.security.cors-origins:http://localhost:*,http://127.0.0.1:*,https://localhost:*,https://127.0.0.1:*,https://silbom.netlify.app}")
+    private String corsOrigins;
+
     public SecurityConfig(SecurityHeadersFilter headers, RateLimitFilter rate) {
         this.headers = headers;
         this.rate = rate;
@@ -53,6 +58,19 @@ public class SecurityConfig {
                         auth ->
                                 auth.requestMatchers(HttpMethod.OPTIONS, "/**")
                                         .permitAll()
+                                        .requestMatchers(
+                                                HttpMethod.GET,
+                                                "/",
+                                                "/index.html",
+                                                "/Silbom1.html",
+                                                "/silbom-tecnico.html",
+                                                "/silbom-tecnico.apk",
+                                                "/app",
+                                                "/app/",
+                                                "/app/**",
+                                                "/docs/**",
+                                                "/favicon.ico")
+                                        .permitAll()
                                         .requestMatchers(HttpMethod.GET, "/api/v1/maquinas/**")
                                         .permitAll()
                                         .requestMatchers("/api/v1/tecnicos/**")
@@ -65,8 +83,14 @@ public class SecurityConfig {
                         basic ->
                                 basic.authenticationEntryPoint(
                                         (request, response, exception) -> {
-                                            response.setHeader(
-                                                    "WWW-Authenticate", "Basic realm=\"SILBOM\"");
+                                            if (!"XMLHttpRequest"
+                                                    .equalsIgnoreCase(
+                                                            request.getHeader(
+                                                                    "X-Requested-With"))) {
+                                                response.setHeader(
+                                                        "WWW-Authenticate",
+                                                        "Basic realm=\"SILBOM\"");
+                                            }
                                             response.setStatus(401);
                                             response.setContentType(
                                                     "application/json;charset=UTF-8");
@@ -103,16 +127,20 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         var config = new CorsConfiguration();
-        config.setAllowedOrigins(
-                List.of(
-                        "http://localhost:3000",
-                        "http://localhost:5173",
-                        "http://127.0.0.1:5500",
-                        "https://silbom.netlify.app"));
+        config.setAllowedOriginPatterns(Arrays.stream(corsOrigins.split(","))
+                .map(String::trim).filter(s -> !s.isEmpty()).toList());
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         config.setAllowedHeaders(
-                List.of("Authorization", "Content-Type", "Accept", "Origin", "User-Agent"));
-        config.setAllowCredentials(true);
+                List.of(
+                        "Authorization",
+                        "Content-Type",
+                        "Accept",
+                        "Origin",
+                        "User-Agent",
+                        "Idempotency-Key",
+                        "X-Requested-With"));
+        // La API usa Authorization explícito; no requiere cookies entre orígenes.
+        config.setAllowCredentials(false);
         config.setMaxAge(3600L);
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

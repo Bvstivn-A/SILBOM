@@ -59,3 +59,13 @@ replay_pid*
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Android app build directory
+android-app/build/
+
+# Pruebas de navegador y certificados locales
+.venv/
+__pycache__/
+test-results/
+*.p12
+*.crt
