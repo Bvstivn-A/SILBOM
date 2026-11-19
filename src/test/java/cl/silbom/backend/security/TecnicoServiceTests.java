@@ -14,7 +14,7 @@ class TecnicoServiceTests {
         var repo=mock(TecnicoRepository.class);var bloqueos=mock(BloqueoLotoRepository.class);
         var encoder=mock(PasswordEncoder.class);var actor=mock(ActorActual.class);
         doThrow(new ForbiddenOperationException("No autorizado")).when(actor).exigirSupervisor();
-        var service=new TecnicoService(repo,bloqueos,encoder,actor,"PLANTA");
+        var service=new TecnicoService(repo,bloqueos,encoder,actor,"PLANTA",mock(TwoAccountAccess.class));
         assertThrows(ForbiddenOperationException.class,()->service.crear(new TecnicoCreateDTO("prueba","Nombre","test-only-password",Rol.TECNICO)));
         verifyNoInteractions(repo,bloqueos,encoder);
     }
