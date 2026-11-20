@@ -1,7 +1,7 @@
 name: Backend y PWA
 on:
   push:
-    branches: [improvement/backend-hito2, hito3_benja, 'fix/hito3-*']
+    branches: [main, improvement/backend-hito2, hito3_benja, 'fix/hito3-*']
   pull_request:
   workflow_dispatch:
 permissions:
@@ -26,6 +26,7 @@ jobs:
       - run: python scripts/sync-web-assets.py --check
       - run: python -m unittest discover -s tests/configuracion -v
       - run: python -m unittest discover -s tests/browser -v
+
   verify:
     runs-on: ubuntu-latest
     services:

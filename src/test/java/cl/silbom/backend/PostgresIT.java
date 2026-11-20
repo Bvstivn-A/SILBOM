@@ -160,7 +160,6 @@ class PostgresIT {
         assertNotEquals(otro.id(), tickets.get(0).id());
         assertEquals(2, maquinas.obtenerPorId(maquina).bloqueosActivos());
     }
-
     @Test void restriccionesFisicasYReferenciasSeVerificanEnPostgres() throws Exception {
         try(var c=conexion("PLANTA-SAN-JOAQUIN")) {
             var ex=assertThrows(SQLException.class,()->c.createStatement().executeUpdate("insert into bloqueos_loto(maquina_id,tipo_intervencion,motivo,nombre_tecnico,confirmacion_candado_ds594,tecnico_id) values('EQ-PR-04','PREVENTIVA','Motivo prueba','Prueba',true,9223372036854775807)"));
