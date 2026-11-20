@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 /** PostgreSQL real, rol no propietario y transacciones independientes; no usa H2 ni Docker. */
-@SpringBootTest @ActiveProfiles("postgres-test") @Timeout(60)
+@SpringBootTest(properties={"silbom.demo.two-users-only=false", "silbom.demo.supervisor.password=", "silbom.demo.technician.password="}) @ActiveProfiles("postgres-test") @Timeout(60)
 class PostgresIT {
     @Autowired MaquinaService maquinas;
     @Autowired BloqueoService bloqueos;

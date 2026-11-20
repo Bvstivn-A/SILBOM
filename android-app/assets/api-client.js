@@ -59,11 +59,21 @@
     }
   }
 
+  function sessionIdentity(data, username) {
+    if (!data || !Number.isSafeInteger(data.id) || data.id <= 0 || data.username !== username
+        || !['TECNICO', 'SUPERVISOR'].includes(data.rol) || typeof data.nombre !== 'string'
+        || typeof data.modoDosCuentas !== 'boolean' || typeof data.identidadesSoloLectura !== 'boolean') {
+      throw new Error('No se pudo verificar la identidad y el rol de la sesión.');
+    }
+    return { id: data.id, username: data.username, nombre: data.nombre, rol: data.rol,
+      modoDosCuentas: data.modoDosCuentas, identidadesSoloLectura: data.identidadesSoloLectura };
+  }
+
   function operationId() {
     // getRandomValues funciona también al revisar el catálogo por HTTP local.
     return '10000000-1000-4000-8000-100000000000'.replace(/[018]/g, c =>
       (Number(c) ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> Number(c) / 4).toString(16));
   }
 
-  window.SilbomHttp = { serverOrigin, baseUrl, allowsCredentials, request, operationId };
+  window.SilbomHttp = { serverOrigin, baseUrl, allowsCredentials, request, operationId, sessionIdentity };
 })();

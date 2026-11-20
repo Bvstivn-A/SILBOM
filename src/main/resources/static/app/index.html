@@ -1718,6 +1718,7 @@
           ...requestOptions, headers, origin: AppState.serverOrigin
         });
         updateConnectionBadge(true);
+        if (result.status === 401 && AppState.auth?.header === auth) clearSessionIdentity();
         if (!silentMonitor) updateHttpMonitor(method, endpoint, result.status, HTTP_STATUS_LABELS[result.status]);
         return result;
       } catch (err) {
@@ -1782,6 +1783,7 @@
        AUTENTICACIÓN EN MEMORIA Y SESIÓN
        ========================================================================== */
     function renderAuthUI() {
+      renderSessionAccess();
       const mobilePill = document.getElementById('mobile-operator-pill');
       const mobileSummary = document.getElementById('mobile-session-summary');
       const mobileLogoutBtn = document.getElementById('mobile-btn-logout');
@@ -1807,23 +1809,69 @@
     }
 
     async function probeAuthenticatedRole() {
-      if (!AppState.apiOnline || !AppState.auth || !AppState.auth.header) return;
-      try {
-        const res = await apiFetch('/tecnicos', { silentMonitor: true });
-        if (res.ok && Array.isArray(res.data)) {
-          AppState.auth.rol = 'SUPERVISOR';
-          const match = res.data.find(t => t.username === AppState.auth.username);
-          if (match) {
-            AppState.auth.id = match.id;
-            AppState.auth.nombre = match.nombre;
-          }
-        } else if (res.status === 403) {
-          AppState.auth.rol = 'TECNICO';
+      const current = AppState.auth;
+      if (!current?.header) throw new Error('Inicia sesión para verificar tu identidad.');
+      const res = await apiFetch('/sesion', { silentMonitor: true, authHeaderOverride: current.header });
+      if (!res.ok) throw new Error(extractApiError(res.data, res.status));
+      if (AppState.auth !== current) throw new Error('La sesión cambió durante la comprobación.');
+      Object.assign(current, SilbomHttp.sessionIdentity(res.data, current.username));
+    }
+
+    function renderSessionAccess() {
+      const session = AppState.auth;
+      let link = document.getElementById('role-interface-link');
+      const anchor = document.getElementById('mobile-operator-pill');
+      if (!link && anchor) {
+        link = document.createElement('a');
+        link.id = 'role-interface-link';
+        link.style.cssText = 'color:inherit;text-decoration:underline;padding:10px;display:inline-block';
+        anchor.parentElement.appendChild(link);
+      }
+      if (link) {
+        link.hidden = !session?.rol;
+        if (session?.rol) {
+          const url = new URL(session.rol === 'TECNICO' ? '/app/' : '/index.html',
+            AppState.serverOrigin || location.origin);
+          if (session.rol === 'TECNICO' && AppState.selectedMachineId) url.searchParams.set('maquina', AppState.selectedMachineId);
+          link.href = url.href;
+          link.textContent = session.rol === 'TECNICO' ? 'Abrir interfaz técnica' : 'Abrir consola de supervisión';
+          link.title = 'La otra vista solicita iniciar sesión de nuevo; no se transfieren credenciales.';
         }
-      } catch (err) {
-        // Ignorar fallo en detección de rol
+      }
+      const form = document.getElementById('mobile-create-tech-form');
+      if (form) {
+        const blocked = !session || session.rol !== 'SUPERVISOR' || session.identidadesSoloLectura;
+        form.hidden = blocked;
+        form.classList.toggle('hidden', blocked);
+        form.querySelectorAll('input,select,button').forEach(control => control.disabled = blocked);
+        let note = document.getElementById('identity-access-note');
+        if (!note) {
+          note = document.createElement('p');note.id = 'identity-access-note';note.setAttribute('role','status');
+          form.before(note);
+        }
+        note.hidden = !blocked;
+        note.textContent = session?.identidadesSoloLectura
+          ? 'Modo demostración: las identidades son de solo lectura. No se pueden crear, editar ni desactivar cuentas.'
+          : 'Inicia sesión como supervisor para administrar identidades.';
       }
     }
+
+    function clearSessionIdentity() {
+      AppState.auth = null;
+      AppState.tickets = [];
+      AppState.auditLogs = [];
+      AppState.tecnicosList = [];
+      document.querySelectorAll('input[type="password"]').forEach(input => input.value = '');
+      ['audit-detail-modal','tech-management-modal'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
+      const note = document.getElementById('audit-modal-note');
+      if (note) note.textContent = '';
+      renderAuthUI();
+      if (typeof syncOperationControls === 'function') syncOperationControls();
+      if (typeof renderMobileHistorial === 'function') renderMobileHistorial();
+      if (typeof renderSupervisorDashboard === 'function') renderSupervisorDashboard();
+      if (typeof renderSupervisorTecnicos === 'function') renderSupervisorTecnicos();
+    }
+    window.addEventListener('pagehide', clearSessionIdentity);
 
     async function performLogin(username, password) {
       if (AppState.isSubmitting || (AppState.pendingOperation && AppState.pendingOperation.username !== username)) {
@@ -1834,13 +1882,15 @@
         showToast('Ingresa usuario y contraseña para iniciar sesión', '⚠️');
         return false;
       }
-      AppState.auth = { username, header: encodeBasicAuth(username, password), rol: null, id: null, nombre: null };
+      const candidate = { username, header: encodeBasicAuth(username, password), rol: null, id: null, nombre: null };
+      AppState.auth = candidate;
       try {
-        const res = await apiFetch('/bloqueos');
+        await probeAuthenticatedRole();
+        const res = await apiFetch('/bloqueos', { authHeaderOverride: candidate.header });
+        if (AppState.auth !== candidate) return false;
         if (!res.ok || !Array.isArray(res.data)) throw new Error(extractApiError(res.data, res.status));
         AppState.tickets = res.data;
         AppState.auditLogs = buildAuditLogsFromTickets(res.data);
-        await probeAuthenticatedRole();
         await loadMachinesFromApi();
         renderAuthUI();
         renderMobileHistorial();
@@ -1848,7 +1898,8 @@
         showToast(`Sesión verificada: ${username}`, '👷');
         return true;
       } catch (err) {
-        AppState.auth = null;
+        if (AppState.auth && AppState.auth !== candidate) return false;
+        clearSessionIdentity();
         AppState.tickets = [];
         AppState.auditLogs = [];
         renderAuthUI();
@@ -1870,11 +1921,11 @@
     }
 
     function logoutOperator() {
-      if (AppState.isSubmitting || AppState.pendingOperation) {
+      if (AppState.isSubmitting) {
         setOperationStatus('Hay una solicitud sin resolver. Verifica su resultado antes de cerrar sesión.', 'warning');
         return;
       }
-      AppState.auth = null;
+      clearSessionIdentity();
       AppState.tickets = [];
       AppState.auditLogs = [];
       clearInterval(AppState.timerInterval);
@@ -1882,6 +1933,7 @@
       renderMobileHistorial();
       showTechStep(1);
       syncOperationControls();
+      if (AppState.pendingOperation) setOperationStatus('Sesión cerrada. La solicitud sigue sin confirmar; vuelve a iniciar con su responsable para verificarla. No se reenvía automáticamente.', 'warning');
       showToast('Sesión cerrada de memoria', '🔒');
     }
 
@@ -2844,6 +2896,10 @@
        ALTA DE TÉCNICOS DESDE TERRENO (POST /api/v1/tecnicos)
        ========================================================================== */
     async function createTechnicianFromForm() {
+      if (!AppState.auth || AppState.auth.rol !== 'SUPERVISOR' || AppState.auth.identidadesSoloLectura) {
+        showToast('La gestión de identidades no está permitida en esta sesión.', '🔒');
+        return;
+      }
       if (AppState.isSubmitting || AppState.pendingOperation) {
         setOperationStatus('Resuelve la solicitud LOTO pendiente antes de administrar técnicos.', 'warning');
         return;

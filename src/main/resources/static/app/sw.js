@@ -1,7 +1,7 @@
-const CACHE_NAME = 'silbom-tech-shell-v3';
+const CACHE_NAME = 'silbom-tech-shell-v4';
 const APP_ENTRY = '/app/index.html';
 const APP_SHELL_URLS = [
-  APP_ENTRY, '/app/api-client.js', '/app/manifest.webmanifest',
+  APP_ENTRY, '/app/api-client.js', '/app/nfc-code.js', '/app/manifest.webmanifest',
   '/app/icons/icon-192.png', '/app/icons/icon-512.png', '/app/icons/apple-touch-icon.png'
 ];
 

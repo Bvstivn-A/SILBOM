@@ -13,6 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.web.cors.*;
 
 /**
@@ -31,12 +34,15 @@ public class SecurityConfig {
 
     private final RateLimitFilter rate;
 
+    private final TwoAccountAccess twoAccounts;
+
     @Value("${silbom.security.cors-origins:http://localhost:*,http://127.0.0.1:*,https://localhost:*,https://127.0.0.1:*,https://silbom.netlify.app}")
     private String corsOrigins;
 
-    public SecurityConfig(SecurityHeadersFilter headers, RateLimitFilter rate) {
+    public SecurityConfig(SecurityHeadersFilter headers, RateLimitFilter rate, TwoAccountAccess twoAccounts) {
         this.headers = headers;
         this.rate = rate;
+        this.twoAccounts = twoAccounts;
     }
 
     /**
@@ -50,6 +56,9 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        AuthorizationManager<RequestAuthorizationContext> identityWrites = (authentication, context) ->
+                new AuthorizationDecision(!twoAccounts.enabled() && authentication.get().getAuthorities()
+                        .stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPERVISOR")));
         return http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(
@@ -73,6 +82,12 @@ public class SecurityConfig {
                                         .permitAll()
                                         .requestMatchers(HttpMethod.GET, "/api/v1/maquinas/**")
                                         .permitAll()
+                                        .requestMatchers(HttpMethod.POST, "/api/v1/tecnicos", "/api/v1/tecnicos/**")
+                                        .access(identityWrites)
+                                        .requestMatchers(HttpMethod.PUT, "/api/v1/tecnicos/**")
+                                        .access(identityWrites)
+                                        .requestMatchers(HttpMethod.DELETE, "/api/v1/tecnicos/**")
+                                        .access(identityWrites)
                                         .requestMatchers("/api/v1/tecnicos/**")
                                         .hasRole("SUPERVISOR")
                                         .requestMatchers("/api/v1/**")

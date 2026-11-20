@@ -15,6 +15,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ActorActual {
 
+    private final TwoAccountAccess twoAccounts;
+
+    public ActorActual(TwoAccountAccess twoAccounts) {
+        this.twoAccounts = twoAccounts;
+    }
+
     /**
      * QUÉ HACE: Extrae el TecnicoPrincipal autenticado de SecurityContextHolder.
      *
@@ -27,6 +33,10 @@ public class ActorActual {
                 || !auth.isAuthenticated()
                 || !(auth.getPrincipal() instanceof TecnicoPrincipal t)) {
             throw new SecurityAuthException("Se requiere la identidad individual del técnico");
+        }
+        if (!t.activo() || !twoAccounts.allows(t.username())
+                || !twoAccounts.allowsRole(t.username(), t.rol())) {
+            throw new SecurityAuthException("Credencial individual no habilitada");
         }
         return t;
     }

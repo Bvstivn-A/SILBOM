@@ -31,17 +31,21 @@ public class TecnicoService {
 
     private final String planta;
 
+    private final TwoAccountAccess twoAccounts;
+
     public TecnicoService(
             TecnicoRepository repository,
             BloqueoLotoRepository bloqueos,
             PasswordEncoder encoder,
             ActorActual actor,
-            @Value("${silbom.security.planta-id}") String planta) {
+            @Value("${silbom.security.planta-id}") String planta,
+            TwoAccountAccess twoAccounts) {
         this.repository = repository;
         this.bloqueos = bloqueos;
         this.encoder = encoder;
         this.actor = actor;
         this.planta = planta;
+        this.twoAccounts = twoAccounts;
     }
 
     /**
@@ -82,6 +86,7 @@ public class TecnicoService {
     @Transactional
     public TecnicoResponseDTO crear(TecnicoCreateDTO dto) {
         actor.exigirSupervisor();
+        denyChangesInTwoAccountMode();
         if (repository.findByUsernameAndPlantaId(dto.username(), planta).isPresent()) {
             throw new ResourceAlreadyExistsException(
                     "Nombre de usuario ya utilizado, incluso si está inactivo");
@@ -105,6 +110,7 @@ public class TecnicoService {
     @Transactional
     public TecnicoResponseDTO actualizar(Long id, TecnicoUpdateDTO dto) {
         actor.exigirSupervisor();
+        denyChangesInTwoAccountMode();
         var t =
                 repository
                         .findForUpdate(id, planta)
@@ -129,6 +135,7 @@ public class TecnicoService {
     @Transactional
     public void eliminar(Long id) {
         actor.exigirSupervisor();
+        denyChangesInTwoAccountMode();
         var t =
                 repository
                         .findForUpdate(id, planta)
@@ -141,6 +148,14 @@ public class TecnicoService {
             throw new BusinessConflictException("El técnico tiene bloqueos activos");
         }
         t.desactivar();
+    }
+
+    private void denyChangesInTwoAccountMode() {
+        if (twoAccounts.enabled()) {
+            throw new ForbiddenOperationException(
+                    "La gestión de identidades está deshabilitada en el modo"
+                        + " de demostración de dos cuentas.");
+        }
     }
 
     /**

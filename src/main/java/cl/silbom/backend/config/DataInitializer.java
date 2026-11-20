@@ -11,6 +11,7 @@ import cl.silbom.backend.repository.BloqueoLotoRepository;
 import cl.silbom.backend.repository.EventoLotoRepository;
 import cl.silbom.backend.repository.MaquinaRepository;
 import cl.silbom.backend.repository.TecnicoRepository;
+import cl.silbom.backend.security.TwoAccountAccess;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.slf4j.Logger;
@@ -50,6 +51,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private final String bootstrapPassword;
 
+    private final TwoAccountAccess twoAccounts;
+
     public DataInitializer(
             MaquinaRepository maquinaRepository,
             BloqueoLotoRepository bloqueoLotoRepository,
@@ -58,7 +61,8 @@ public class DataInitializer implements CommandLineRunner {
             EventoLotoRepository eventos,
             PasswordEncoder encoder,
             @Value("${silbom.bootstrap.username:}") String bootstrapUsername,
-            @Value("${silbom.bootstrap.password:}") String bootstrapPassword) {
+            @Value("${silbom.bootstrap.password:}") String bootstrapPassword,
+            TwoAccountAccess twoAccounts) {
         this.maquinaRepository = maquinaRepository;
         this.bloqueoLotoRepository = bloqueoLotoRepository;
         this.plantaId = plantaId;
@@ -67,6 +71,7 @@ public class DataInitializer implements CommandLineRunner {
         this.encoder = encoder;
         this.bootstrapUsername = bootstrapUsername;
         this.bootstrapPassword = bootstrapPassword;
+        this.twoAccounts = twoAccounts;
     }
 
     /**
@@ -78,10 +83,63 @@ public class DataInitializer implements CommandLineRunner {
      * LEGADO_IMPORTADO identifica datos anteriores, sin afirmar que sus acciones fueron observadas
      * por el sistema.
      */
+    /**
+     * El modo de dos usuarios es opt-in. No elimina cuentas históricas, no reescribe
+     * identidades de terceros y se niega a arrancar si impediría gestionar un ticket
+     * activo cuyo responsable no pertenece a esas dos cuentas.
+     */
+    private void configureDemoAccounts() {
+        if (bloqueoLotoRepository.countActivosSinIdentidadPermitida(plantaId,
+                EstadoBloqueo.ACTIVO, List.of(twoAccounts.supervisorUsername(),
+                        twoAccounts.technicianUsername())) > 0) {
+                throw new IllegalStateException(
+                        "Hay tickets LOTO activos sin responsable habilitado en la demo."
+                            + " No se ha modificado el historial. Mantenga el modo desactivado"
+                            + " y resuelva esos tickets"
+                            + " mediante el procedimiento autorizado antes de activar"
+                            + " SILBOM_DEMO_TWO_USERS_ONLY.");
+        }
+        configureDemoIdentity(
+                twoAccounts.supervisorUsername(),
+                "Supervisor SILBOM",
+                twoAccounts.supervisorPassword(),
+                Rol.SUPERVISOR);
+        configureDemoIdentity(
+                twoAccounts.technicianUsername(),
+                "Técnico SILBOM",
+                twoAccounts.technicianPassword(),
+                Rol.TECNICO);
+        log.info("Modo de demostración de dos usuarios habilitado (contraseñas ocultas)");
+    }
+
+    private void configureDemoIdentity(String username, String displayName,
+            String password, Rol rol) {
+        var existing = tecnicos.findByUsernameAndPlantaId(username, plantaId);
+        if (existing.isPresent()) {
+            var user = existing.get();
+            if (!user.isActivo() || user.getRol() != rol) {
+                throw new IllegalStateException(
+                        "La identidad " + username
+                            + " ya existe con un rol distinto o está desactivada."
+                            + " Se requiere revisión administrativa antes de continuar.");
+            }
+            // No rotar el hash con cada reinicio si la credencial ya coincide.
+            boolean samePassword = encoder.matches(password, user.getPasswordHash());
+            if (!displayName.equals(user.getNombre()) || !samePassword) {
+                user.actualizar(displayName, rol, samePassword ? null : encoder.encode(password));
+            }
+        } else {
+            tecnicos.save(new Tecnico(
+                    username, displayName, encoder.encode(password), rol, plantaId));
+        }
+    }
+
     @Override
     @Transactional
     public void run(String... args) {
-        if (tecnicos.findByPlantaIdAndActivoTrueOrderById(plantaId).isEmpty()
+        if (twoAccounts.enabled()) {
+            configureDemoAccounts();
+        } else if (tecnicos.findByPlantaIdAndActivoTrueOrderById(plantaId).isEmpty()
                 && !bootstrapUsername.isBlank()) {
             if (!bootstrapUsername.matches("[A-Za-z0-9._-]{3,50}")
                     || bootstrapPassword.startsWith("CAMBIAR_")
