@@ -163,3 +163,5 @@ dialog::backdrop { background: #07131dcc; }
 .access-labels path { fill: none; stroke: #91b4cb; stroke-width: 1.5; }
 @media (max-width: 660px) { .plan-viewport { min-height: 0; }.machine-tooltip { max-height: calc(100% - 16px); overflow: auto; } }
 .marker-disc.large-count { font-size: 11px; width: auto; min-width: 34px; padding: 0 6px; }
+
+.startup-message { position: absolute; z-index: 20; inset: 16px; margin: auto; height: fit-content; max-height: calc(100% - 32px); overflow: auto; padding: 18px; border: 1px solid #7895ab; border-radius: 8px; background: #182c3b; color: #edf5fa; font-size: 14px; }

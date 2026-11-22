@@ -271,6 +271,7 @@
   if (positions.some(p => p.id === machineHash())) selected=machineHash();
   renderMachines(config.initialMachines()); updateCamera();
   announce(`${current().nombre} seleccionada. ${stateText(current())}. PROTOTIPO: datos simulados.`);
+  $('startup-message').hidden=true;
   window.SilbomIndustrialPlan=Object.freeze({
     renderMachines,
     snapshot:() => JSON.parse(JSON.stringify({machines:view,selected,scenario,camera}))

@@ -6,7 +6,9 @@ Propuesta arquitectónica navegable para revisión del equipo. Rama **`prototype
 
 ## Cómo abrirlo
 
-Descarga o cambia a esta rama y conserva todos los archivos de la carpeta juntos. Abre `docs/prototipos/plano-industrial-2d/index.html` en un navegador. HTML, CSS y JavaScript son locales, sin módulos, fuentes externas, paquetes npm ni peticiones para cargar el dibujo. No necesitas iniciar Spring Boot, PostgreSQL ni la aplicación Android.
+**Para mostrarlo o descargar un solo archivo, usa [SILBOM-plano-demo.html](SILBOM-plano-demo.html).** Guarda ese HTML y ábrelo en Chrome, Firefox o Safari con JavaScript habilitado. Incluye estilos, dibujo, datos e interacciones; no necesita otros archivos ni backend. La vista previa de un adjunto puede no ejecutar JavaScript.
+
+`index.html` es la versión de desarrollo: necesita `styles.css`, `datos-demo.js`, `plano.js` y `script.js` en la misma carpeta. Descargar únicamente `index.html` deja el plano vacío; ahora muestra un aviso de recuperación. Para trabajar en las fuentes, conserva toda la carpeta y abre `index.html`. No necesitas iniciar Spring Boot, PostgreSQL ni la aplicación Android.
 
 Si el navegador o visor restringe los archivos locales, desde la raíz del repositorio ejecuta:
 
@@ -72,7 +74,9 @@ El resumen inicial es **6 / 2 / 4 / 3**, calculado, no mantenido como contadores
 
 | Archivo | Responsabilidad |
 | --- | --- |
-| `index.html` | Estructura semántica, controles, panel y ficha |
+| `SILBOM-plano-demo.html` | Archivo único recomendado para descargar y presentar |
+| `exportar-demo.py` | Genera el HTML portátil desde las fuentes; no contiene otra implementación |
+| `index.html` | Estructura semántica, controles, panel y ficha; necesita sus archivos auxiliares |
 | `styles.css` | Tema, blueprint, responsive y estados de interacción |
 | `plano.js` | Geometría SVG propia y estática del edificio y sus elementos |
 | `datos-demo.js` | Catálogo, posiciones gráficas ficticias y datos iniciales |
@@ -85,6 +89,17 @@ La consola actual `src/main/resources/static/index.html` usa tipografía del sis
 Este prototipo conserva tipografía, cian, estados con texto/íconos y lenguaje de paneles. Adapta las superficies al azul técnico `#101D2A`/`#182C3B`, muros claros y rojo más luminoso `#FF8D93` para legibilidad. El centro visual es el edificio SVG, con un solo panel contextual. No copia ni altera estilos de producción.
 
 Se utilizaron UI/UX Pro Max para planificar la interacción, Frontend Design para el diseño e implementación y Web Design Guidelines para la revisión. Las sugerencias genéricas de landing pages y fuentes externas se descartaron por no corresponder a esta consola industrial autónoma.
+
+## Regenerar el archivo único
+
+Después de cambiar las fuentes, ejecuta desde la raíz del repositorio:
+
+```bash
+python3 docs/prototipos/plano-industrial-2d/exportar-demo.py
+python3 docs/prototipos/plano-industrial-2d/exportar-demo.py --check
+```
+
+El exportador usa solo la biblioteca estándar de Python. Conserva los archivos de desarrollo separados e incorpora su contenido en el HTML portable. La CSP de ese HTML permite únicamente los bloques CSS/JS cuyos hashes coinciden, y mantiene `connect-src 'none'` y `form-action 'none'`. El dibujo también queda incluido estáticamente; las interacciones requieren JavaScript.
 
 ## Integración posterior con la API
 
@@ -115,7 +130,7 @@ No existe todavía ese adaptador ni conexión real en estos archivos.
 
 ## Verificación y límites
 
-Pruebas Chromium: **15 casos, 14 aprobados, 1 omitido por la política `file://` del navegador administrado**. Sin errores JavaScript ni errores de consola/CSP. Se prueba mediante servidor local; no se declara apertura directa verificada ni pruebas en Safari o dispositivos físicos.
+Pruebas Chromium: **17 casos, 16 aprobados, 1 omitido por la política `file://` del navegador administrado**. Sin errores JavaScript ni errores de consola/CSP en las versiones completas. El caso negativo de archivos ausentes provoca los errores de carga esperados. Se prueba mediante servidor local; no se declara apertura directa verificada ni pruebas en Safari o dispositivos físicos.
 
 La suite verifica catálogo, seis posiciones, estados, selección sin mutación, tooltip con teclado/Escape, cambios 0/1/2, Multi-LOTO, restablecimiento, ficha y retorno de foco, zoom, arrastre y alternativa por botones, coordenadas proporcionales, ausencia de superposición de IDs, datos inválidos/duplicados/incompletos, estado no confirmado conservado al cambiar de escenario, MTBF, texto no confiable y pérdida de red después de cargar. Solo se permiten peticiones GET a los cinco archivos estáticos esperados: ninguna llamada a la API, ni POST, PUT, PATCH o DELETE.
 
@@ -127,13 +142,15 @@ Para repetir las pruebas, necesitas Python 3, Playwright para Python y Chromium 
 python3 docs/prototipos/plano-industrial-2d/verificar-plano.py
 ```
 
+La prueba del HTML portátil lo copia a una carpeta temporal sin sus archivos auxiliares, comprueba selección, Multi-LOTO, zoom, ficha, estados grises y restablecimiento, y exige una única petición GET al propio HTML. Otro caso reproduce la falta de archivos de index.html y comprueba el mensaje de recuperación.
+
 El script inicia y detiene su propio servidor local con puerto efímero. Usa Chromium en `PATH`, permite indicar `SILBOM_TEST_CHROMIUM` o utiliza el navegador instalado de Playwright. No instala paquetes ni modifica configuraciones del sistema. Estas dependencias son solo para las pruebas, no para abrir el prototipo.
 
 Evidencias:
 
 - [Escritorio 1600 px](evidencias/escritorio-1600.png), [tablet 1024 px](evidencias/tablet-1024.png) y [teléfono 390 px](evidencias/movil-390.png).
 - [Tooltip](evidencias/tooltip.png), [estado sin verificar](evidencias/sin-verificar.png), [zoom 150 %](evidencias/zoom-150.png) y [ficha local](evidencias/ficha-local.png).
-- [Resultados y geometría de controles](evidencias/verificacion.json), con SHA-256 de los cinco archivos probados.
+- [Resultados y geometría de controles](evidencias/verificacion.json), con SHA-256 de las fuentes y del HTML portátil probado.
 - [Contrastes de pares principales](evidencias/contraste.json): texto ≥4,5:1; contornos y foco ≥3:1. Comprobación parcial del tema oscuro, no certificación WCAG.
 - [Integridad de los archivos originales](evidencias/aislamiento.json).
 

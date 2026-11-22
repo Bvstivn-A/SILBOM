@@ -61,6 +61,14 @@
       "test": "test_15_direct_file_opening",
       "status": "skip",
       "reason": "El navegador administrado bloquea file://. Verificar apertura directa en un navegador personal."
+    },
+    {
+      "test": "test_16_portable_alone_no_companion_files",
+      "status": "pass"
+    },
+    {
+      "test": "test_17_missing_companions_shows_recovery_message",
+      "status": "pass"
     }
   ],
   "viewports": [
@@ -1607,17 +1615,68 @@
     {
       "method": "GET",
       "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
     }
   ],
   "sha256": {
-    "index.html": "6835e8a4331746cf6353ad2d4d6eb100ae3d013547485afa1a0228f89aceb177",
-    "styles.css": "44a79fd82bb03b3e8b114807aa7f04ef4272cb80a17cc8d3e786a2fcbbb6bd7c",
-    "script.js": "d30371ea85592bdc23d6fc420e0a0e12404763c26f79e9100c3d4e01b72a3406",
+    "index.html": "48582dab2b743ea76e8a6292cd7f4e02f0d39edf594c0033e013407d983c0bd3",
+    "styles.css": "553bd03d7b1c19a04787166473742ee8b590a2fe927816501dd05c5731bd9837",
+    "script.js": "8b352bfbde4f7c32585060357e76d4acbdfe7bcaff865fea2ee57081308a6cf5",
     "datos-demo.js": "3791e3a93b7f250184edc18892002621971b78c74cf997fc84851e274ad30648",
-    "plano.js": "2e4fabe0914c5c9b531c415e030eb81c05a7448f60250b15c04d7ff8cb39640e"
+    "plano.js": "2e4fabe0914c5c9b531c415e030eb81c05a7448f60250b15c04d7ff8cb39640e",
+    "SILBOM-plano-demo.html": "9eb1e1219e9e144c64e022a91a7c99fba1a5bf30c10b74c0ececfed2a25c1348"
   },
   "direct_file": "not_verified_managed_browser_policy",
-  "tests": 15,
+  "portable_isolation": {
+    "files_present": [
+      "SILBOM-plano-demo.html"
+    ],
+    "requests": 1,
+    "companion_requests": 0,
+    "javascript_or_csp_errors": [],
+    "interactions": "verified"
+  },
+  "missing_companions": "reproduced_empty_plan_and_verified_recovery_message",
+  "tests": 17,
   "failures": 0,
   "errors": 0,
   "skipped": 1

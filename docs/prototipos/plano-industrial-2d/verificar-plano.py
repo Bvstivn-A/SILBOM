@@ -8,13 +8,15 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import shutil
 from threading import Thread
+import tempfile
+import subprocess
 import unittest
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / 'evidencias'
 OUT.mkdir(exist_ok=True)
-ASSETS = ['index.html','styles.css','script.js','datos-demo.js','plano.js']
+ASSETS = ['index.html','styles.css','script.js','datos-demo.js','plano.js','SILBOM-plano-demo.html']
 REPORT = {'browser':'Chromium', 'checks':[], 'viewports':[], 'requests':[],
           'sha256':{name:hashlib.sha256((ROOT/name).read_bytes()).hexdigest() for name in ASSETS}}
 class Handler(SimpleHTTPRequestHandler):
@@ -274,7 +276,7 @@ class PlanTests(unittest.TestCase):
     def test_15_direct_file_opening(self):
         page=self.context.new_page()
         try:
-            page.goto((ROOT/'index.html').as_uri())
+            page.goto((ROOT/'SILBOM-plano-demo.html').as_uri())
             self.assertEqual(page.locator('.machine-marker').count(),6)
             page.locator('[data-demo-count="0"]').click()
             self.assertEqual(page.locator('#detail-count').inner_text(),'0')
@@ -284,6 +286,63 @@ class PlanTests(unittest.TestCase):
             REPORT['direct_file']='not_verified_managed_browser_policy'
             self.skipTest('El navegador administrado bloquea file://. Verificar apertura directa en un navegador personal.')
         finally:page.close()
+
+    def test_16_portable_alone_no_companion_files(self):
+        subprocess.run(['python3',str(ROOT/'exportar-demo.py'),'--check'],check=True,capture_output=True)
+        with tempfile.TemporaryDirectory(prefix='silbom-portable-') as folder:
+            shutil.copyfile(ROOT/'SILBOM-plano-demo.html',Path(folder)/'SILBOM-plano-demo.html')
+            server=ThreadingHTTPServer(('127.0.0.1',0),partial(Handler,directory=folder))
+            thread=Thread(target=server.serve_forever,daemon=True);thread.start()
+            page=self.context.new_page();errors=[];requests=[]
+            page.on('pageerror',lambda e:errors.append(str(e)))
+            page.on('console',lambda msg:errors.append(msg.text) if msg.type=='error' else None)
+            page.on('request',lambda req:requests.append((req.method,req.url)))
+            url=f'http://127.0.0.1:{server.server_port}/SILBOM-plano-demo.html'
+            try:
+                page.goto(url)
+                self.assertEqual(page.locator('.machine-marker').count(),6)
+                self.assertTrue(page.locator('#startup-message').is_hidden())
+                self.assertEqual(page.locator('body').evaluate('(el)=>getComputedStyle(el).backgroundColor'),'rgb(16, 29, 42)')
+                self.assertTrue(page.locator('.outer-wall').is_visible())
+                page.locator('#point-EQ-COM-03').click()
+                self.assertEqual(page.locator('#detail-code').inner_text(),'EQ-COM-03')
+                page.locator('[data-demo-count="2"]').click()
+                self.assertEqual(page.locator('#detail-count').inner_text(),'2')
+                self.assertIn('2 bloqueos LOTO activos',page.locator('#detail-state').inner_text())
+                self.assertEqual(page.locator('#stat-locks').inner_text(),'5')
+                page.locator('#zoom-in').click()
+                self.assertEqual(page.locator('#zoom-level').inner_text(),'150 %')
+                page.locator('#fit-plan').click()
+                page.locator('#open-sheet').click()
+                self.assertEqual(page.locator('#sheet-count').inner_text(),'2')
+                page.locator('#back-to-plan').click()
+                page.locator('#scenario').select_option('offline')
+                self.assertEqual(page.locator('.machine-marker[data-state=unknown]').count(),6)
+                self.assertEqual(page.locator('#stat-locks').inner_text(),'—')
+                page.locator('#reset-demo').click()
+                self.assertEqual(page.locator('#stat-locks').inner_text(),'3')
+                self.assertEqual(page.locator('#detail-code').inner_text(),'EQ-ENV-01')
+                self.assertEqual(page.locator('script[src],link[rel=stylesheet]').count(),0)
+                self.assertEqual(requests,[('GET',url)])
+                self.assertEqual(errors,[])
+                REPORT['portable_isolation']={'files_present':['SILBOM-plano-demo.html'],'requests':1,'companion_requests':0,'javascript_or_csp_errors':errors,'interactions':'verified'}
+            finally:
+                page.close();server.shutdown();server.server_close();thread.join()
+
+    def test_17_missing_companions_shows_recovery_message(self):
+        with tempfile.TemporaryDirectory(prefix='silbom-missing-assets-') as folder:
+            shutil.copyfile(ROOT/'index.html',Path(folder)/'index.html')
+            server=ThreadingHTTPServer(('127.0.0.1',0),partial(Handler,directory=folder))
+            thread=Thread(target=server.serve_forever,daemon=True);thread.start()
+            page=self.context.new_page()
+            try:
+                page.goto(f'http://127.0.0.1:{server.server_port}/index.html')
+                self.assertEqual(page.locator('.machine-marker').count(),0)
+                self.assertTrue(page.locator('#startup-message').is_visible())
+                self.assertIn('archivo único',page.locator('#startup-message').inner_text())
+                REPORT['missing_companions']='reproduced_empty_plan_and_verified_recovery_message'
+            finally:
+                page.close();server.shutdown();server.server_close();thread.join()
 
 class Result(unittest.TextTestResult):
     def addSuccess(self,test):
