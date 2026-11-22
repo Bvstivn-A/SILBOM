@@ -21,10 +21,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 /**
- * SILBOM Android: WebView local + lector NFC NDEF de texto real.
+ * SILBOM Android: WebView local + lector NFC NDEF de texto real + lector QR propio.
  *
  * Importante: una etiqueta solo identifica una máquina. El backend verifica
  * la existencia, los permisos y cualquier operación LOTO posterior.
@@ -32,11 +31,12 @@ import java.util.regex.Pattern;
 public final class MainActivity extends Activity {
 
     private static final String APP_URL = "file:///android_asset/index.html";
-    private static final Pattern MACHINE_CODE = Pattern.compile("^EQ-[A-Z]{2,4}-[0-9]{2}$");
+    private static final int REQUEST_QR_SCAN = 7301;
 
     private WebView webView;
     private NfcAdapter nfcAdapter;
     private volatile boolean scanRequested;
+    private boolean qrScanRequested;
 
     private final class SilbomNfcBridge {
         @JavascriptInterface
@@ -47,6 +47,14 @@ public final class MainActivity extends Activity {
         @JavascriptInterface
         public void cancelScan() {
             runOnUiThread(() -> stopScan());
+        }
+    }
+
+    /** Puente QR: abre el lector de la APK; el texto vuelve validado a la WebView. */
+    private final class SilbomQrBridge {
+        @JavascriptInterface
+        public void startScan() {
+            runOnUiThread(() -> beginQrScan());
         }
     }
 
@@ -79,7 +87,7 @@ public final class MainActivity extends Activity {
                         }
                         if (textCount != 1) {
                             error = textCount == 0 ? "no_text" : "multiple_text";
-                        } else if (result == null || !MACHINE_CODE.matcher(result).matches()) {
+                        } else if (result == null || !MachineCode.isValid(result)) {
                             error = "invalid_code";
                         }
                     }
@@ -134,6 +142,7 @@ public final class MainActivity extends Activity {
 
         settings.setUserAgentString(settings.getUserAgentString() + " SilbomNativeApp/1.1");
         webView.addJavascriptInterface(new SilbomNfcBridge(), "SilbomAndroidNfc");
+        webView.addJavascriptInterface(new SilbomQrBridge(), "SilbomAndroidQr");
 
         // Impide cargar sitios remotos dentro de una WebView que tiene un puente nativo.
         webView.setWebViewClient(new WebViewClient() {
@@ -204,10 +213,51 @@ public final class MainActivity extends Activity {
     }
 
     private void sendJsEvent(String method, String value) {
+        sendBridgeEvent("SilbomNfc", method, value);
+    }
+
+    private void sendBridgeEvent(String target, String method, String value) {
         if (webView == null || !APP_URL.equals(webView.getUrl())) return;
         webView.evaluateJavascript(
-                "window.SilbomNfc && window.SilbomNfc." + method
+                "window." + target + " && window." + target + "." + method
                         + "(" + JSONObject.quote(value) + ");", null);
+    }
+
+    private void beginQrScan() {
+        if (qrScanRequested) return; // Ya hay un lector abierto.
+        if (scanRequested) { // No mezclar con una lectura NFC en curso.
+            sendBridgeEvent("SilbomQr", "onError", "busy");
+            return;
+        }
+        qrScanRequested = true;
+        try {
+            startActivityForResult(new Intent(this, QrScannerActivity.class), REQUEST_QR_SCAN);
+        } catch (Exception exception) {
+            qrScanRequested = false;
+            sendBridgeEvent("SilbomQr", "onError", "scanner_unavailable");
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode != REQUEST_QR_SCAN) return;
+        boolean expected = qrScanRequested;
+        qrScanRequested = false;
+        if (!expected) return; // Resultado tardío: no se procesa dos veces.
+        if (resultCode != RESULT_OK || data == null) {
+            String reason = data == null ? null : data.getStringExtra(QrScannerActivity.EXTRA_ERROR);
+            sendBridgeEvent("SilbomQr", "onError", reason == null ? QrScannerActivity.ERROR_CANCELLED : reason);
+            return;
+        }
+        String raw = data.getStringExtra(QrScannerActivity.EXTRA_TEXT);
+        String rejection = MachineCode.rejectionReason(raw);
+        if (rejection != null) {
+            // El contenido rechazado (p. ej. una URL) nunca se abre ni se envía a la WebView.
+            sendBridgeEvent("SilbomQr", "onError", rejection);
+        } else {
+            sendBridgeEvent("SilbomQr", "onRead", MachineCode.normalize(raw));
+        }
     }
 
     @Override
@@ -223,6 +273,7 @@ public final class MainActivity extends Activity {
         disableReader();
         if (webView != null) {
             webView.removeJavascriptInterface("SilbomAndroidNfc");
+            webView.removeJavascriptInterface("SilbomAndroidQr");
             webView.destroy();
             webView = null;
         }

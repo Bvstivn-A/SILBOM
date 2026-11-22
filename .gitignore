@@ -69,3 +69,6 @@ __pycache__/
 test-results/
 *.p12
 *.crt
+
+# Dependencias Android descargadas por build-apk.sh
+android-app/libs/

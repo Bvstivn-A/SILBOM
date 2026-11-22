@@ -34,6 +34,7 @@ class Scenario:
         self.session_role = "SUPERVISOR"
         self.session_status = 200
         self.auth_rejected = False
+        self.detail_status = None
         self.lock = threading.Lock()
 
 
@@ -80,6 +81,11 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.reply(503, {'mensaje': 'Lectura temporalmente no disponible'})
             if path == '/maquinas':
                 return self.reply(200, [state.machine])
+            if path.startswith('/maquinas/'):  # Público, como GET /api/v1/maquinas/** en SecurityConfig.
+                if state.detail_status:
+                    return self.reply(state.detail_status, {'mensaje': 'Rechazado por prueba'})
+                found = path.split('/')[2] == state.machine['id']
+                return self.reply(200 if found else 404, state.machine if found else {'mensaje': 'No encontrada'})
             if not username:
                 return self.reply(401, {'mensaje': 'Credencial inválida'})
             if state.auth_rejected:
@@ -522,6 +528,121 @@ class MobileTests(unittest.TestCase):
         self.page.locator('button[onclick="refreshConnection()"]' ).click()
         expect(self.page.locator('#tech-step-2')).to_be_visible()
         self.assertFalse(any(r['method'] != 'GET' for r in self.state.requests))
+
+    # ---- Identificación por QR (puente Android simulado) y NFC sobre la misma lógica ----
+    QR_BRIDGE = 'window.SilbomAndroidQr = {startScan(){ window.__qrStarts = (window.__qrStarts || 0) + 1; }}'
+    NFC_BRIDGE = 'window.SilbomAndroidNfc = {startScan(){}, cancelScan(){}}'
+
+    def detail_requests(self):
+        return [r for r in self.state.requests if r['path'].startswith('/maquinas/')]
+
+    def start_qr(self):
+        self.page.evaluate(self.QR_BRIDGE)
+        self.page.locator('#btn-start-qr').click()
+        expect(self.page.locator('#qr-scan-status')).to_contain_text('Apunta la cámara al código QR de la máquina')
+        expect(self.page.locator('#btn-start-qr')).to_be_disabled()
+        self.assertEqual(1, self.page.evaluate('window.__qrStarts'))
+
+    def test_qr_valid_code_opens_machine_sheet_from_api_without_writes(self):
+        self.start_qr()
+        self.page.evaluate('window.SilbomQr.onRead("EQ-ENV-01")')
+        expect(self.page.locator('#qr-scan-status')).to_contain_text('Máquina encontrada: EQ-ENV-01 · Equipo de prueba')
+        expect(self.page.locator('#tech-step-2')).to_be_visible()
+        expect(self.page.locator('#form-machine-code')).to_have_text('EQ-ENV-01')
+        expect(self.page.locator('#form-machine-name')).to_have_text('Equipo de prueba')
+        self.assertEqual(['/maquinas/EQ-ENV-01'], [r['path'] for r in self.detail_requests()])
+        self.assertEqual([], [r for r in self.state.requests if r['method'] != 'GET'])
+        self.assertEqual([], self.state.events)
+        expect(self.page.locator('#btn-start-qr')).to_be_enabled()
+
+    def test_qr_duplicate_reads_only_query_once(self):
+        self.start_qr()
+        self.page.evaluate('Promise.all([window.SilbomQr.onRead("EQ-ENV-01"), window.SilbomQr.onRead("EQ-ENV-01")])')
+        self.assertEqual(1, len(self.detail_requests()))
+        self.page.evaluate('window.SilbomQr.onRead("EQ-ENV-01")')  # Sin escaneo solicitado: se ignora.
+        self.assertEqual(1, len(self.detail_requests()))
+
+    def test_qr_unknown_machine_unauthorized_and_offline_never_open_sheet(self):
+        cases = [('EQ-XYZ-99', None, False, 'Máquina no registrada en SILBOM.'),
+                 ('EQ-ENV-01', 401, False, 'No autorizado para consultar esta máquina.'),
+                 ('EQ-ENV-01', 403, False, 'No autorizado para consultar esta máquina.'),
+                 ('EQ-ENV-01', None, True, 'No se pudo conectar con el servidor.')]
+        for code, status, offline, message in cases:
+            with self.subTest(code=code, status=status, offline=offline):
+                self.state.detail_status, self.state.network_down = status, offline
+                self.page.evaluate('window.__qrStarts = 0')
+                self.start_qr()
+                self.page.evaluate('(c) => window.SilbomQr.onRead(c)', code)
+                expect(self.page.locator('#qr-scan-status')).to_have_text(message)
+                expect(self.page.locator('#operation-status')).to_contain_text(message)
+                expect(self.page.locator('#tech-step-2')).to_be_hidden()
+                expect(self.page.locator('#btn-start-qr')).to_be_enabled()
+        self.state.network_down = False
+        self.assertEqual([], [r for r in self.state.requests if r['method'] != 'GET'])
+
+    def test_qr_invalid_content_is_rejected_without_requests(self):
+        for value in ['HOLA', 'EQ-ENV', 'https://google.com', 'http://192.168.1.50:8080', '', 'eq-com-03']:
+            with self.subTest(value=value):
+                self.page.evaluate('window.__qrStarts = 0')
+                self.start_qr()
+                self.page.evaluate('(v) => window.SilbomQr.onRead(v)', value)
+                expect(self.page.locator('#qr-scan-status')).to_contain_text('identificador de máquina SILBOM válido')
+        self.assertEqual([], self.detail_requests())
+        expect(self.page.locator('#tech-step-2')).to_be_hidden()
+
+    def test_qr_native_errors_are_explained_and_allow_retry(self):
+        cases = {'cancelled': 'Escaneo QR cancelado.', 'url_not_allowed': 'no se abrió nada',
+                 'empty_code': 'El QR está vacío.', 'camera_permission_denied': 'Permite el acceso a la cámara',
+                 'camera_unavailable': 'La cámara no está disponible', 'scanner_failed': 'Error interno del lector QR',
+                 'scanner_unavailable': 'El lector QR no está disponible'}
+        for reason, message in cases.items():
+            with self.subTest(reason=reason):
+                self.page.evaluate('window.__qrStarts = 0')
+                self.start_qr()
+                self.page.evaluate('(r) => window.SilbomQr.onError(r)', reason)
+                expect(self.page.locator('#qr-scan-status')).to_contain_text(message)
+                expect(self.page.locator('#btn-start-qr')).to_be_enabled()
+        self.assertEqual([], self.detail_requests())
+
+    def test_qr_without_android_bridge_explains_and_keeps_manual_selection(self):
+        self.page.locator('#btn-start-qr').click()
+        expect(self.page.locator('#qr-scan-status')).to_contain_text('aplicación Android instalada')
+        self.page.locator('#manual-machine-select').select_option('EQ-ENV-01')
+        expect(self.page.locator('#form-machine-code')).to_have_text('EQ-ENV-01')
+
+    def test_qr_blocked_while_lock_operation_is_unconfirmed(self):
+        self.prepare()
+        self.state.post_fault = {'drop_before': True}
+        self.page.locator('#btn-submit-lock').click()
+        expect(self.page.locator('#operation-status')).to_contain_text('Alta sin confirmar')
+        self.page.evaluate(self.QR_BRIDGE)
+        self.page.evaluate('startNativeQrScan()')
+        self.assertIsNone(self.page.evaluate('window.__qrStarts ?? null'))
+
+    def test_nfc_still_identifies_machine_through_shared_flow(self):
+        self.page.evaluate(self.NFC_BRIDGE)
+        self.page.locator('#btn-start-nfc').click()
+        expect(self.page.locator('#nfc-scan-status')).to_contain_text('Acerca el teléfono')
+        self.page.evaluate('window.SilbomNfc.onRead("EQ-ENV-01")')
+        expect(self.page.locator('#nfc-scan-status')).to_have_text('Máquina EQ-ENV-01 verificada desde el servidor.')
+        expect(self.page.locator('#form-machine-code')).to_have_text('EQ-ENV-01')
+        self.page.evaluate('cancelToStep1()')
+        self.page.locator('#btn-start-nfc').click()
+        self.page.evaluate('window.SilbomNfc.onRead("EQ-XYZ-99")')
+        expect(self.page.locator('#operation-status')).to_contain_text('Máquina no registrada en SILBOM.')
+        self.assertEqual(['/maquinas/EQ-ENV-01', '/maquinas/EQ-XYZ-99'], [r['path'] for r in self.detail_requests()])
+
+    def test_qr_identified_machine_can_still_be_locked_and_released_with_session(self):
+        self.login()
+        self.start_qr()
+        self.page.evaluate('window.SilbomQr.onRead("EQ-ENV-01")')
+        expect(self.page.locator('#form-machine-code')).to_have_text('EQ-ENV-01')
+        self.assertEqual([], self.state.events)  # Identificar no crea bloqueos.
+        self.page.locator('#card-type-preventive').click()
+        self.page.locator('#check-padlock').check()
+        self.page.locator('#btn-submit-lock').click()
+        expect(self.page.locator('#operation-status')).to_contain_text('confirmado por el servidor')
+        self.assertEqual(['CREADO'], self.state.events)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 # SILBOM Android NFC — pruebas y entrega
 
+> Lectura por **código QR** con la cámara (misma lógica que NFC): ver [`ANDROID_QR.md`](ANDROID_QR.md).
+
 ## Estado de esta rama
 Esta rama integra lector NFC **real** en la aplicación Android WebView existente
 (`android-app/src/cl/silbom/tecnico/MainActivity.java`). No requiere Capacitor:
