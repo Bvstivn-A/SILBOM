@@ -167,6 +167,14 @@ SILBOM_DEMO_SUPERVISOR_PASSWORD=EligeUnaClave1  # contraseña para entrar como "
 SILBOM_DEMO_TECHNICIAN_PASSWORD=EligeOtraClave2 # contraseña para entrar como "tecnico"
 ```
 
+Si vas a usar la **app Android** (sección 5), agrega también esta línea, en una sola línea y tal cual:
+
+```properties
+SILBOM_CORS_ORIGINS=http://localhost:*,http://127.0.0.1:*,https://localhost:*,https://127.0.0.1:*,https://silbom.netlify.app,null
+```
+
+La app Android carga sus pantallas desde el propio celular, así que el servidor recibe sus peticiones con origen `null`. Sin esta línea, el servidor rechaza los bloqueos (error 403) y la app los guarda solo en el celular: nunca llegan a la consola del supervisor. Úsala solo en tu red local para la demostración.
+
 Reglas importantes:
 
 - Las contraseñas de la demo deben tener **al menos 12 caracteres**. Usa solo letras y números.
@@ -266,13 +274,14 @@ Reglas que verás al usarlo:
 
 Para probar con un celular real y etiquetas NFC:
 
-1. **PC y celular en la misma red Wi-Fi.** Averigua la IP del PC:
+1. **PC y celular en la misma red.** El PC puede estar conectado por cable o por Wi-Fi, siempre que esté en el mismo router que el Wi-Fi del celular (no uses la red de invitados). Averigua la IP del PC; si tiene cable y Wi-Fi a la vez, usa la IP de la conexión que comparte red con el celular:
    - Windows: `ipconfig` (línea «Dirección IPv4»)
    - macOS: `ipconfig getifaddr en0`
    - Linux: `hostname -I`
-2. Instala la app: descarga `silbom-tecnico.apk` de la versión más reciente en [Releases](https://github.com/Bvstivn-A/Silbom/releases), ábrelo en el celular y permite instalar apps de «orígenes desconocidos».
-3. En la app, toca **⚙️ Conectar a IP del Servidor** y escribe `http://IP-DEL-PC:8080` (por ejemplo `http://192.168.1.20:8080`). Inicia sesión con `tecnico`.
-4. Escribe las etiquetas con la app gratuita **NFC Tools**: *Escribir → Añadir registro → Texto*, con **un solo registro** por etiqueta:
+2. Instala la app: descarga `silbom-tecnico.apk` de la versión **[v0.9.1-beta](https://github.com/Bvstivn-A/Silbom/releases/tag/v0.9.1-beta)**, ábrelo en el celular y permite instalar apps de «orígenes desconocidos». Las versiones v0.10.x (con QR) necesitan HTTPS y un certificado instalado en el celular ([Pruebas móviles con HTTPS y QR](PRUEBAS_MOVILES.md)); no funcionan con estos pasos.
+3. Revisa que el `.env` del PC tenga la línea `SILBOM_CORS_ORIGINS` del Paso 4 y que el firewall permita el puerto 8080 (ver [Fallas frecuentes](#6-fallas-frecuentes)).
+4. En la app, toca **⚙️ IP** (Conectar a IP del Servidor), escribe `http://IP-DEL-PC:8080` (por ejemplo `http://192.168.1.20:8080`) y toca **Guardar IP y Probar Conexión**. Debe aparecer **🟢 API Conectada**. Luego inicia sesión con `tecnico`.
+5. Escribe las etiquetas con la app gratuita **NFC Tools**: *Escribir → Añadir registro → Texto*, con **un solo registro** por etiqueta:
 
    | Texto de la etiqueta | Máquina |
    |---|---|
@@ -280,7 +289,8 @@ Para probar con un celular real y etiquetas NFC:
    | `EQ-COM-03` | Compresor de Tornillo |
    | `EQ-ENV-01` | Envasadora Rotativa Automática |
 
-5. Activa NFC en el celular, toca **Tocar Tag NFC** (en versiones nuevas: **Escanear etiqueta NFC**) y acerca el teléfono a la etiqueta.
+6. Activa NFC en el celular, abre la app y acerca la etiqueta a la parte trasera del teléfono (en la v0.9.1-beta el NFC queda activo al abrir la app; en versiones nuevas primero toca **Escanear etiqueta NFC**). Si aparece la pantalla de Android «Nueva etiqueta escaneada», la app no estaba abierta en primer plano.
+7. Toca **Activar Bloqueo LOTO**. Debe aparecer **«¡BLOQUEO LOTO #… REGISTRADO!»** y la máquina se pone roja en la consola del supervisor.
 
 ¿No tienes Android ni etiquetas? Desde el navegador de cualquier celular (también iPhone) entra a `http://IP-DEL-PC:8080/app/` y elige la máquina manualmente.
 
@@ -301,7 +311,8 @@ Guías detalladas: [Android y NFC](ANDROID_NFC_PRUEBAS.md) · [Pruebas móviles 
 | `encryption-secret debe decodificar a exactamente 32 bytes` | Genera de nuevo la clave del Paso 4 y pégala completa, sin comillas ni espacios. |
 | `Bootstrap requiere usuario válido y contraseña de 12 caracteres` | Revisa que `SILBOM_DEMO_TWO_USERS_ONLY=true` esté escrito así, o borra las líneas `SILBOM_BOOTSTRAP_…`. |
 | `Port 8080 was already in use` | Ya hay otro SILBOM abierto. Ciérralo, o cambia `SERVER_PORT=8081` en `.env`. |
-| El celular no conecta al PC | Misma red Wi-Fi; usa la IP del PC, no `localhost`; permite el puerto 8080 en el firewall (Windows lo pregunta al primer arranque; Fedora: `sudo firewall-cmd --add-port=8080/tcp`). Las redes de universidad suelen bloquear conexiones entre equipos: usa el hotspot del celular. |
+| El celular no conecta al PC | Misma red (PC por cable o Wi-Fi, pero en el mismo router); usa la IP del PC con `http://`, no `localhost`; permite el puerto 8080 en el firewall (Windows lo pregunta al primer arranque: marca «Redes privadas»; Ubuntu/Pop!_OS: `sudo ufw allow 8080/tcp`; Fedora: `sudo firewall-cmd --add-port=8080/tcp`). Las redes de universidad suelen bloquear conexiones entre equipos: usa el hotspot del celular. |
+| La app muestra el ticket, pero la máquina no se pone roja en la consola del supervisor | El bloqueo quedó guardado solo en el celular. Revisa que `.env` tenga la línea `SILBOM_CORS_ORIGINS` con `null` (Paso 4) y reinicia el servidor. Si la app perdió la conexión, ciérrala, ábrela de nuevo, comprueba que diga **🟢 API Conectada** e inicia sesión otra vez. Al bloquear debe aparecer «¡BLOQUEO LOTO #… REGISTRADO!». |
 | La consola dice «Inicia sesión» y no muestra historial | Inicia sesión como `supervisor` en la barra superior. |
 | El navegador rellena el usuario con otro nombre | Escribe exactamente `supervisor` o `tecnico`. |
 
