@@ -5,7 +5,7 @@
 
 - **Video del producto:** [Ver en YouTube](https://youtu.be/L9Cww6cgNoY)
 - **Manual de instalación y uso:** [docs/MANUAL_INSTALACION_Y_USO.md](docs/MANUAL_INSTALACION_Y_USO.md)
-- **App Android (APK):** [Releases del repositorio](https://github.com/Bvstivn-A/Silbom/releases)
+- **App Android (APK):** [v0.9.1-beta en Releases](https://github.com/Bvstivn-A/Silbom/releases/tag/v0.9.1-beta)
 - **Historial del Hito 1:** [github.com/Vicente-PR/SILBOM](https://github.com/Vicente-PR/SILBOM) (ver [Historial del proyecto](#historial-del-proyecto))
 
 Proyecto semestral INGT1003 · Universidad Mayor · 2026
@@ -83,7 +83,7 @@ SILBOM tiene tres partes:
 
 **Plano para supervisores:** después de iniciar sesión como supervisor, abre la pestaña **Plano de planta** de la consola. Usa el catálogo real que consulta el dashboard cada 10 segundos; un cierre confirmado desde la app móvil se refleja en la siguiente lectura. Si queda otro bloqueo activo, la máquina continúa roja. Sin conexión, ante datos inválidos o después de 30 segundos sin lectura válida, los estados quedan grises y los contadores sin verificar. Seleccionar una máquina o abrir su análisis no crea ni libera bloqueos. La distribución del edificio es ilustrativa.
 
-**App Android:** descarga el APK en [Releases](https://github.com/Bvstivn-A/Silbom/releases) y conéctalo a `http://IP-DEL-PC:8080`.
+**App Android:** descarga el APK de la [v0.9.1-beta](https://github.com/Bvstivn-A/Silbom/releases/tag/v0.9.1-beta) y conéctalo a `http://IP-DEL-PC:8080`. Requiere la línea `SILBOM_CORS_ORIGINS` del [manual](docs/MANUAL_INSTALACION_Y_USO.md#paso-4--configurar-el-archivo-env) en `.env`.
 
 **Datos de prueba:**
 - Cuentas `supervisor` y `tecnico`.
@@ -172,7 +172,7 @@ Stack: Java 21, Spring Boot 3.5.16, Maven, JPA, Spring Security, PostgreSQL 15�
 | `ENCRYPTION_SECRET` | Base64 de 32 bytes para AES-256-GCM |
 | `PLANTA_ID` | Planta definida por el servidor |
 | `SERVER_PORT` | Puerto (por defecto 8080) |
-| `SILBOM_CORS_ORIGINS` | Solo si el frontend se sirve desde otro origen |
+| `SILBOM_CORS_ORIGINS` | Lista de orígenes permitidos (reemplaza la predeterminada). La app Android necesita incluir `null` (ver [manual, Paso 4](docs/MANUAL_INSTALACION_Y_USO.md#paso-4--configurar-el-archivo-env)) |
 | `SILBOM_DEMO_TWO_USERS_ONLY` | `true` = solo existen las cuentas `supervisor` y `tecnico` |
 | `SILBOM_DEMO_SUPERVISOR_PASSWORD` / `SILBOM_DEMO_TECHNICIAN_PASSWORD` | Contraseñas de la demo (12+ caracteres) |
 | `SILBOM_BOOTSTRAP_USERNAME` / `SILBOM_BOOTSTRAP_PASSWORD` | Modo normal: crea el primer supervisor si no hay usuarios; retirar después |
