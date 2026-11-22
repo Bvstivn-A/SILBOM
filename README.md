@@ -81,6 +81,8 @@ SILBOM tiene tres partes:
    - Consola del supervisor: <http://localhost:8080/>, con el usuario `supervisor`.
    - App del técnico: <http://localhost:8080/app/?maquina=EQ-EXT-02>, con el usuario `tecnico`.
 
+**Plano para supervisores:** después de iniciar sesión como supervisor, abre la pestaña **Plano de planta** de la consola. Usa el catálogo real que consulta el dashboard cada 10 segundos; un cierre confirmado desde la app móvil se refleja en la siguiente lectura. Si queda otro bloqueo activo, la máquina continúa roja. Sin conexión, ante datos inválidos o después de 30 segundos sin lectura válida, los estados quedan grises y los contadores sin verificar. Seleccionar una máquina o abrir su análisis no crea ni libera bloqueos. La distribución del edificio es ilustrativa.
+
 **App Android:** descarga el APK en [Releases](https://github.com/Bvstivn-A/Silbom/releases) y conéctalo a `http://IP-DEL-PC:8080`.
 
 **Datos de prueba:**

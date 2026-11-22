@@ -214,6 +214,11 @@ class SilbomApplicationTests {
                 .andExpect(header().string("Location", "/app/?maquina=EQ-ENV-01"));
         mvc.perform(get("/app/manifest.webmanifest").with(anonymous())).andExpect(status().isOk());
         mvc.perform(get("/app/icons/icon-192.png").with(anonymous())).andExpect(status().isOk());
+        // Los recursos estáticos del plano cargan sin credenciales; sus datos usan la sesión de la consola.
+        mvc.perform(get("/app/supervisor-plan/blueprint.js").with(anonymous())).andExpect(status().isOk());
+        mvc.perform(get("/app/supervisor-plan/plan.js").with(anonymous())).andExpect(status().isOk())
+                .andExpect(content().string(containsString("SilbomSupervisorPlan")));
+        mvc.perform(get("/app/supervisor-plan/plan.css").with(anonymous())).andExpect(status().isOk());
         mvc.perform(options("/api/v1/bloqueos").with(anonymous())
                 .header("Origin", "https://localhost:8443")
                 .header("Access-Control-Request-Method", "POST")
