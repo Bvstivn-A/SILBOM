@@ -1,0 +1,685 @@
+<!doctype html>
+<!-- Archivo autónomo generado por exportar-demo.py. Editar las fuentes separadas. -->
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#152737">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Q0vvaQ6vtOnUpsub6A+q4BGWgwhCAz8hRvJipWvqAWo='; style-src 'sha256-f6bblU+zlrMBQxNHGMDIZCBqt2UNTNHVSpYHdF7N2Fc='; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <title>Plano industrial 2D · Prototipo SILBOM</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%23152737'/%3E%3Cpath d='M8 14h16v13H8zM12 14V9a4 4 0 018 0v5' fill='none' stroke='%230cb7f2' stroke-width='2'/%3E%3C/svg%3E">
+  <style>
+:root {
+  color-scheme: dark;
+  --bg: #101d2a; --surface: #182c3b; --raised: #203b4d; --canvas: #102638;
+  --ink: #edf5fa; --muted: #b3c7d6; --border: #405e74; --control: #7895ab;
+  --blue: #0cb7f2; --blue-light: #80dfff; --green: #66ddb0; --red: #ff8d93; --gray: #becbd6;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; color: var(--ink); background: var(--bg); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+h1,h2,h3,p { margin: 0; } h1,h2,h3 { text-wrap: balance; }
+button, select { font: inherit; color: inherit; }
+button, select, a { touch-action: manipulation; -webkit-tap-highlight-color: #0cb7f233; }
+button { cursor: pointer; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+[hidden] { display: none !important; }
+:where(button, select, a, [tabindex]):focus-visible { outline: 3px solid var(--blue-light); outline-offset: 4px; }
+:where(button, select, a, [tabindex]) { scroll-margin-block: 24px; }
+a { color: var(--blue-light); }
+.icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.skip-link { position: fixed; top: -90px; left: 18px; padding: 12px; z-index: 30; color: white; background: #163e57; border-radius: 8px; }
+.skip-link:focus { top: 12px; }
+.app-header { background: #152737; border-bottom: 1px solid var(--border); }
+.header-inner { max-width: 1720px; padding: 18px 32px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand > svg { width: 34px; height: 38px; stroke: var(--blue); stroke-width: 1.8; }
+.brand strong { font-size: 24px; line-height: 1; letter-spacing: 1px; }
+.brand > span { margin-left: 10px; padding-left: 22px; border-left: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+.header-context { font-size: 13px; color: var(--muted); }
+.prototype-notice { background: #203647; border-bottom: 1px solid #59778a; }
+.prototype-notice > div { max-width: 1720px; margin: auto; padding: 9px 32px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px 20px; font-size: 13px; }
+.prototype-notice strong { color: #d6efff; font-size: 12px; }
+.prototype-notice span { color: #c2d3df; }
+main { max-width: 1720px; margin: auto; padding: 28px 32px 24px; }
+.page-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
+h1 { font-size: clamp(27px,2.3vw,34px); line-height: 1.2; letter-spacing: -.025em; }
+.page-heading p { color: var(--muted); font-size: 14px; margin-top: 7px; }
+.button, .icon-button { min-height: 44px; border: 1px solid var(--control); border-radius: 8px; background: transparent; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; color: var(--ink); font-size: 14px; font-weight: 600; transition: background-color 150ms, border-color 150ms; }
+.button:hover:not(:disabled), .icon-button:hover:not(:disabled) { background: #2c495e; border-color: #b1c9da; }
+.icon-button { width: 44px; height: 44px; padding: 0; flex: none; }
+.button-primary { color: #092b3c; background: var(--blue); border-color: var(--blue); width: 100%; }
+.button-primary:hover:not(:disabled) { color: #092b3c; background: #74dcff; border-color: #74dcff; }
+select { min-height: 44px; border: 1px solid var(--control); border-radius: 8px; background: var(--surface); color: var(--ink); padding: 8px 30px 8px 11px; min-width: 0; max-width: 100%; font-size: 16px; }
+.summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 25px; }
+.summary > div { padding: 14px 22px; border-left: 1px solid var(--border); }
+.summary > div:first-child { border-left: 0; padding-left: 0; }
+.summary span { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); }
+.summary strong { display: block; font-size: 27px; margin-top: 4px; line-height: 1.3; font-variant-numeric: tabular-nums; }
+#stat-locked { color: var(--red); } #stat-free { color: var(--green); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.dot.locked { background: var(--red); }.dot.free { background: var(--green); }
+.workbench { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 24px; align-items: start; }
+.plan-section, .side-column { min-width: 0; }
+.plan-topline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
+h2 { font-size: 17px; line-height: 1.35; }
+.plan-topline p { font-size: 12px; color: var(--muted); margin-top: 5px; }
+.scenario-control { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.scenario-control label { font-size: 12px; color: var(--muted); }
+.scenario-control select { font-size: 14px; max-width: 260px; }
+.drawing-shell { border: 1px solid #64849b; border-radius: 10px; background: var(--canvas); overflow: hidden; }
+.drawing-toolbar { min-height: 62px; padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--border); background: #162e40; }
+.drawing-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #d1e1eb; font-weight: 550; }
+.drawing-label .icon { color: #91bfd9; }
+.zoom-controls { display: flex; align-items: center; gap: 5px; }
+.zoom-controls .icon-button { width: 44px; background: #19374b; }
+#zoom-level { font-size: 13px; text-align: center; min-width: 54px; font-variant-numeric: tabular-nums; }
+.fit-button { margin-left: 6px; }
+.plan-viewport { position: relative; aspect-ratio: 1280 / 880; overflow: hidden; isolation: isolate; background: var(--canvas); }
+.plan-viewport[data-zoomed="true"] { cursor: grab; }
+.plan-viewport.dragging { cursor: grabbing; user-select: none; }
+.scene { position: absolute; inset: 0; transform-origin: top left; }
+.blueprint-layer, .markers { position: absolute; inset: 0; }
+.blueprint-layer { pointer-events: none; }
+.blueprint { width: 100%; height: 100%; display: block; }
+.markers { pointer-events: none; }
+.machine-marker { position: absolute; transform: translate(-50%,-50%); width: 48px; height: 48px; border-radius: 50%; border: 0; padding: 0; display: grid; place-items: center; background: transparent; color: var(--green); pointer-events: auto; z-index: 2; }
+.marker-disc { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: #092c24; background: var(--green); border: 3px solid #103244; box-shadow: 0 0 0 1px #66ddb088, 0 2px 6px #00000055; font-size: 17px; font-weight: 800; line-height: 1; transition: box-shadow 150ms; font-variant-numeric: tabular-nums; }
+.machine-marker[data-state="locked"] { color: var(--red); }
+.machine-marker[data-state="locked"] .marker-disc { color: #3b141a; background: var(--red); box-shadow: 0 0 0 1px #ff8d9399, 0 2px 6px #00000055; }
+.machine-marker[data-state="unknown"] { color: var(--gray); }
+.machine-marker[data-state="unknown"] .marker-disc { color: #203141; background: var(--gray); box-shadow: 0 0 0 1px #becbd688, 0 2px 6px #00000055; }
+.machine-marker[aria-pressed="true"] .marker-disc { box-shadow: 0 0 0 3px #102638, 0 0 0 5px var(--blue-light); }
+.machine-marker:hover .marker-disc { box-shadow: 0 0 0 3px #102638, 0 0 0 5px #d2e8f7; }
+.machine-marker:focus-visible { outline-offset: 3px; z-index: 5; }
+.marker-label { position: absolute; top: calc(100% - 1px); left: 50%; transform: translateX(-50%); background: #102638; border: 1px solid #6f91a9; border-radius: 4px; padding: 3px 6px; white-space: nowrap; color: #e2eef7; font: 600 12px/1.35 ui-monospace, SFMono-Regular, Consolas, monospace; pointer-events: none; }
+.machine-marker[aria-pressed="true"] .marker-label { border-color: var(--blue-light); color: var(--blue-light); }
+.machine-tooltip { position: absolute; z-index: 15; width: 276px; max-width: calc(100% - 20px); padding: 15px; background: #203b4d; border: 1px solid #9bbace; border-radius: 9px; box-shadow: 0 10px 24px #00000055; font-size: 13px; color: var(--ink); cursor: default; overflow: auto; }
+.machine-tooltip strong { display: block; margin: 3px 0 7px; line-height: 1.4; overflow-wrap: anywhere; }
+.machine-tooltip > p { color: #c4d8e6; overflow-wrap: anywhere; }
+.machine-tooltip > .code { color: var(--blue-light); margin: 0; font-size: 12px; }
+#tip-state { color: var(--ink); margin-top: 8px; }
+.drawing-bottom { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.drawing-bottom > span { font-size: 11px; color: #b4cddd; max-width: 65ch; }
+.pan-controls { display: flex; gap: 6px; flex: none; }
+.pan-controls .icon-button { width: 44px; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 15px; }
+.legend > span { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 12px; }
+.state-symbol { width: 18px; height: 18px; display: inline-grid; place-items: center; font-style: normal; border-radius: 50%; font-size: 14px; line-height: 1; font-weight: 800; }
+.state-symbol.locked { color: #38141b; background: var(--red); }.state-symbol.free { color: #0d3026; background: var(--green); }.state-symbol.unknown { color: #203141; background: var(--gray); }
+.availability { display: flex; gap: 7px; align-items: flex-start; color: var(--muted); font-size: 12px; margin-top: 12px; }
+.availability .icon { color: var(--blue); width: 17px; height: 17px; }
+.machine-nav { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.machine-nav label { color: var(--muted); font-size: 13px; }
+.machine-nav select { flex: 1; min-width: 180px; font-size: 14px; }
+.map-help { font-size: 12px; color: var(--muted); max-width: 95ch; margin-top: 12px; }
+.side-column { padding-top: 3px; display: grid; gap: 16px; }
+.equipment-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border); padding: 18px 20px; }
+.section-heading h2 { font-size: 14px; color: var(--muted); font-weight: 600; }.section-heading .icon { color: #91b4cb; }
+.detail-body { padding: 22px 20px; }
+.code { font: 650 13px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; color: var(--blue-light); margin-bottom: 8px; }
+#detail-name { font-size: 23px; letter-spacing: -.02em; line-height: 1.25; overflow-wrap: anywhere; }
+.state-pill { display: inline-flex; align-items: center; gap: 7px; color: var(--gray); background: #2b4051; border: 1px solid #7e94a5; border-radius: 7px; font-size: 12px; font-weight: 600; padding: 8px 10px; margin-top: 17px; max-width: 100%; }
+.state-pill .icon { width: 16px; height: 16px; }
+.state-pill[data-state="locked"] { color: var(--red); border-color: #ad6d7d; background: #402c3b; }
+.state-pill[data-state="free"] { color: var(--green); border-color: #4c9d88; background: #193e39; }
+dl { margin: 22px 0; }
+dl > div { display: flex; gap: 18px; justify-content: space-between; align-items: flex-start; padding: 13px 0; border-top: 1px solid var(--border); font-size: 13px; }
+dt { max-width: 48%; color: var(--muted); }dd { max-width: 58%; text-align: right; margin: 0; font-weight: 600; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.detail-help { color: var(--muted); font-size: 12px; margin: -5px 0 19px; line-height: 1.5; }
+.demo-panel { border: 1px dashed #698ba1; border-radius: var(--radius); padding: 18px 16px; background: #152b3b; }
+.demo-panel h2 { display: flex; gap: 8px; align-items: center; font-size: 14px; }.demo-panel .icon { color: var(--blue-light); }
+.demo-panel > p { font-size: 12px; color: #b9cfde; margin-top: 10px; }
+.demo-options { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-top: 16px; }
+.demo-choice { min-height: 74px; border: 1px solid var(--control); border-radius: 7px; padding: 9px 5px; color: var(--ink); background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+.demo-choice:hover:not(:disabled) { background: #29485e; }
+.demo-choice[aria-pressed="true"] { border-color: var(--blue-light); background: #20435b; }
+.demo-choice strong { font-size: 21px; line-height: 1.2; }.demo-choice span { font-size: 11px; text-align: center; }
+.empty-detail { padding: 30px 22px; text-align: center; }.empty-detail .icon { width: 40px; height: 40px; margin-bottom: 15px; color: var(--blue-light); }.empty-detail h3 { font-size: 18px; margin-bottom: 10px; }.empty-detail p { color: var(--muted); font-size: 14px; }
+.feedback { border-left: 3px solid var(--blue); background: #172f41; padding: 12px 16px; margin-top: 22px; color: #c6dbe8; font-size: 13px; min-height: 44px; }
+footer { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 23px; color: var(--muted); font-size: 12px; }
+footer p { display: flex; gap: 8px; align-items: flex-start; max-width: 85ch; }footer .icon { width: 18px; height: 18px; }
+dialog { border: 1px solid #89a9be; border-radius: 13px; padding: 0; background: var(--surface); color: var(--ink); width: min(570px,calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain; box-shadow: 0 22px 55px #00000066; }
+dialog::backdrop { background: #07131dcc; }
+.sheet-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 22px; border-bottom: 1px solid var(--border); }.sheet-heading p { color: var(--muted); font-size: 11px; margin-top: 5px; }
+.sheet-body { padding: 24px; }.sheet-body h3 { font-size: 25px; line-height: 1.25; overflow-wrap: anywhere; }.sheet-notice { padding: 13px; border-left: 2px solid #83b7d6; background: #213f54; color: #d1e5f2; font-size: 13px; margin-bottom: 20px; }
+@media (min-width: 1281px) { .side-column { position: sticky; top: 20px; } }
+@media (max-width: 1280px) { .workbench { grid-template-columns: 1fr; }.side-column { padding: 0; grid-template-columns: minmax(0,1fr) 320px; align-items: start; }.detail-body { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 0 24px; }.detail-body > .code,.detail-body > h3,.detail-body > .state-pill { grid-column: 1; }.detail-body > dl { grid-column: 2; grid-row: 1 / span 3; margin: 0; }.detail-help { grid-column: 1; margin: 15px 0 0; }.detail-body > .button { grid-column: 2; margin-top: 15px; }.demo-panel { height: 100%; } }
+@media (max-width: 900px) { .header-inner, .prototype-notice > div { padding-left: 22px; padding-right: 22px; }main { padding: 24px 22px; }.side-column { grid-template-columns: 1fr; }.demo-options { grid-template-columns: repeat(3,minmax(0,1fr)); }.summary > div { padding: 14px 15px; }.header-context { display: none; }.demo-choice { min-height: 64px; }.demo-choice span { font-size: 12px; }.drawing-toolbar { padding: 8px 10px; } }
+@media (max-width: 660px) { .header-inner { padding-top: max(16px,env(safe-area-inset-top)); }.brand > span { display: none; }.page-heading { flex-wrap: wrap; }.page-heading > .button { width: 100%; }.summary { grid-template-columns: repeat(2,minmax(0,1fr)); }.summary > div { padding: 12px; }.summary > div:first-child { padding-left: 12px; }.summary > div:nth-child(3) { border-left: 0; border-top: 1px solid var(--border); }.summary > div:nth-child(4) { border-top: 1px solid var(--border); }.summary span { align-items: flex-start; font-size: 12px; }.drawing-toolbar { flex-wrap: wrap; gap: 10px; }.drawing-label { font-size: 12px; }.zoom-controls { margin-left: auto; }.drawing-bottom { flex-direction: column; align-items: flex-start; }.machine-nav select { flex-basis: 100%; }.machine-nav .button { width: 100%; }.plan-viewport { min-height: 245px; }.marker-label { font-size: 10px; padding: 2px 3px; }.machine-marker { width: 44px; height: 44px; }.marker-disc { width: 30px; height: 30px; font-size: 15px; }.detail-body { display: block; }.detail-body dl { margin: 22px 0; }.detail-help { margin: 0 0 18px; }.plan-topline { gap: 15px; }.scenario-control { width: 100%; justify-content: space-between; }.scenario-control select { max-width: 100%; }.side-column { gap: 16px; }footer { padding-bottom: env(safe-area-inset-bottom); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+/* Capa arquitectónica; los únicos estados LOTO viven en los puntos y el panel. */
+.drafting-corners { fill: none; stroke: #6088a3; stroke-width: 1; }
+.room-surfaces [data-zone] { fill: #18384d; transition: fill 160ms; }
+.room-surfaces [data-zone="produccion"] { fill: #153448; }
+.room-surfaces [data-zone="mantenimiento"] { fill: #1c3d4f; }
+.room-surfaces [data-zone="bodega"] { fill: #1a3548; }
+.room-surfaces [data-zone].zone-selected { fill: #1e4961; }
+.circulation-center { stroke: #6f95ab; stroke-width: 1; stroke-dasharray: 12 10; fill: none; }
+.technical-fixtures { fill: #294b60; stroke: #65869c; stroke-width: 1.5; }
+.technical-fixtures .service-outline { fill: none; stroke: #608096; stroke-width: 1; stroke-dasharray: 5 6; }
+.machine-footprints { fill: #294c62; stroke: #aac7da; stroke-width: 1.9; stroke-linejoin: round; }
+.structural-columns { fill: #93adc0; stroke: #c2d7e5; stroke-width: 1.5; }
+.outer-wall { fill: none; stroke: #c3d8e6; stroke-width: 9; stroke-linejoin: miter; }
+.wall-core { fill: none; stroke: #43677f; stroke-width: 3; }
+.inner-walls { fill: none; stroke: #b9cfde; stroke-width: 4; }
+.door-openings { fill: none; stroke: #173448; stroke-width: 13; }
+.doors { fill: none; stroke: #9fbfd4; stroke-width: 1.5; }
+.zone-text { fill: #deebf4; font-size: 19px; font-weight: 550; }
+.zone-text .zone-subtitle { fill: #a9c5d8; font-size: 14px; font-weight: 400; }
+.circulation-text rect { fill: #244254; }
+.circulation-text text { fill: #c4d9e6; font-size: 16px; letter-spacing: .3px; }
+.access-labels { fill: #b7d0e1; font-size: 14px; }
+.access-labels path { fill: none; stroke: #91b4cb; stroke-width: 1.5; }
+@media (max-width: 660px) { .plan-viewport { min-height: 0; }.machine-tooltip { max-height: calc(100% - 16px); overflow: auto; } }
+.marker-disc.large-count { font-size: 11px; width: auto; min-width: 34px; padding: 0 6px; }
+
+.startup-message { position: absolute; z-index: 20; inset: 16px; margin: auto; height: fit-content; max-height: calc(100% - 32px); overflow: auto; padding: 18px; border: 1px solid #7895ab; border-radius: 8px; background: #182c3b; color: #edf5fa; font-size: 14px; }
+
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al plano</a>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand"><svg viewBox="0 0 36 40" fill="none" aria-hidden="true"><path d="M18 2 33 8v12c0 10-15 18-15 18S3 30 3 20V8L18 2Z"/><path d="M12 18v-5a6 6 0 0 1 12 0v5M9 18h18v13H9z"/><circle cx="18" cy="24" r="1.6"/></svg><strong translate="no">SILBOM</strong><span>Consola del supervisor</span></div>
+      <span class="header-context">Propuesta visual para Hito 3</span>
+    </div>
+  </header>
+  <div class="prototype-notice"><div><strong>PROTOTIPO — DATOS SIMULADOS</strong><span>Edificio ficticio. Sin conexión a la planta real.</span></div></div>
+  <main id="main" tabindex="-1">
+    <section class="page-heading" aria-labelledby="title"><div><h1 id="title">Plano industrial</h1><p>Ubica un equipo y consulta sus registros digitales de bloqueo.</p></div><button id="reset-demo" class="button" type="button"><span data-icon="reset"></span>Restablecer escenario</button></section>
+    <section class="summary" aria-label="Resumen calculado de datos simulados">
+      <div><span>Máquinas del catálogo</span><strong id="stat-total">—</strong></div>
+      <div><span><i class="dot locked" aria-hidden="true"></i>Con registros digitales</span><strong id="stat-locked">—</strong></div>
+      <div><span><i class="dot free" aria-hidden="true"></i>Sin registros de bloqueo</span><strong id="stat-free">—</strong></div>
+      <div><span>Bloqueos digitales activos</span><strong id="stat-locks">—</strong></div>
+    </section>
+    <div class="workbench">
+      <section class="plan-section" aria-labelledby="plan-heading">
+        <div class="plan-topline"><div><h2 id="plan-heading">Distribución de la instalación</h2><p>Vista superior ficticia · Sin escala · Sin certificación</p></div><div class="scenario-control"><label for="scenario">Escenario</label><select id="scenario" name="scenario"><option value="available">Datos demo disponibles</option><option value="offline">Servidor desconectado (demo)</option><option value="stale">Información desactualizada</option></select></div></div>
+        <div class="drawing-shell">
+          <div class="drawing-toolbar"><span class="drawing-label"><span data-icon="plan"></span>Edificio de demostración</span><div class="zoom-controls" role="group" aria-label="Ampliación del plano"><button id="zoom-out" class="icon-button" type="button" aria-label="Alejar plano"><span data-icon="minus"></span></button><output id="zoom-level" aria-live="polite" aria-label="Nivel de ampliación">100 %</output><button id="zoom-in" class="icon-button" type="button" aria-label="Acercar plano"><span data-icon="plus"></span></button><button id="fit-plan" class="button fit-button" type="button"><span data-icon="fit"></span>Ajustar</button></div></div>
+          <div id="plan-viewport" class="plan-viewport" aria-label="Plano esquemático. Selecciona uno de los seis puntos de maquinaria.">
+            <p id="startup-message" class="startup-message" role="status">Las interacciones todavía no se han cargado. Descarga este HTML y ábrelo en Chrome, Firefox o Safari con JavaScript habilitado. La vista previa de un archivo puede mostrar solo el dibujo.</p>
+            <div id="scene" class="scene"><div id="blueprint-layer" class="blueprint-layer">
+<svg class="blueprint" viewBox="0 0 1280 880" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="blueprint-title blueprint-description">
+  <title id="blueprint-title">Plano industrial ficticio en vista superior</title>
+  <desc id="blueprint-description">Salas de maquinaria, preparación y moldeo al norte del pasillo; mantenimiento al costado derecho. Producción ocupa la nave inferior, junto a bodega y despacho. Puertas y posiciones son ilustrativas, sin escala ni certificación.</desc>
+  <defs>
+    <pattern id="technical-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#2b5873" stroke-width=".7" opacity=".35"/></pattern>
+    <pattern id="circulation-hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V12" fill="none" stroke="#5a88a2" stroke-width="1" opacity=".2"/></pattern>
+    <pattern id="rack-hatch" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M0 0L18 18" stroke="#7497ad" stroke-width="1" opacity=".35"/></pattern>
+    <g id="workbench"><rect width="160" height="32" rx="2"/><path d="M40 0v32m40-32v32m40-32v32"/><circle cx="25" cy="58" r="11"/><circle cx="80" cy="58" r="11"/><circle cx="135" cy="58" r="11"/></g>
+    <g id="compressor-plan"><rect x="-70" y="-38" width="140" height="76" rx="7"/><path d="M-57-38v76m114-76v76m-99-64v52m10-52v52m10-52v52m10-52v52"/><circle cx="29" cy="0" r="24"/><circle cx="29" cy="0" r="10"/><path d="M-70-20h-12v40h12m140-40h12v40H70M-51 38v10h18V38m66 0v10h18V38"/></g>
+    <g id="mixer-plan"><rect x="-66" y="-48" width="132" height="96" rx="30"/><path d="M0-48v96m-43-72 86 48m-86 0 86-48"/><circle r="17"/><path d="M-66-20h-10v40h10m132-40h10v40H66M-40-56h80m-80 112h80"/></g>
+    <g id="extruder-plan"><rect x="-54" y="-24" width="115" height="48" rx="3"/><rect x="-85" y="-30" width="31" height="60" rx="5"/><path d="M-85-18h31m-31 12h31m-31 12h31m-31 12h31m11-42 12 48m4-48 12 48m4-48 12 48m4-48 12 48m4-48 12 48M-32-46h40v22h-40zM61-17h24v34H61"/></g>
+    <g id="press-plan"><rect x="-63" y="-64" width="126" height="128" rx="3"/><path d="M-44-64V64m88-128V64m-88-99h88m-88 70h88M0-64v29"/><rect x="-29" y="-30" width="58" height="17" rx="2"/><rect x="-29" y="13" width="58" height="22" rx="2"/><path d="M-63-44h-16v24h16m126 40h16v24H63"/></g>
+    <g id="filler-plan"><circle r="59"/><circle r="36"/><circle r="12"/><path d="M0-59v23m59 36H36M0 59V36m-59-36h23m-6-42 16 16m68-16L26-26m16 68L26 26m-68 16 16-16"/><rect x="-115" y="-15" width="56" height="30" rx="4"/><rect x="59" y="-15" width="56" height="30" rx="4"/><path d="M-30-71h60m-60 142h60"/></g>
+    <g id="conveyor-plan"><rect x="-91" y="-40" width="182" height="80" rx="27"/><rect x="-80" y="-28" width="160" height="56" rx="20"/><path d="M-60-28v56m20-56v56m20-56v56m20-56v56m20-56v56m20-56v56m20-56v56M-60-51H60m-120 102H60"/></g>
+  </defs>
+  <rect width="1280" height="880" fill="url(#technical-grid)"/>
+  <g class="drafting-corners"><path d="M28 58V28h30m1164 0h30v30M28 822v30h30m1164 0h30v-30"/></g>
+  <g class="room-surfaces">
+    <path d="M90 100H920V72h270v740H915v-60H90Z" fill="#173448"/>
+    <path id="zone-sala-maquinas" data-zone="sala-maquinas" d="M90 100h275v230H90Z"/>
+    <path id="zone-preparacion" data-zone="preparacion" d="M365 100h300v230H365Z"/>
+    <path id="zone-moldeo" data-zone="moldeo" d="M665 100h255v230H665Z"/>
+    <path id="zone-mantenimiento" data-zone="mantenimiento" d="M920 72h270v258H920Z"/>
+    <path id="zone-produccion" data-zone="produccion" d="M90 410h745v342H90Z"/>
+    <path id="zone-bodega" data-zone="bodega" d="M915 410h275v402H915Z"/>
+  </g>
+  <g class="circulation">
+    <path d="M90 330h1100v80H90Zm745 80h80v342h-80Z" fill="#244254"/>
+    <path d="M90 330h1100v80H90Zm745 80h80v342h-80Z" fill="url(#circulation-hatch)"/>
+    <path class="circulation-center" d="M137 370h1005M875 435v280"/>
+  </g>
+  <g class="technical-fixtures">
+    <use href="#workbench" x="972" y="156"/>
+    <rect x="953" y="256" width="70" height="37"/><path d="M953 267h70m-70 13h70"/>
+    <rect x="1090" y="256" width="68" height="37"/><path d="M1090 267h68m-68 13h68"/>
+    <rect x="947" y="464" width="210" height="40" fill="url(#rack-hatch)"/><path d="M989 464v40m42-40v40m42-40v40m42-40v40"/>
+    <rect x="947" y="521" width="210" height="28" fill="url(#rack-hatch)"/><path d="M989 521v28m42-28v28m42-28v28m42-28v28"/>
+    <rect x="950" y="731" width="48" height="36"/><path d="m950 731 48 36m-48 0 48-36"/>
+    <rect x="1110" y="731" width="48" height="36"/><path d="m1110 731 48 36m-48 0 48-36"/>
+    <path class="service-outline" d="M151 180h168v112H151Zm286-7h148v119H437Zm269 5h168v116H706Z"/>
+    <path class="service-outline" d="M182 484h207v208H182Zm277 8h282v200H459Z"/>
+  </g>
+  <g class="machine-footprints" aria-hidden="true">
+    <use href="#compressor-plan" x="235" y="222"/>
+    <use href="#mixer-plan" x="510" y="218"/>
+    <use href="#extruder-plan" x="790" y="224"/>
+    <use href="#press-plan" x="285" y="563"/>
+    <use href="#filler-plan" x="600" y="566"/>
+    <use href="#conveyor-plan" x="1050" y="650"/>
+  </g>
+  <g class="structural-columns"><rect x="95" y="414" width="17" height="17"/><rect x="810" y="414" width="17" height="17"/><rect x="95" y="721" width="17" height="17"/><rect x="810" y="721" width="17" height="17"/><rect x="119" y="414" width="6" height="17"/></g>
+  <path class="outer-wall" d="M90 100H920V72h270v740H915v-60H90Z"/>
+  <path class="wall-core" d="M90 100H920V72h270v740H915v-60H90Z"/>
+  <g class="inner-walls"><path d="M365 100v230m300-230v230M920 72v258M90 330h118m56 0h213m56 0h221m56 0h165m56 0h159M90 410h118m56 0h331m74 0h306m56 0h159M835 410v153m0 66v123m80-342v153m0 66v123"/></g>
+  <g class="door-openings"><path d="M90 345v50m370 357h72m478 60h100"/></g>
+  <g class="doors">
+    <path d="M208 330v-56m56 56a56 56 0 0 0-56-56M477 330v-56m56 56a56 56 0 0 0-56-56M754 330v-56m56 56a56 56 0 0 0-56-56M975 330v-56m56 56a56 56 0 0 0-56-56"/>
+    <path d="M208 410v56m56-56a56 56 0 0 1-56 56M595 410v74m74-74a74 74 0 0 1-74 74M975 410v56m56-56a56 56 0 0 1-56 56M835 563h-66m66 66a66 66 0 0 1-66-66M915 563h66m-66 66a66 66 0 0 0 66-66"/>
+    <path d="M90 345h50m-50 50a50 50 0 0 0 50-50M460 752v-72m72 72a72 72 0 0 0-72-72M1010 812v-12h100v12m-100-7h100"/>
+  </g>
+  <g class="zone-text">
+    <text x="126" y="140">Sala de máquinas</text><text class="zone-subtitle" x="126" y="162">Servicios auxiliares</text>
+    <text x="400" y="140">Preparación</text><text class="zone-subtitle" x="400" y="162">Mezcla de materiales</text>
+    <text x="700" y="140">Moldeo</text><text class="zone-subtitle" x="700" y="162">Extrusión</text>
+    <text x="950" y="115">Mantenimiento</text><text class="zone-subtitle" x="950" y="137">Taller de apoyo</text>
+    <text x="128" y="460">Producción</text><text class="zone-subtitle" x="128" y="481">Estampado y envasado</text>
+    <text x="948" y="444">Bodega</text><text class="zone-subtitle" x="948" y="580">Logística y despacho</text>
+  </g>
+  <g class="circulation-text"><rect x="422" y="353" width="338" height="34" rx="3"/><text x="591" y="376" text-anchor="middle">Pasillo de circulación</text><text x="876" y="496" text-anchor="middle" transform="rotate(90 876 496)">Circulación</text></g>
+  <g class="access-labels"><path d="M35 345v50m-8-25h55m-9-6 9 6-9 6"/><text x="33" y="425">Acceso</text><path d="M470 788h50m-25-15v37m-6-9 6 9 6-9"/><text x="550" y="803">Acceso a producción</text><text x="956" y="845">Acceso de despacho</text></g>
+</svg></div><div id="markers" class="markers" role="group" aria-label="Máquinas del plano"></div></div>
+            <div id="machine-tooltip" class="machine-tooltip" role="tooltip" hidden><p id="tip-code" class="code" translate="no"></p><strong id="tip-name"></strong><p id="tip-area"></p><p id="tip-state"></p><p id="tip-count"></p></div>
+          </div>
+          <div class="drawing-bottom"><span>Distribución ilustrativa. Las puertas no representan rutas de evacuación.</span><div class="pan-controls" id="pan-controls" role="group" aria-label="Desplazar el plano ampliado" hidden><button class="icon-button" type="button" data-pan="left" aria-label="Ver hacia la izquierda"><span data-icon="left"></span></button><button class="icon-button" type="button" data-pan="up" aria-label="Ver hacia arriba"><span data-icon="up"></span></button><button class="icon-button" type="button" data-pan="down" aria-label="Ver hacia abajo"><span data-icon="down"></span></button><button class="icon-button" type="button" data-pan="right" aria-label="Ver hacia la derecha"><span data-icon="right"></span></button></div></div>
+        </div>
+        <div class="legend" aria-label="Leyenda de estados digitales"><span><i class="state-symbol locked" aria-hidden="true">+</i>Con registros de bloqueo</span><span><i class="state-symbol free" aria-hidden="true">−</i>Sin registros de bloqueo</span><span><i class="state-symbol unknown" aria-hidden="true">?</i>Sin verificar</span></div>
+        <p id="availability" class="availability"><span data-icon="database"></span><span id="availability-text">Datos simulados en memoria; no se consulta la API.</span></p>
+        <div class="machine-nav"><label for="machine-picker">Ir a un equipo</label><select id="machine-picker" name="machine-picker"></select><button id="clear-selection" class="button" type="button">Quitar selección</button></div>
+        <p class="map-help">Tab y Enter para seleccionar. Acerca el plano para ver el dibujo; arrastra el fondo o usa las flechas de desplazamiento cuando esté ampliado.</p>
+      </section>
+      <aside class="side-column" aria-label="Información del equipo y escenarios de demostración">
+        <section class="equipment-panel" aria-labelledby="detail-heading"><div class="section-heading"><h2 id="detail-heading">Equipo seleccionado</h2><span data-icon="location"></span></div>
+          <div id="empty-detail" class="empty-detail" hidden><span data-icon="plan"></span><h3>Explora la instalación</h3><p>Selecciona un punto del plano o un equipo de la lista para consultar sus datos simulados.</p></div>
+          <div id="detail-body" class="detail-body"><p id="detail-code" class="code" translate="no"></p><h3 id="detail-name"></h3><div id="detail-state" class="state-pill"></div><dl><div><dt>Área del catálogo</dt><dd id="detail-area"></dd></div><div><dt>Bloqueos activos</dt><dd id="detail-count"></dd></div><div><dt>MTBF de ejemplo</dt><dd id="detail-mtbf"></dd></div></dl><p class="detail-help">El estado es digital. No demuestra aislamiento físico ni autoriza una intervención.</p><button id="open-sheet" class="button button-primary" type="button"><span data-icon="file"></span>Ver ficha completa</button></div>
+        </section>
+        <section class="demo-panel" aria-labelledby="demo-heading"><h2 id="demo-heading"><span data-icon="simulation"></span>Escenarios de demostración</h2><p>Cambia solo los datos ficticios del equipo seleccionado. No crea ni libera bloqueos reales.</p><div class="demo-options" role="group" aria-label="Número simulado de bloqueos del equipo seleccionado"><button type="button" class="demo-choice" data-demo-count="0"><strong>0</strong><span>Sin registros</span></button><button type="button" class="demo-choice" data-demo-count="1"><strong>1</strong><span>Un registro</span></button><button type="button" class="demo-choice" data-demo-count="2"><strong>2</strong><span>Multi-LOTO</span></button></div><p id="demo-help" class="demo-help">Disponible únicamente en este prototipo.</p></section>
+      </aside>
+    </div>
+    <p id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">Cargando demostración…</p>
+    <footer><p><span data-icon="shield"></span>El verde solo indica ausencia de bloqueos digitales registrados; no significa que un equipo sea seguro, esté energizado o pueda arrancar.</p><span>Prototipo independiente · Sin conexión al backend</span></footer>
+    <noscript><p>Activa JavaScript para seleccionar los equipos y probar los escenarios locales. No necesitas iniciar el backend.</p></noscript>
+  </main>
+  <dialog id="sheet" aria-labelledby="sheet-heading" aria-describedby="sheet-description"><div class="sheet-heading"><div><h2 id="sheet-heading">Ficha de equipo</h2><p id="sheet-description">PROTOTIPO — DATOS SIMULADOS</p></div><button id="close-sheet" class="icon-button" type="button" aria-label="Cerrar ficha"><span data-icon="close"></span></button></div><div class="sheet-body"><p id="sheet-code" class="code" translate="no"></p><h3 id="sheet-name"></h3><div id="sheet-state" class="state-pill"></div><dl><div><dt>Área del catálogo</dt><dd id="sheet-area"></dd></div><div><dt>Bloqueos digitales activos</dt><dd id="sheet-count"></dd></div><div><dt>MTBF de ejemplo</dt><dd id="sheet-mtbf"></dd></div></dl><p class="sheet-notice">Esta ficha no proviene de PostgreSQL. Consultarla o seleccionar un punto no ejecuta operaciones LOTO. El MTBF ilustrativo no predice la próxima falla.</p><button id="back-to-plan" class="button" type="button">Volver al plano</button></div></dialog>
+  <script>
+// datos-demo.js
+/* Catálogo contrastado con DataInitializer. Coordenadas, estados y MTBF ficticios.
+ * Script clásico para funcionar también con apertura directa file://, sin imports/fetch. */
+(() => {
+  'use strict';
+  const positions = [
+    { id: 'EQ-COM-03', x: 235, y: 260, zone: 'sala-maquinas', nombre: 'Compresor de Tornillo', area: 'Sala de Máquinas', mtbf: 718.5, count: 0 },
+    { id: 'EQ-MEZ-01', x: 510, y: 260, zone: 'preparacion', nombre: 'Mezclador Industrial de Cinta', area: 'Área de Preparación', mtbf: 715, count: 0 },
+    { id: 'EQ-EXT-02', x: 790, y: 260, zone: 'moldeo', nombre: 'Extrusora de Polímeros', area: 'Área de Moldeo', mtbf: 171.3, count: 0 },
+    { id: 'EQ-PR-04', x: 285, y: 592, zone: 'produccion', nombre: 'Prensa Hidráulica 200T', area: 'Área de Estampado', mtbf: 356, count: 1 },
+    { id: 'EQ-ENV-01', x: 600, y: 592, zone: 'produccion', nombre: 'Envasadora Rotativa Automática', area: 'Línea de Envasado 1', mtbf: 233.8, count: 2 },
+    { id: 'EQ-TR-01', x: 1050, y: 680, zone: 'bodega', nombre: 'Cinta Transportadora Principal', area: 'Logística y Despacho', mtbf: null, count: 0 }
+  ].map(item => Object.freeze(item));
+  window.SilbomPlanData = Object.freeze({
+    width: 1280, height: 880,
+    positions: Object.freeze(positions),
+    initialMachines: () => positions.map(({id, nombre, area, mtbf, count}) =>
+      ({id, nombre, area, mtbf, bloqueada: count > 0, bloqueosActivos: count}))
+  });
+})();
+
+// plano.js
+/* Dibujo arquitectónico ilustrativo. Coordenadas gráficas, nunca metros.
+ * Sin rutas, dimensiones, salidas ni certificaciones de seguridad reales. */
+(() => {
+  'use strict';
+  window.SilbomBlueprint = Object.freeze({markup: `
+<svg class="blueprint" viewBox="0 0 1280 880" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="blueprint-title blueprint-description">
+  <title id="blueprint-title">Plano industrial ficticio en vista superior</title>
+  <desc id="blueprint-description">Salas de maquinaria, preparación y moldeo al norte del pasillo; mantenimiento al costado derecho. Producción ocupa la nave inferior, junto a bodega y despacho. Puertas y posiciones son ilustrativas, sin escala ni certificación.</desc>
+  <defs>
+    <pattern id="technical-grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#2b5873" stroke-width=".7" opacity=".35"/></pattern>
+    <pattern id="circulation-hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V12" fill="none" stroke="#5a88a2" stroke-width="1" opacity=".2"/></pattern>
+    <pattern id="rack-hatch" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M0 0L18 18" stroke="#7497ad" stroke-width="1" opacity=".35"/></pattern>
+    <g id="workbench"><rect width="160" height="32" rx="2"/><path d="M40 0v32m40-32v32m40-32v32"/><circle cx="25" cy="58" r="11"/><circle cx="80" cy="58" r="11"/><circle cx="135" cy="58" r="11"/></g>
+    <g id="compressor-plan"><rect x="-70" y="-38" width="140" height="76" rx="7"/><path d="M-57-38v76m114-76v76m-99-64v52m10-52v52m10-52v52m10-52v52"/><circle cx="29" cy="0" r="24"/><circle cx="29" cy="0" r="10"/><path d="M-70-20h-12v40h12m140-40h12v40H70M-51 38v10h18V38m66 0v10h18V38"/></g>
+    <g id="mixer-plan"><rect x="-66" y="-48" width="132" height="96" rx="30"/><path d="M0-48v96m-43-72 86 48m-86 0 86-48"/><circle r="17"/><path d="M-66-20h-10v40h10m132-40h10v40H66M-40-56h80m-80 112h80"/></g>
+    <g id="extruder-plan"><rect x="-54" y="-24" width="115" height="48" rx="3"/><rect x="-85" y="-30" width="31" height="60" rx="5"/><path d="M-85-18h31m-31 12h31m-31 12h31m-31 12h31m11-42 12 48m4-48 12 48m4-48 12 48m4-48 12 48m4-48 12 48M-32-46h40v22h-40zM61-17h24v34H61"/></g>
+    <g id="press-plan"><rect x="-63" y="-64" width="126" height="128" rx="3"/><path d="M-44-64V64m88-128V64m-88-99h88m-88 70h88M0-64v29"/><rect x="-29" y="-30" width="58" height="17" rx="2"/><rect x="-29" y="13" width="58" height="22" rx="2"/><path d="M-63-44h-16v24h16m126 40h16v24H63"/></g>
+    <g id="filler-plan"><circle r="59"/><circle r="36"/><circle r="12"/><path d="M0-59v23m59 36H36M0 59V36m-59-36h23m-6-42 16 16m68-16L26-26m16 68L26 26m-68 16 16-16"/><rect x="-115" y="-15" width="56" height="30" rx="4"/><rect x="59" y="-15" width="56" height="30" rx="4"/><path d="M-30-71h60m-60 142h60"/></g>
+    <g id="conveyor-plan"><rect x="-91" y="-40" width="182" height="80" rx="27"/><rect x="-80" y="-28" width="160" height="56" rx="20"/><path d="M-60-28v56m20-56v56m20-56v56m20-56v56m20-56v56m20-56v56m20-56v56M-60-51H60m-120 102H60"/></g>
+  </defs>
+  <rect width="1280" height="880" fill="url(#technical-grid)"/>
+  <g class="drafting-corners"><path d="M28 58V28h30m1164 0h30v30M28 822v30h30m1164 0h30v-30"/></g>
+  <g class="room-surfaces">
+    <path d="M90 100H920V72h270v740H915v-60H90Z" fill="#173448"/>
+    <path id="zone-sala-maquinas" data-zone="sala-maquinas" d="M90 100h275v230H90Z"/>
+    <path id="zone-preparacion" data-zone="preparacion" d="M365 100h300v230H365Z"/>
+    <path id="zone-moldeo" data-zone="moldeo" d="M665 100h255v230H665Z"/>
+    <path id="zone-mantenimiento" data-zone="mantenimiento" d="M920 72h270v258H920Z"/>
+    <path id="zone-produccion" data-zone="produccion" d="M90 410h745v342H90Z"/>
+    <path id="zone-bodega" data-zone="bodega" d="M915 410h275v402H915Z"/>
+  </g>
+  <g class="circulation">
+    <path d="M90 330h1100v80H90Zm745 80h80v342h-80Z" fill="#244254"/>
+    <path d="M90 330h1100v80H90Zm745 80h80v342h-80Z" fill="url(#circulation-hatch)"/>
+    <path class="circulation-center" d="M137 370h1005M875 435v280"/>
+  </g>
+  <g class="technical-fixtures">
+    <use href="#workbench" x="972" y="156"/>
+    <rect x="953" y="256" width="70" height="37"/><path d="M953 267h70m-70 13h70"/>
+    <rect x="1090" y="256" width="68" height="37"/><path d="M1090 267h68m-68 13h68"/>
+    <rect x="947" y="464" width="210" height="40" fill="url(#rack-hatch)"/><path d="M989 464v40m42-40v40m42-40v40m42-40v40"/>
+    <rect x="947" y="521" width="210" height="28" fill="url(#rack-hatch)"/><path d="M989 521v28m42-28v28m42-28v28m42-28v28"/>
+    <rect x="950" y="731" width="48" height="36"/><path d="m950 731 48 36m-48 0 48-36"/>
+    <rect x="1110" y="731" width="48" height="36"/><path d="m1110 731 48 36m-48 0 48-36"/>
+    <path class="service-outline" d="M151 180h168v112H151Zm286-7h148v119H437Zm269 5h168v116H706Z"/>
+    <path class="service-outline" d="M182 484h207v208H182Zm277 8h282v200H459Z"/>
+  </g>
+  <g class="machine-footprints" aria-hidden="true">
+    <use href="#compressor-plan" x="235" y="222"/>
+    <use href="#mixer-plan" x="510" y="218"/>
+    <use href="#extruder-plan" x="790" y="224"/>
+    <use href="#press-plan" x="285" y="563"/>
+    <use href="#filler-plan" x="600" y="566"/>
+    <use href="#conveyor-plan" x="1050" y="650"/>
+  </g>
+  <g class="structural-columns"><rect x="95" y="414" width="17" height="17"/><rect x="810" y="414" width="17" height="17"/><rect x="95" y="721" width="17" height="17"/><rect x="810" y="721" width="17" height="17"/><rect x="119" y="414" width="6" height="17"/></g>
+  <path class="outer-wall" d="M90 100H920V72h270v740H915v-60H90Z"/>
+  <path class="wall-core" d="M90 100H920V72h270v740H915v-60H90Z"/>
+  <g class="inner-walls"><path d="M365 100v230m300-230v230M920 72v258M90 330h118m56 0h213m56 0h221m56 0h165m56 0h159M90 410h118m56 0h331m74 0h306m56 0h159M835 410v153m0 66v123m80-342v153m0 66v123"/></g>
+  <g class="door-openings"><path d="M90 345v50m370 357h72m478 60h100"/></g>
+  <g class="doors">
+    <path d="M208 330v-56m56 56a56 56 0 0 0-56-56M477 330v-56m56 56a56 56 0 0 0-56-56M754 330v-56m56 56a56 56 0 0 0-56-56M975 330v-56m56 56a56 56 0 0 0-56-56"/>
+    <path d="M208 410v56m56-56a56 56 0 0 1-56 56M595 410v74m74-74a74 74 0 0 1-74 74M975 410v56m56-56a56 56 0 0 1-56 56M835 563h-66m66 66a66 66 0 0 1-66-66M915 563h66m-66 66a66 66 0 0 0 66-66"/>
+    <path d="M90 345h50m-50 50a50 50 0 0 0 50-50M460 752v-72m72 72a72 72 0 0 0-72-72M1010 812v-12h100v12m-100-7h100"/>
+  </g>
+  <g class="zone-text">
+    <text x="126" y="140">Sala de máquinas</text><text class="zone-subtitle" x="126" y="162">Servicios auxiliares</text>
+    <text x="400" y="140">Preparación</text><text class="zone-subtitle" x="400" y="162">Mezcla de materiales</text>
+    <text x="700" y="140">Moldeo</text><text class="zone-subtitle" x="700" y="162">Extrusión</text>
+    <text x="950" y="115">Mantenimiento</text><text class="zone-subtitle" x="950" y="137">Taller de apoyo</text>
+    <text x="128" y="460">Producción</text><text class="zone-subtitle" x="128" y="481">Estampado y envasado</text>
+    <text x="948" y="444">Bodega</text><text class="zone-subtitle" x="948" y="580">Logística y despacho</text>
+  </g>
+  <g class="circulation-text"><rect x="422" y="353" width="338" height="34" rx="3"/><text x="591" y="376" text-anchor="middle">Pasillo de circulación</text><text x="876" y="496" text-anchor="middle" transform="rotate(90 876 496)">Circulación</text></g>
+  <g class="access-labels"><path d="M35 345v50m-8-25h55m-9-6 9 6-9 6"/><text x="33" y="425">Acceso</text><path d="M470 788h50m-25-15v37m-6-9 6 9 6-9"/><text x="550" y="803">Acceso a producción</text><text x="956" y="845">Acceso de despacho</text></g>
+</svg>`});
+})();
+
+// script.js
+/* Visualización local. No tiene transporte HTTP, credenciales ni operaciones LOTO. */
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const config = window.SilbomPlanData;
+  const positions = config.positions;
+  const format = new Intl.NumberFormat('es-CL', {maximumFractionDigits: 1});
+  const nodes = new Map();
+  const ICONS = {
+    reset:'M3 10a9 9 0 1 1 2 8M3 4v6h6', plan:'M3 3h18v18H3zM3 10h11V3m0 7v11m0-6h7',
+    plus:'M12 5v14M5 12h14', minus:'M5 12h14', fit:'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M8 8h8v8H8z',
+    left:'m14 6-6 6 6 6', right:'m10 6 6 6-6 6', up:'m6 14 6-6 6 6', down:'m6 10 6 6 6-6',
+    database:'M20 6c0 2-4 4-8 4S4 8 4 6s4-4 8-4 8 2 8 4Zm0 0v12c0 2-4 4-8 4s-8-2-8-4V6m0 6c0 2 4 4 8 4s8-2 8-4',
+    location:'M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Zm-8-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6',
+    file:'M14 2H5v20h14V7l-5-5Zm0 0v5h5M8 12h8m-8 4h8',
+    simulation:'M7 3h10M9 3v6L3 19a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3L15 9V3M7 15h10',
+    shield:'m12 2 9 4v6c0 6-9 10-9 10S3 18 3 12V6l9-4Zm0 5v6m0 4h.01',
+    close:'m6 6 12 12M6 18 18 6', lock:'M5 10h14v11H5zM8 10V6a4 4 0 0 1 8 0v4m-4 5v2',
+    free:'M9 12h6M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
+    unknown:'M9.5 8a2.5 2.5 0 0 1 5 .5c0 2-2.5 2-2.5 4m0 4h.01M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0'
+  };
+  function icon(name) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('viewBox','0 0 24 24'); svg.setAttribute('class','icon');
+    svg.setAttribute('aria-hidden','true'); svg.setAttribute('focusable','false');
+    const path = document.createElementNS(svg.namespaceURI,'path'); path.setAttribute('d',ICONS[name]); svg.append(path); return svg;
+  }
+  document.querySelectorAll('[data-icon]').forEach(node => node.replaceChildren(icon(node.dataset.icon)));
+  // Solo dibujo propio estático: ningún dato del catálogo se interpola en markup.
+  $('blueprint-layer').innerHTML = window.SilbomBlueprint.markup;
+  let rows = [], view = [], selected = 'EQ-ENV-01', scenario = 'available', sourceVerified = true;
+  let tooltipId = null, sheetTrigger = null, drag = null;
+  const camera = {zoom:1, x:0, y:0};
+  const clamp = (value,min,max) => Math.min(max,Math.max(min,value));
+  const current = () => view.find(item => item.id === selected);
+  const announce = message => { $('feedback').textContent = message; };
+  function state(item) { return !item.verified ? 'unknown' : item.bloqueosActivos > 0 ? 'locked' : 'free'; }
+  function stateText(item) {
+    if (!item.verified) return scenario === 'stale' ? 'Información desactualizada' : 'Estado sin verificar';
+    const n = item.bloqueosActivos;
+    return n === 0 ? 'Sin bloqueos digitales' : `${format.format(n)} bloqueo${n === 1 ? '' : 's'} LOTO activo${n === 1 ? '' : 's'}`;
+  }
+  function countText(item) { return item.verified ? format.format(item.bloqueosActivos) : 'Sin verificar'; }
+  function mtbfText(item) { return !item.verified ? 'Sin verificar' : item.mtbf === null ? 'No calculable' : `${format.format(item.mtbf)} h`; }
+  function renderPill(element,item) {
+    element.dataset.state = state(item);
+    const text = document.createElement('span'); text.textContent = stateText(item);
+    element.replaceChildren(icon(state(item) === 'locked' ? 'lock' : state(item)),text);
+  }
+  function normalizeMachines(input, verified) {
+    const list = Array.isArray(input) ? input : [];
+    const ids = new Set(list.map(item => item?.id));
+    const complete = list.length === positions.length && ids.size === positions.length && positions.every(p => ids.has(p.id));
+    return positions.map(fallback => {
+      const row = list.find(item => item?.id === fallback.id) || {};
+      const validState = Number.isInteger(row.bloqueosActivos) && row.bloqueosActivos >= 0 && row.bloqueosActivos <= 2147483647
+        && typeof row.bloqueada === 'boolean' && row.bloqueada === (row.bloqueosActivos > 0);
+      const validText = typeof row.nombre === 'string' && row.nombre.trim() && typeof row.area === 'string' && row.area.trim();
+      return {id:fallback.id,
+        nombre:typeof row.nombre === 'string' && row.nombre.trim() ? row.nombre.trim() : fallback.nombre,
+        area:typeof row.area === 'string' && row.area.trim() ? row.area.trim() : fallback.area,
+        bloqueada:validState ? row.bloqueada : null, bloqueosActivos:validState ? row.bloqueosActivos : null,
+        mtbf:typeof row.mtbf === 'number' && Number.isFinite(row.mtbf) && row.mtbf >= 0 ? row.mtbf : null,
+        verified:Boolean(verified && complete && validState && validText)};
+    });
+  }
+  function renderSummary() {
+    const unknown = view.filter(item => !item.verified).length;
+    $('stat-total').textContent = format.format(view.length);
+    const values = {
+      'stat-locked':view.filter(item => item.bloqueosActivos > 0).length,
+      'stat-free':view.filter(item => item.bloqueosActivos === 0).length,
+      'stat-locks':view.reduce((sum,item) => sum + (item.bloqueosActivos ?? 0),0)
+    };
+    for (const [key,value] of Object.entries(values)) {
+      $(key).textContent = unknown ? '—' : format.format(value);
+      $(key).setAttribute('aria-label',unknown ? 'Sin confirmar: hay datos sin verificar' : format.format(value));
+    }
+    $('availability-text').textContent = unknown
+      ? `${unknown} equipo(s) sin verificar en esta demostración. «—» no significa cero bloqueos.`
+      : 'Datos simulados en memoria; no se consulta la API.';
+  }
+  function renderDetail() {
+    const item = current();
+    $('detail-body').hidden = !item; $('empty-detail').hidden = Boolean(item);
+    $('clear-selection').disabled = !item;
+    $('machine-picker').value = selected || '';
+    for (const button of document.querySelectorAll('[data-demo-count]')) {
+      button.disabled = !item?.verified;
+      button.setAttribute('aria-pressed',String(Boolean(item?.verified && item.bloqueosActivos === Number(button.dataset.demoCount))));
+    }
+    $('demo-help').textContent = !item ? 'Selecciona un equipo para mostrar sus escenarios ficticios.'
+      : item.verified ? 'Disponible únicamente en este prototipo.' : 'Elige «Datos demo disponibles» para cambiar el escenario local.';
+    document.querySelectorAll('[data-zone]').forEach(node => node.classList.toggle('zone-selected',Boolean(item && node.dataset.zone === positions.find(p => p.id === item.id).zone)));
+    if (!item) return;
+    $('detail-code').textContent = item.id; $('detail-name').textContent = item.nombre; $('detail-area').textContent = item.area;
+    $('detail-count').textContent = countText(item); $('detail-mtbf').textContent = mtbfText(item);
+    renderPill($('detail-state'),item);
+  }
+  // Única entrada visual para un arreglo externo. No contiene transporte ni autenticación.
+  function renderMachines(input,{verified=true}={}) {
+    rows = Array.isArray(input) ? input.map(item => item && typeof item === 'object' ? {...item} : item) : [];
+    sourceVerified = Boolean(verified);
+    view = normalizeMachines(rows,sourceVerified && scenario === 'available');
+    for (const item of view) {
+      const {button,disc,option} = nodes.get(item.id);
+      button.dataset.state = state(item);
+      button.setAttribute('aria-pressed',String(item.id === selected));
+      button.setAttribute('aria-label',`${item.id}, ${item.nombre}. ${item.area}. ${stateText(item)}. Bloqueos activos: ${countText(item)}. Datos simulados.`);
+      disc.textContent = !item.verified ? '?' : item.bloqueosActivos > 0 ? format.format(item.bloqueosActivos) : '−';
+      disc.classList.toggle('large-count',item.verified && item.bloqueosActivos > 99);
+      option.textContent = `${item.id} · ${item.nombre}`;
+    }
+    hideTooltip(); renderSummary(); renderDetail(); if ($('sheet').open) renderSheet();
+  }
+  function machineHash() { try { return decodeURIComponent(location.hash.slice(1)); } catch { return ''; } }
+  function setHash() { try { const url = new URL(location.href); url.hash = selected || ''; history.pushState(null,'',url); } catch { /* file:// puede restringir History sin impedir usar el plano. */ } }
+  function selectMachine(id,{center=false,updateUrl=true}={}) {
+    if (!positions.some(item => item.id === id)) return;
+    selected = id;
+    for (const [key,node] of nodes) node.button.setAttribute('aria-pressed',String(key === id));
+    hideTooltip(); renderDetail(); if (center && camera.zoom > 1) centerOn(id);
+    if (updateUrl) setHash();
+    announce(`${current().nombre} seleccionada. ${stateText(current())}. Datos simulados; no se ejecutó ninguna operación.`);
+  }
+  function clearSelection(updateUrl=true) {
+    selected = null;
+    for (const node of nodes.values()) node.button.setAttribute('aria-pressed','false');
+    hideTooltip(); renderDetail(); if (updateUrl) setHash();
+    announce('Selección quitada. Elige un punto del plano o un equipo de la lista.');
+  }
+  function applyDemoCount(count) {
+    const item = current();
+    if (!item?.verified || ![0,1,2].includes(count)) return;
+    const next = rows.map(row => row.id === item.id ? {...row,bloqueada:count > 0,bloqueosActivos:count} : row);
+    renderMachines(next);
+    announce(`Escenario local: ${item.id}, ${stateText(current())}. Solo cambiaron datos simulados; no se creó ni liberó un bloqueo real.`);
+  }
+  function resetDemo() {
+    hideTooltip();
+    if ($('sheet').open) $('sheet').close();
+    selected = 'EQ-ENV-01'; scenario = 'available'; $('scenario').value = scenario;
+    renderMachines(config.initialMachines()); fit(); setHash();
+    announce(`Escenario inicial restablecido: ${$('stat-total').textContent} equipos, ${$('stat-locked').textContent} con registros y ${$('stat-locks').textContent} bloqueos digitales simulados.`);
+  }
+  function renderSheet() {
+    const item = current(); if (!item) return;
+    $('sheet-code').textContent = item.id; $('sheet-name').textContent = item.nombre; $('sheet-area').textContent = item.area;
+    $('sheet-count').textContent = countText(item); $('sheet-mtbf').textContent = mtbfText(item); renderPill($('sheet-state'),item);
+  }
+  function hideTooltip() {
+    if (tooltipId) nodes.get(tooltipId).button.removeAttribute('aria-describedby');
+    tooltipId = null; $('machine-tooltip').hidden = true;
+  }
+  function showTooltip(id) {
+    const item = view.find(row => row.id === id); if (!item || drag) return;
+    hideTooltip(); tooltipId = id;
+    $('tip-code').textContent = id; $('tip-name').textContent = item.nombre; $('tip-area').textContent = item.area;
+    $('tip-state').textContent = stateText(item); $('tip-count').textContent = `Bloqueos activos: ${countText(item)}`;
+    const tooltip = $('machine-tooltip'); tooltip.hidden = false; tooltip.style.maxHeight='';
+    const rect = nodes.get(id).button.getBoundingClientRect(), parent = $('plan-viewport').getBoundingClientRect();
+    const width = tooltip.offsetWidth;
+    const above=rect.top-parent.top-16, below=parent.bottom-rect.bottom-16;
+    const placeAbove=above >= tooltip.offsetHeight || above >= below;
+    tooltip.style.maxHeight=`${Math.max(32,placeAbove ? above : below)}px`;
+    const height=tooltip.offsetHeight, x=rect.left-parent.left+rect.width/2;
+    const y=placeAbove ? rect.top-parent.top-height-8 : rect.bottom-parent.top+8;
+    tooltip.style.left=`${clamp(x-width/2,8,Math.max(8,parent.width-width-8))}px`;
+    tooltip.style.top=`${clamp(y,8,Math.max(8,parent.height-height-8))}px`;
+    nodes.get(id).button.setAttribute('aria-describedby','machine-tooltip');
+  }
+  function updateCamera() {
+    camera.x = clamp(camera.x,1-camera.zoom,0); camera.y = clamp(camera.y,1-camera.zoom,0);
+    $('plan-viewport').scrollLeft=0; $('plan-viewport').scrollTop=0;
+    $('scene').style.transform = `translate(${camera.x*100}%,${camera.y*100}%) scale(${camera.zoom})`;
+    $('zoom-level').textContent = `${format.format(camera.zoom*100)} %`;
+    $('zoom-out').disabled = camera.zoom <= 1; $('zoom-in').disabled = camera.zoom >= 2.5;
+    $('plan-viewport').dataset.zoomed = String(camera.zoom > 1);
+    $('pan-controls').hidden = camera.zoom === 1;
+    hideTooltip();
+  }
+  function centerOn(id) {
+    const p = positions.find(item => item.id === id); if (!p) return;
+    camera.x = .5-p.x/config.width*camera.zoom; camera.y = .5-p.y/config.height*camera.zoom; updateCamera();
+  }
+  function zoomTo(value) {
+    const next = clamp(value,1,2.5), p = positions.find(item => item.id === selected);
+    const anchorX = p ? p.x/config.width : (.5-camera.x)/camera.zoom;
+    const anchorY = p ? p.y/config.height : (.5-camera.y)/camera.zoom;
+    camera.zoom = next; camera.x = .5-anchorX*next; camera.y = .5-anchorY*next; updateCamera();
+    announce(`Plano ampliado al ${format.format(next*100)} %. Usa las flechas para desplazarte o «Ajustar» para volver a la vista completa.`);
+  }
+  function fit() { camera.zoom=1; camera.x=0; camera.y=0; updateCamera(); }
+  function ensureVisible(id) {
+    if (camera.zoom === 1) return;
+    const rect = nodes.get(id).button.getBoundingClientRect(), parent = $('plan-viewport').getBoundingClientRect();
+    if (rect.left < parent.left+8 || rect.right > parent.right-8 || rect.top < parent.top+8 || rect.bottom > parent.bottom-35) centerOn(id);
+  }
+  function buildMarkers() {
+    const placeholder = document.createElement('option'); placeholder.value=''; placeholder.textContent='Selecciona un equipo'; $('machine-picker').append(placeholder);
+    for (const p of positions) {
+      const button = document.createElement('button'); button.type='button'; button.className='machine-marker'; button.id='point-'+p.id;
+      button.dataset.machineId=p.id; button.style.left=`${p.x/config.width*100}%`; button.style.top=`${p.y/config.height*100}%`;
+      const disc = document.createElement('span'); disc.className='marker-disc'; disc.setAttribute('aria-hidden','true');
+      const label = document.createElement('span'); label.className='marker-label'; label.textContent=p.id; label.setAttribute('translate','no'); label.setAttribute('aria-hidden','true');
+      button.append(disc,label); $('markers').append(button);
+      const option = document.createElement('option'); option.value=p.id; $('machine-picker').append(option);
+      nodes.set(p.id,{button,disc,option});
+      button.addEventListener('click',() => selectMachine(p.id));
+      button.addEventListener('pointerenter',event => { if (event.pointerType !== 'touch') showTooltip(p.id); });
+      button.addEventListener('pointerleave',event => { if (!$('machine-tooltip').contains(event.relatedTarget) && document.activeElement !== button) hideTooltip(); });
+      button.addEventListener('focus',() => { ensureVisible(p.id); showTooltip(p.id); });
+      button.addEventListener('blur',() => hideTooltip());
+    }
+  }
+  buildMarkers();
+  $('machine-tooltip').addEventListener('pointerleave',event => {
+    if (tooltipId && event.relatedTarget !== nodes.get(tooltipId).button && document.activeElement !== nodes.get(tooltipId).button) hideTooltip();
+  });
+  document.addEventListener('keydown',event => { if (event.key === 'Escape') hideTooltip(); });
+  $('machine-picker').addEventListener('change',event => event.target.value ? selectMachine(event.target.value,{center:true}) : clearSelection());
+  $('clear-selection').addEventListener('click',() => { clearSelection(); $('machine-picker').focus(); });
+  document.querySelectorAll('[data-demo-count]').forEach(button => button.addEventListener('click',() => applyDemoCount(Number(button.dataset.demoCount))));
+  $('reset-demo').addEventListener('click',resetDemo);
+  $('scenario').addEventListener('change',event => {
+    scenario=event.target.value; renderMachines(rows,{verified:sourceVerified});
+    announce(scenario === 'available' ? 'Datos demo locales disponibles. No se consultó la API.'
+      : scenario === 'stale' ? 'Información desactualizada en la demostración. Estados y contadores sin verificar.'
+      : 'Servidor desconectado en la demostración. Estados grises, sin confirmar ningún bloqueo.');
+  });
+  $('zoom-in').addEventListener('click',() => zoomTo(camera.zoom+.5));
+  $('zoom-out').addEventListener('click',() => zoomTo(camera.zoom-.5));
+  $('fit-plan').addEventListener('click',() => { fit(); announce('Plano completo ajustado a pantalla.'); });
+  document.querySelectorAll('[data-pan]').forEach(button => button.addEventListener('click',() => {
+    const direction=button.dataset.pan;
+    camera.x += direction === 'left' ? .18 : direction === 'right' ? -.18 : 0;
+    camera.y += direction === 'up' ? .18 : direction === 'down' ? -.18 : 0;
+    updateCamera();
+  }));
+  $('plan-viewport').addEventListener('pointerdown',event => {
+    if (camera.zoom === 1 || event.button !== 0 || event.target.closest('button,.machine-tooltip')) return;
+    // Se preserva el scroll vertical/pinch nativo en pantallas táctiles; las flechas ofrecen desplazamiento accesible.
+    if (event.pointerType === 'touch') return;
+    const rect=$('plan-viewport').getBoundingClientRect();
+    drag={id:event.pointerId,x:event.clientX,y:event.clientY,cameraX:camera.x,cameraY:camera.y,width:rect.width,height:rect.height};
+    $('plan-viewport').setPointerCapture(event.pointerId); $('plan-viewport').classList.add('dragging'); hideTooltip(); event.preventDefault();
+  });
+  $('plan-viewport').addEventListener('pointermove',event => {
+    if (!drag || drag.id !== event.pointerId) return;
+    camera.x=drag.cameraX+(event.clientX-drag.x)/drag.width; camera.y=drag.cameraY+(event.clientY-drag.y)/drag.height; updateCamera();
+  });
+  const endDrag=() => { drag=null; $('plan-viewport').classList.remove('dragging'); };
+  $('plan-viewport').addEventListener('pointerup',endDrag);
+  $('plan-viewport').addEventListener('pointercancel',endDrag);
+  $('plan-viewport').addEventListener('lostpointercapture',endDrag);
+  $('open-sheet').addEventListener('click',() => { if (!current()) return; sheetTrigger=document.activeElement; hideTooltip(); renderSheet(); $('sheet').showModal(); });
+  $('close-sheet').addEventListener('click',() => $('sheet').close());
+  $('back-to-plan').addEventListener('click',() => $('sheet').close());
+  $('sheet').addEventListener('close',() => { if (sheetTrigger?.isConnected && sheetTrigger.getClientRects().length) sheetTrigger.focus(); });
+  $('sheet').addEventListener('keydown',event => {
+    if (event.key !== 'Tab') return;
+    const controls=[...$('sheet').querySelectorAll('button:not(:disabled)')];
+    if (event.shiftKey && document.activeElement === controls[0]) { event.preventDefault(); controls.at(-1).focus(); }
+    else if (!event.shiftKey && document.activeElement === controls.at(-1)) { event.preventDefault(); controls[0].focus(); }
+  });
+  window.addEventListener('popstate',() => {
+    const id=machineHash();
+    if (positions.some(p => p.id === id)) selectMachine(id,{center:true,updateUrl:false});
+    else if (!id) clearSelection(false);
+  });
+  if (positions.some(p => p.id === machineHash())) selected=machineHash();
+  renderMachines(config.initialMachines()); updateCamera();
+  announce(`${current().nombre} seleccionada. ${stateText(current())}. PROTOTIPO: datos simulados.`);
+  $('startup-message').hidden=true;
+  window.SilbomIndustrialPlan=Object.freeze({
+    renderMachines,
+    snapshot:() => JSON.parse(JSON.stringify({machines:view,selected,scenario,camera}))
+  });
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1683 @@
+{
+  "browser": "Chromium",
+  "checks": [
+    {
+      "test": "test_01_catalog_architecture_and_consistent_positions",
+      "status": "pass"
+    },
+    {
+      "test": "test_02_mouse_selection_all_catalog_rows_without_mutation",
+      "status": "pass"
+    },
+    {
+      "test": "test_03_tooltip_hover_keyboard_dismiss_and_keep_point_visible",
+      "status": "pass"
+    },
+    {
+      "test": "test_04_green_red_multi_zero_and_reset",
+      "status": "pass"
+    },
+    {
+      "test": "test_05_offline_stale_gray_and_restore",
+      "status": "pass"
+    },
+    {
+      "test": "test_06_sheet_escape_focus_and_no_operation",
+      "status": "pass"
+    },
+    {
+      "test": "test_07_zoom_pan_fit_and_keyboard_recenters",
+      "status": "pass"
+    },
+    {
+      "test": "test_08_drag_background_preserves_selection_and_state",
+      "status": "pass"
+    },
+    {
+      "test": "test_09_picker_clear_selection_and_deep_link",
+      "status": "pass"
+    },
+    {
+      "test": "test_10_renderer_validation_reorder_and_mtbf",
+      "status": "pass"
+    },
+    {
+      "test": "test_11_untrusted_text_is_not_html",
+      "status": "pass"
+    },
+    {
+      "test": "test_12_responsive_proportions_targets_and_no_overlap",
+      "status": "pass"
+    },
+    {
+      "test": "test_13_reduced_motion_offline_and_large_text",
+      "status": "pass"
+    },
+    {
+      "test": "test_14_captures",
+      "status": "pass"
+    },
+    {
+      "test": "test_15_direct_file_opening",
+      "status": "skip",
+      "reason": "El navegador administrado bloquea file://. Verificar apertura directa en un navegador personal."
+    },
+    {
+      "test": "test_16_portable_alone_no_companion_files",
+      "status": "pass"
+    },
+    {
+      "test": "test_17_missing_companions_shows_recovery_message",
+      "status": "pass"
+    }
+  ],
+  "viewports": [
+    {
+      "width": 375,
+      "scroll": 375,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 22,
+        "y": 1377.703125
+      },
+      "map": {
+        "right": 353,
+        "bottom": 1353.703125
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 331,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "machine-picker",
+          "w": 331,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 331,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 289,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 93.65625,
+          "h": 67.1875
+        },
+        {
+          "id": "",
+          "w": 93.671875,
+          "h": 67.1875
+        },
+        {
+          "id": "",
+          "w": 93.65625,
+          "h": 67.1875
+        }
+      ],
+      "labels": [
+        {
+          "x": 52.296875,
+          "y": 849.84375,
+          "right": 114.484375,
+          "bottom": 869.34375
+        },
+        {
+          "x": 122.984375,
+          "y": 849.84375,
+          "right": 185.171875,
+          "bottom": 869.34375
+        },
+        {
+          "x": 194.953125,
+          "y": 849.84375,
+          "right": 257.140625,
+          "bottom": 869.34375
+        },
+        {
+          "x": 68.1640625,
+          "y": 935.171875,
+          "right": 124.3359375,
+          "bottom": 954.671875
+        },
+        {
+          "x": 146.125,
+          "y": 935.171875,
+          "right": 208.3125,
+          "bottom": 954.671875
+        },
+        {
+          "x": 264.7890625,
+          "y": 957.796875,
+          "right": 320.9609375,
+          "bottom": 977.296875
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scroll": 390,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 22,
+        "y": 1370.015625
+      },
+      "map": {
+        "right": 368,
+        "bottom": 1346.015625
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 346,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "machine-picker",
+          "w": 346,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 346,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 304,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 98.65625,
+          "h": 67.1875
+        },
+        {
+          "id": "",
+          "w": 98.671875,
+          "h": 67.1875
+        },
+        {
+          "id": "",
+          "w": 98.65625,
+          "h": 67.1875
+        }
+      ],
+      "labels": [
+        {
+          "x": 55.0625,
+          "y": 834.890625,
+          "right": 117.25,
+          "bottom": 854.390625
+        },
+        {
+          "x": 128.96875,
+          "y": 834.890625,
+          "right": 191.15625,
+          "bottom": 854.390625
+        },
+        {
+          "x": 204.21875,
+          "y": 834.890625,
+          "right": 266.40625,
+          "bottom": 854.390625
+        },
+        {
+          "x": 71.5078125,
+          "y": 924.109375,
+          "right": 127.6796875,
+          "bottom": 943.609375
+        },
+        {
+          "x": 153.15625,
+          "y": 924.109375,
+          "right": 215.34375,
+          "bottom": 943.609375
+        },
+        {
+          "x": 277.1015625,
+          "y": 947.765625,
+          "right": 333.2734375,
+          "bottom": 967.265625
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "scroll": 768,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 22,
+        "y": 1219.796875
+      },
+      "map": {
+        "right": 746,
+        "bottom": 1195.796875
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 206.640625,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "machine-picker",
+          "w": 485.546875,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 138.9375,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 329,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 224.65625,
+          "h": 67.1875
+        },
+        {
+          "id": "",
+          "w": 224.671875,
+          "h": 67.1875
+        },
+        {
+          "id": "",
+          "w": 224.671875,
+          "h": 67.1875
+        }
+      ],
+      "labels": [
+        {
+          "x": 116.03125,
+          "y": 649.578125,
+          "right": 195.0625,
+          "bottom": 673.765625
+        },
+        {
+          "x": 271.15625,
+          "y": 649.578125,
+          "right": 350.1875,
+          "bottom": 673.765625
+        },
+        {
+          "x": 429.09375,
+          "y": 649.578125,
+          "right": 508.125,
+          "bottom": 673.765625
+        },
+        {
+          "x": 147.8515625,
+          "y": 836.84375,
+          "right": 219.6484375,
+          "bottom": 861.03125
+        },
+        {
+          "x": 321.921875,
+          "y": 836.84375,
+          "right": 400.953125,
+          "bottom": 861.03125
+        },
+        {
+          "x": 579.3671875,
+          "y": 886.484375,
+          "right": 651.1640625,
+          "bottom": 910.671875
+        }
+      ]
+    },
+    {
+      "width": 834,
+      "scroll": 834,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 22,
+        "y": 1245.671875
+      },
+      "map": {
+        "right": 812,
+        "bottom": 1221.671875
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 206.640625,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "machine-picker",
+          "w": 551.546875,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 138.9375,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 362,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 246.65625,
+          "h": 67.1875
+        },
+        {
+          "id": "",
+          "w": 246.671875,
+          "h": 67.1875
+        },
+        {
+          "id": "",
+          "w": 246.671875,
+          "h": 67.1875
+        }
+      ],
+      "labels": [
+        {
+          "x": 128.15625,
+          "y": 643.484375,
+          "right": 207.1875,
+          "bottom": 667.671875
+        },
+        {
+          "x": 297.453125,
+          "y": 643.484375,
+          "right": 376.484375,
+          "bottom": 667.671875
+        },
+        {
+          "x": 469.828125,
+          "y": 643.484375,
+          "right": 548.859375,
+          "bottom": 667.671875
+        },
+        {
+          "x": 162.5546875,
+          "y": 847.859375,
+          "right": 234.3515625,
+          "bottom": 872.046875
+        },
+        {
+          "x": 352.859375,
+          "y": 847.859375,
+          "right": 431.890625,
+          "bottom": 872.046875
+        },
+        {
+          "x": 633.5078125,
+          "y": 902.046875,
+          "right": 705.3046875,
+          "bottom": 926.234375
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "scroll": 1024,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 32,
+        "y": 1368.546875
+      },
+      "map": {
+        "right": 992,
+        "bottom": 1344.546875
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 206.640625,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "machine-picker",
+          "w": 721.546875,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 138.9375,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 279,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        }
+      ],
+      "labels": [
+        {
+          "x": 169.359375,
+          "y": 684.015625,
+          "right": 248.390625,
+          "bottom": 708.203125
+        },
+        {
+          "x": 375.1875,
+          "y": 684.015625,
+          "right": 454.21875,
+          "bottom": 708.203125
+        },
+        {
+          "x": 584.75,
+          "y": 684.015625,
+          "right": 663.78125,
+          "bottom": 708.203125
+        },
+        {
+          "x": 210.3984375,
+          "y": 932.484375,
+          "right": 282.1953125,
+          "bottom": 956.671875
+        },
+        {
+          "x": 442.546875,
+          "y": 932.484375,
+          "right": 521.578125,
+          "bottom": 956.671875
+        },
+        {
+          "x": 782.9609375,
+          "y": 998.359375,
+          "right": 854.7578125,
+          "bottom": 1022.546875
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "scroll": 1280,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 32,
+        "y": 1547.46875
+      },
+      "map": {
+        "right": 1248,
+        "bottom": 1523.46875
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 206.640625,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "machine-picker",
+          "w": 977.546875,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 138.9375,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 407,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        }
+      ],
+      "labels": [
+        {
+          "x": 216.359375,
+          "y": 738.9375,
+          "right": 295.390625,
+          "bottom": 763.125
+        },
+        {
+          "x": 477.1875,
+          "y": 738.9375,
+          "right": 556.21875,
+          "bottom": 763.125
+        },
+        {
+          "x": 742.75,
+          "y": 738.9375,
+          "right": 821.78125,
+          "bottom": 763.125
+        },
+        {
+          "x": 267.3984375,
+          "y": 1053.8125,
+          "right": 339.1953125,
+          "bottom": 1078
+        },
+        {
+          "x": 562.546875,
+          "y": 1053.8125,
+          "right": 641.578125,
+          "bottom": 1078
+        },
+        {
+          "x": 992.9609375,
+          "y": 1137.28125,
+          "right": 1064.7578125,
+          "bottom": 1161.46875
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "scroll": 1440,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 1088,
+        "y": 344.84375
+      },
+      "map": {
+        "right": 1064,
+        "bottom": 1401.40625
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 206.640625,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "machine-picker",
+          "w": 793.546875,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 138.9375,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 278,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        }
+      ],
+      "labels": [
+        {
+          "x": 182.578125,
+          "y": 706,
+          "right": 261.609375,
+          "bottom": 730.1875
+        },
+        {
+          "x": 403.875,
+          "y": 706,
+          "right": 482.90625,
+          "bottom": 730.1875
+        },
+        {
+          "x": 629.1875,
+          "y": 706,
+          "right": 708.21875,
+          "bottom": 730.1875
+        },
+        {
+          "x": 226.4296875,
+          "y": 973.15625,
+          "right": 298.2265625,
+          "bottom": 997.34375
+        },
+        {
+          "x": 476.296875,
+          "y": 973.15625,
+          "right": 555.328125,
+          "bottom": 997.34375
+        },
+        {
+          "x": 842.0234375,
+          "y": 1043.96875,
+          "right": 913.8203125,
+          "bottom": 1068.15625
+        }
+      ]
+    },
+    {
+      "width": 1600,
+      "scroll": 1600,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 1248,
+        "y": 345.890625
+      },
+      "map": {
+        "right": 1224,
+        "bottom": 1512.453125
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 206.640625,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "machine-picker",
+          "w": 953.546875,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 138.9375,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 278,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        }
+      ],
+      "labels": [
+        {
+          "x": 211.953125,
+          "y": 739.546875,
+          "right": 290.984375,
+          "bottom": 763.734375
+        },
+        {
+          "x": 467.625,
+          "y": 739.546875,
+          "right": 546.65625,
+          "bottom": 763.734375
+        },
+        {
+          "x": 727.9375,
+          "y": 739.546875,
+          "right": 806.96875,
+          "bottom": 763.734375
+        },
+        {
+          "x": 262.0546875,
+          "y": 1048.203125,
+          "right": 333.8515625,
+          "bottom": 1072.390625
+        },
+        {
+          "x": 551.296875,
+          "y": 1048.203125,
+          "right": 630.328125,
+          "bottom": 1072.390625
+        },
+        {
+          "x": 973.2734375,
+          "y": 1130.015625,
+          "right": 1045.0703125,
+          "bottom": 1154.203125
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "scroll": 1920,
+      "ratio": 1.4545454545454546,
+      "side": {
+        "x": 1468,
+        "y": 345.890625
+      },
+      "map": {
+        "right": 1444,
+        "bottom": 1594.953125
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 206.640625,
+          "h": 48
+        },
+        {
+          "id": "scenario",
+          "w": 255,
+          "h": 44
+        },
+        {
+          "id": "zoom-out",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "zoom-in",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "fit-plan",
+          "w": 106.234375,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-COM-03",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-MEZ-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-EXT-02",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-PR-04",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-ENV-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "point-EQ-TR-01",
+          "w": 48,
+          "h": 48
+        },
+        {
+          "id": "machine-picker",
+          "w": 1073.546875,
+          "h": 44
+        },
+        {
+          "id": "clear-selection",
+          "w": 138.9375,
+          "h": 44
+        },
+        {
+          "id": "open-sheet",
+          "w": 278,
+          "h": 48
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        },
+        {
+          "id": "",
+          "w": 90,
+          "h": 74
+        }
+      ],
+      "labels": [
+        {
+          "x": 333.984375,
+          "y": 763.921875,
+          "right": 413.015625,
+          "bottom": 788.109375
+        },
+        {
+          "x": 615.4375,
+          "y": 763.921875,
+          "right": 694.46875,
+          "bottom": 788.109375
+        },
+        {
+          "x": 902,
+          "y": 763.921875,
+          "right": 981.03125,
+          "bottom": 788.109375
+        },
+        {
+          "x": 388.7734375,
+          "y": 1103.703125,
+          "right": 460.5703125,
+          "bottom": 1127.890625
+        },
+        {
+          "x": 707.546875,
+          "y": 1103.703125,
+          "right": 786.578125,
+          "bottom": 1127.890625
+        },
+        {
+          "x": 1171.7109375,
+          "y": 1193.765625,
+          "right": 1243.5078125,
+          "bottom": 1217.953125
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/index.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/styles.css"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/datos-demo.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/plano.js"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/script.js"
+    }
+  ],
+  "sha256": {
+    "index.html": "48582dab2b743ea76e8a6292cd7f4e02f0d39edf594c0033e013407d983c0bd3",
+    "styles.css": "553bd03d7b1c19a04787166473742ee8b590a2fe927816501dd05c5731bd9837",
+    "script.js": "8b352bfbde4f7c32585060357e76d4acbdfe7bcaff865fea2ee57081308a6cf5",
+    "datos-demo.js": "3791e3a93b7f250184edc18892002621971b78c74cf997fc84851e274ad30648",
+    "plano.js": "2e4fabe0914c5c9b531c415e030eb81c05a7448f60250b15c04d7ff8cb39640e",
+    "SILBOM-plano-demo.html": "9eb1e1219e9e144c64e022a91a7c99fba1a5bf30c10b74c0ececfed2a25c1348"
+  },
+  "direct_file": "not_verified_managed_browser_policy",
+  "portable_isolation": {
+    "files_present": [
+      "SILBOM-plano-demo.html"
+    ],
+    "requests": 1,
+    "companion_requests": 0,
+    "javascript_or_csp_errors": [],
+    "interactions": "verified"
+  },
+  "missing_companions": "reproduced_empty_plan_and_verified_recovery_message",
+  "tests": 17,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 1
+}

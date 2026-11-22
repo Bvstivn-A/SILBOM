@@ -1,0 +1,106 @@
+[
+  {
+    "element": "Texto principal",
+    "foreground": "#edf5fa",
+    "background": "#182c3b",
+    "ratio": 13.02,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Texto secundario",
+    "foreground": "#b3c7d6",
+    "background": "#182c3b",
+    "ratio": 8.25,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Rótulos de zona",
+    "foreground": "#deebf4",
+    "background": "#18384d",
+    "ratio": 10.1,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Subtítulo de zona",
+    "foreground": "#a9c5d8",
+    "background": "#18384d",
+    "ratio": 6.82,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "ID de máquina",
+    "foreground": "#e2eef7",
+    "background": "#102638",
+    "ratio": 13.13,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Punto verde",
+    "foreground": "#092c24",
+    "background": "#66ddb0",
+    "ratio": 8.97,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Punto rojo",
+    "foreground": "#3b141a",
+    "background": "#ff8d93",
+    "ratio": 7.29,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Punto gris",
+    "foreground": "#203141",
+    "background": "#becbd6",
+    "ratio": 8.05,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Estado rojo",
+    "foreground": "#ff8d93",
+    "background": "#402c3b",
+    "ratio": 5.78,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Estado verde",
+    "foreground": "#66ddb0",
+    "background": "#193e39",
+    "ratio": 7.0,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Botón principal",
+    "foreground": "#092b3c",
+    "background": "#0cb7f2",
+    "ratio": 6.38,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Contorno de control",
+    "foreground": "#7895ab",
+    "background": "#182c3b",
+    "ratio": 4.57,
+    "minimum": 3,
+    "passes": true
+  },
+  {
+    "element": "Foco",
+    "foreground": "#80dfff",
+    "background": "#182c3b",
+    "ratio": 9.52,
+    "minimum": 3,
+    "passes": true
+  }
+]
