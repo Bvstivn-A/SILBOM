@@ -11,7 +11,7 @@ client = (static / "app/api-client.js").read_text()
 nfc_helper = (static / "app/nfc-code.js").read_text()
 copies = {
     "src/main/resources/static/Silbom1.html": panel,
-    "docs/Silbom1.html": panel.replace('./app/api-client.js', './api-client.js'),
+    "docs/Silbom1.html": panel.replace('./app/api-client.js', './api-client.js').replace('./app/supervisor-plan/', './supervisor-plan/'),
     "src/main/resources/static/silbom-tecnico.html": mobile.replace('./api-client.js', './app/api-client.js')
         .replace('./manifest.webmanifest', './app/manifest.webmanifest').replace('./icons/', './app/icons/')
         .replace('./nfc-code.js', './app/nfc-code.js'),
@@ -23,6 +23,8 @@ copies = {
     "android-app/assets/api-client.js": client,
     "android-app/assets/nfc-code.js": nfc_helper,
 }
+for asset in ('blueprint.js', 'plan.js', 'plan.css'):
+    copies['docs/supervisor-plan/' + asset] = (static / 'app/supervisor-plan' / asset).read_text()
 check = argparse.ArgumentParser()
 check.add_argument('--check', action='store_true')
 args = check.parse_args()
@@ -32,6 +34,7 @@ for path, content in copies.items():
     if not target.exists() or target.read_text() != content:
         different.append(path)
         if not args.check:
+            target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(content)
 if args.check and different:
     raise SystemExit('Copias desactualizadas: ' + ', '.join(different))
