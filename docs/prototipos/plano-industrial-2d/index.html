@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#152737">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <title>Plano industrial 2D · Prototipo SILBOM</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%23152737'/%3E%3Cpath d='M8 14h16v13H8zM12 14V9a4 4 0 018 0v5' fill='none' stroke='%230cb7f2' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="datos-demo.js"></script>
+  <script defer src="plano.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al plano</a>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand"><svg viewBox="0 0 36 40" fill="none" aria-hidden="true"><path d="M18 2 33 8v12c0 10-15 18-15 18S3 30 3 20V8L18 2Z"/><path d="M12 18v-5a6 6 0 0 1 12 0v5M9 18h18v13H9z"/><circle cx="18" cy="24" r="1.6"/></svg><strong translate="no">SILBOM</strong><span>Consola del supervisor</span></div>
+      <span class="header-context">Propuesta visual para Hito 3</span>
+    </div>
+  </header>
+  <div class="prototype-notice"><div><strong>PROTOTIPO — DATOS SIMULADOS</strong><span>Edificio ficticio. Sin conexión a la planta real.</span></div></div>
+  <main id="main" tabindex="-1">
+    <section class="page-heading" aria-labelledby="title"><div><h1 id="title">Plano industrial</h1><p>Ubica un equipo y consulta sus registros digitales de bloqueo.</p></div><button id="reset-demo" class="button" type="button"><span data-icon="reset"></span>Restablecer escenario</button></section>
+    <section class="summary" aria-label="Resumen calculado de datos simulados">
+      <div><span>Máquinas del catálogo</span><strong id="stat-total">—</strong></div>
+      <div><span><i class="dot locked" aria-hidden="true"></i>Con registros digitales</span><strong id="stat-locked">—</strong></div>
+      <div><span><i class="dot free" aria-hidden="true"></i>Sin registros de bloqueo</span><strong id="stat-free">—</strong></div>
+      <div><span>Bloqueos digitales activos</span><strong id="stat-locks">—</strong></div>
+    </section>
+    <div class="workbench">
+      <section class="plan-section" aria-labelledby="plan-heading">
+        <div class="plan-topline"><div><h2 id="plan-heading">Distribución de la instalación</h2><p>Vista superior ficticia · Sin escala · Sin certificación</p></div><div class="scenario-control"><label for="scenario">Escenario</label><select id="scenario" name="scenario"><option value="available">Datos demo disponibles</option><option value="offline">Servidor desconectado (demo)</option><option value="stale">Información desactualizada</option></select></div></div>
+        <div class="drawing-shell">
+          <div class="drawing-toolbar"><span class="drawing-label"><span data-icon="plan"></span>Edificio de demostración</span><div class="zoom-controls" role="group" aria-label="Ampliación del plano"><button id="zoom-out" class="icon-button" type="button" aria-label="Alejar plano"><span data-icon="minus"></span></button><output id="zoom-level" aria-live="polite" aria-label="Nivel de ampliación">100 %</output><button id="zoom-in" class="icon-button" type="button" aria-label="Acercar plano"><span data-icon="plus"></span></button><button id="fit-plan" class="button fit-button" type="button"><span data-icon="fit"></span>Ajustar</button></div></div>
+          <div id="plan-viewport" class="plan-viewport" aria-label="Plano esquemático. Selecciona uno de los seis puntos de maquinaria.">
+            <div id="scene" class="scene"><div id="blueprint-layer" class="blueprint-layer"></div><div id="markers" class="markers" role="group" aria-label="Máquinas del plano"></div></div>
+            <div id="machine-tooltip" class="machine-tooltip" role="tooltip" hidden><p id="tip-code" class="code" translate="no"></p><strong id="tip-name"></strong><p id="tip-area"></p><p id="tip-state"></p><p id="tip-count"></p></div>
+          </div>
+          <div class="drawing-bottom"><span>Distribución ilustrativa. Las puertas no representan rutas de evacuación.</span><div class="pan-controls" id="pan-controls" role="group" aria-label="Desplazar el plano ampliado" hidden><button class="icon-button" type="button" data-pan="left" aria-label="Ver hacia la izquierda"><span data-icon="left"></span></button><button class="icon-button" type="button" data-pan="up" aria-label="Ver hacia arriba"><span data-icon="up"></span></button><button class="icon-button" type="button" data-pan="down" aria-label="Ver hacia abajo"><span data-icon="down"></span></button><button class="icon-button" type="button" data-pan="right" aria-label="Ver hacia la derecha"><span data-icon="right"></span></button></div></div>
+        </div>
+        <div class="legend" aria-label="Leyenda de estados digitales"><span><i class="state-symbol locked" aria-hidden="true">+</i>Con registros de bloqueo</span><span><i class="state-symbol free" aria-hidden="true">−</i>Sin registros de bloqueo</span><span><i class="state-symbol unknown" aria-hidden="true">?</i>Sin verificar</span></div>
+        <p id="availability" class="availability"><span data-icon="database"></span><span id="availability-text">Datos simulados en memoria; no se consulta la API.</span></p>
+        <div class="machine-nav"><label for="machine-picker">Ir a un equipo</label><select id="machine-picker" name="machine-picker"></select><button id="clear-selection" class="button" type="button">Quitar selección</button></div>
+        <p class="map-help">Tab y Enter para seleccionar. Acerca el plano para ver el dibujo; arrastra el fondo o usa las flechas de desplazamiento cuando esté ampliado.</p>
+      </section>
+      <aside class="side-column" aria-label="Información del equipo y escenarios de demostración">
+        <section class="equipment-panel" aria-labelledby="detail-heading"><div class="section-heading"><h2 id="detail-heading">Equipo seleccionado</h2><span data-icon="location"></span></div>
+          <div id="empty-detail" class="empty-detail" hidden><span data-icon="plan"></span><h3>Explora la instalación</h3><p>Selecciona un punto del plano o un equipo de la lista para consultar sus datos simulados.</p></div>
+          <div id="detail-body" class="detail-body"><p id="detail-code" class="code" translate="no"></p><h3 id="detail-name"></h3><div id="detail-state" class="state-pill"></div><dl><div><dt>Área del catálogo</dt><dd id="detail-area"></dd></div><div><dt>Bloqueos activos</dt><dd id="detail-count"></dd></div><div><dt>MTBF de ejemplo</dt><dd id="detail-mtbf"></dd></div></dl><p class="detail-help">El estado es digital. No demuestra aislamiento físico ni autoriza una intervención.</p><button id="open-sheet" class="button button-primary" type="button"><span data-icon="file"></span>Ver ficha completa</button></div>
+        </section>
+        <section class="demo-panel" aria-labelledby="demo-heading"><h2 id="demo-heading"><span data-icon="simulation"></span>Escenarios de demostración</h2><p>Cambia solo los datos ficticios del equipo seleccionado. No crea ni libera bloqueos reales.</p><div class="demo-options" role="group" aria-label="Número simulado de bloqueos del equipo seleccionado"><button type="button" class="demo-choice" data-demo-count="0"><strong>0</strong><span>Sin registros</span></button><button type="button" class="demo-choice" data-demo-count="1"><strong>1</strong><span>Un registro</span></button><button type="button" class="demo-choice" data-demo-count="2"><strong>2</strong><span>Multi-LOTO</span></button></div><p id="demo-help" class="demo-help">Disponible únicamente en este prototipo.</p></section>
+      </aside>
+    </div>
+    <p id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">Cargando demostración…</p>
+    <footer><p><span data-icon="shield"></span>El verde solo indica ausencia de bloqueos digitales registrados; no significa que un equipo sea seguro, esté energizado o pueda arrancar.</p><span>Prototipo independiente · Sin conexión al backend</span></footer>
+    <noscript><p>Activa JavaScript para seleccionar los equipos y probar los escenarios locales. No necesitas iniciar el backend.</p></noscript>
+  </main>
+  <dialog id="sheet" aria-labelledby="sheet-heading" aria-describedby="sheet-description"><div class="sheet-heading"><div><h2 id="sheet-heading">Ficha de equipo</h2><p id="sheet-description">PROTOTIPO — DATOS SIMULADOS</p></div><button id="close-sheet" class="icon-button" type="button" aria-label="Cerrar ficha"><span data-icon="close"></span></button></div><div class="sheet-body"><p id="sheet-code" class="code" translate="no"></p><h3 id="sheet-name"></h3><div id="sheet-state" class="state-pill"></div><dl><div><dt>Área del catálogo</dt><dd id="sheet-area"></dd></div><div><dt>Bloqueos digitales activos</dt><dd id="sheet-count"></dd></div><div><dt>MTBF de ejemplo</dt><dd id="sheet-mtbf"></dd></div></dl><p class="sheet-notice">Esta ficha no proviene de PostgreSQL. Consultarla o seleccionar un punto no ejecuta operaciones LOTO. El MTBF ilustrativo no predice la próxima falla.</p><button id="back-to-plan" class="button" type="button">Volver al plano</button></div></dialog>
+</body>
+</html>
