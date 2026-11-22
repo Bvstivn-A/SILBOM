@@ -1,6 +1,6 @@
 # SILBOM Android — Lector QR nativo (junto a NFC)
 
-Versión de la app: **1.2.1 (versionCode 4)** · paquete `cl.silbom.tecnico`
+Versión de la app: **1.2.2 (versionCode 5)** · paquete `cl.silbom.tecnico`
 
 El técnico puede identificar una máquina de tres formas equivalentes:
 
@@ -107,9 +107,30 @@ adb reverse tcp:8080 tcp:8080                        # el localhost:8080 del tel
 En la app: **⚙️ Servidor** → `http://localhost:8080` → *Guardar IP y Probar Conexión*.
 Funciona mientras el cable esté conectado. Hay que repetir `adb reverse` si se reconecta el teléfono.
 
-**Opción B: por Wi-Fi con HTTPS**: Caddy en el puerto 8443 delante de Spring Boot
-(`deploy/Caddyfile.local`, `docs/PRUEBAS_MOVILES.md`), con `https://<ip-del-pc>:8443`. El
-certificado debe ser de confianza para la WebView de la app.
+**Opción B: por Wi-Fi con HTTPS (Caddy)**
+
+```bash
+sudo apt install caddy && sudo systemctl disable --now caddy    # una vez; sin servicio en :80
+java -jar target/silbom-backend-1.0.0.jar --spring.profiles.active=local-proxy   # solo 127.0.0.1
+SILBOM_TEST_HOST=<ip-del-pc> caddy run --config deploy/Caddyfile.local --adapter caddyfile
+```
+
+Caddy recibe HTTPS en `8443` con su propia CA (`tls internal`) y reenvía a `127.0.0.1:8080`.
+El `Caddyfile` no abre el puerto 80 ni instala la CA en el computador.
+
+En el teléfono, **una sola vez**:
+1. Copiar la CA **pública** (nunca `root.key`):
+   `adb push ~/.local/share/caddy/pki/authorities/local/root.crt /sdcard/Download/SILBOM-Caddy-CA.crt`
+2. *Ajustes → Seguridad y privacidad → Más ajustes de seguridad → Instalar desde el almacenamiento
+   del dispositivo → Certificado de CA* → **Instalar de todas formas** → elegir `SILBOM-Caddy-CA.crt`.
+   (Android exige tener un bloqueo de pantalla.)
+3. En SILBOM: **⚙️ Servidor** → `https://<ip-del-pc>:8443` → *Guardar IP y Probar Conexión*.
+
+Desde la versión 1.2.2 la APK confía en las CA instaladas por el usuario
+(`res/xml/network_security_config.xml`); sin ese archivo Android 7+ las ignora. Es aceptable para
+la APK de demostración. En producción convendría un certificado público o fijar solo la CA propia.
+Si cambia la IP del computador (otra red), hay que ejecutar Caddy con la nueva IP; la CA es la misma
+y no hay que reinstalarla.
 
 ## 5. Etiquetas QR
 

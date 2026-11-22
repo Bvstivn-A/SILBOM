@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Demo en red local: Caddy (deploy/Caddyfile.local) sirve HTTPS con su propia CA.
+  Se confía en el sistema y en las CA que el usuario instaló en el teléfono
+  (Ajustes > Seguridad > Instalar certificado CA). Ver docs/ANDROID_QR.md §4.
+  cleartextTrafficPermitted mantiene http://localhost (adb reverse por USB);
+  la web solo permite HTTP hacia localhost.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
