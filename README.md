@@ -3,10 +3,10 @@
 > **Una capa de auditoría digital sobre el candado que la ley ya exige.**
 > Identifica cada máquina con NFC, registra cada candado LOTO y lo muestra en vivo al supervisor.
 
-🎬 **Video del producto:** [Ver en YouTube](https://youtu.be/L9Cww6cgNoY)
-📘 **Manual de instalación y uso:** [docs/MANUAL_INSTALACION_Y_USO.md](docs/MANUAL_INSTALACION_Y_USO.md)
-📦 **App Android (APK):** [Releases del repositorio](https://github.com/Bvstivn-A/Silbom/releases)
-🕓 **Historial del Hito 1:** [github.com/Vicente-PR/SILBOM](https://github.com/Vicente-PR/SILBOM) (ver [Historial del proyecto](#historial-del-proyecto))
+**Video del producto:** [Ver en YouTube](https://youtu.be/L9Cww6cgNoY)
+**Manual de instalación y uso:** [docs/MANUAL_INSTALACION_Y_USO.md](docs/MANUAL_INSTALACION_Y_USO.md)
+**App Android (APK):** [Releases del repositorio](https://github.com/Bvstivn-A/Silbom/releases)
+**Historial del Hito 1:** [github.com/Vicente-PR/SILBOM](https://github.com/Vicente-PR/SILBOM) (ver [Historial del proyecto](#historial-del-proyecto))
 
 Proyecto semestral INGT1003 · Universidad Mayor · 2026
 
