@@ -1,0 +1,744 @@
+{
+  "browser": "Chromium",
+  "checks": [
+    {
+      "test": "test_01_catalog_and_derived_summary",
+      "status": "pass"
+    },
+    {
+      "test": "test_02_all_selections_keyboard_and_hover",
+      "status": "pass"
+    },
+    {
+      "test": "test_03_multiloto_and_reset",
+      "status": "pass"
+    },
+    {
+      "test": "test_04_offline_stale_and_restore",
+      "status": "pass"
+    },
+    {
+      "test": "test_05_local_sheet_keyboard_and_return_focus",
+      "status": "pass"
+    },
+    {
+      "test": "test_06_clear_and_switch_without_reload",
+      "status": "pass"
+    },
+    {
+      "test": "test_07_renderer_reordered_array_and_mtbf",
+      "status": "pass"
+    },
+    {
+      "test": "test_08_invalid_incomplete_duplicate_data_fail_gray",
+      "status": "pass"
+    },
+    {
+      "test": "test_09_untrusted_strings_remain_text",
+      "status": "pass"
+    },
+    {
+      "test": "test_10_responsive_geometry_and_touch_targets",
+      "status": "pass"
+    },
+    {
+      "test": "test_11_reduced_motion_and_large_text",
+      "status": "pass"
+    },
+    {
+      "test": "test_12_actual_network_offline_remains_local_demo",
+      "status": "pass"
+    },
+    {
+      "test": "test_13_hash_selects_without_simulating_and_malformed_is_safe",
+      "status": "pass"
+    },
+    {
+      "test": "test_14_screenshot_evidence",
+      "status": "pass"
+    },
+    {
+      "test": "test_15_direct_file_url",
+      "status": "skip",
+      "reason": "El navegador administrado bloquea file://; comprobar apertura directa en un navegador personal."
+    }
+  ],
+  "viewports": [
+    {
+      "width": 375,
+      "scroll": 375,
+      "map": {
+        "x": 12,
+        "y": 798.015625,
+        "right": 363,
+        "bottom": 1716.96875
+      },
+      "panel": {
+        "x": 12,
+        "y": 1840.46875
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 351,
+          "h": 44
+        },
+        {
+          "id": "scenario",
+          "w": 236,
+          "h": 44
+        },
+        {
+          "id": "show-all",
+          "w": 161.90625,
+          "h": 44
+        },
+        {
+          "id": "machine-EQ-COM-03",
+          "w": 138.5,
+          "h": 207.46875
+        },
+        {
+          "id": "machine-EQ-MEZ-01",
+          "w": 138.5,
+          "h": 207.46875
+        },
+        {
+          "id": "machine-EQ-EXT-02",
+          "w": 138.5,
+          "h": 207.46875
+        },
+        {
+          "id": "machine-EQ-PR-04",
+          "w": 138.5,
+          "h": 207.46875
+        },
+        {
+          "id": "machine-EQ-ENV-01",
+          "w": 138.5,
+          "h": 225.015625
+        },
+        {
+          "id": "machine-EQ-TR-01",
+          "w": 138.5,
+          "h": 225.015625
+        },
+        {
+          "id": "clear-selection",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "show-sheet",
+          "w": 309,
+          "h": 44
+        },
+        {
+          "id": "simulate-lock",
+          "w": 309,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scroll": 390,
+      "map": {
+        "x": 22,
+        "y": 798.015625,
+        "right": 368,
+        "bottom": 1724.96875
+      },
+      "panel": {
+        "x": 22,
+        "y": 1848.46875
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 346,
+          "h": 44
+        },
+        {
+          "id": "scenario",
+          "w": 236,
+          "h": 44
+        },
+        {
+          "id": "show-all",
+          "w": 161.90625,
+          "h": 44
+        },
+        {
+          "id": "machine-EQ-COM-03",
+          "w": 134,
+          "h": 207.46875
+        },
+        {
+          "id": "machine-EQ-MEZ-01",
+          "w": 134,
+          "h": 207.46875
+        },
+        {
+          "id": "machine-EQ-EXT-02",
+          "w": 134,
+          "h": 207.46875
+        },
+        {
+          "id": "machine-EQ-PR-04",
+          "w": 134,
+          "h": 207.46875
+        },
+        {
+          "id": "machine-EQ-ENV-01",
+          "w": 134,
+          "h": 225.015625
+        },
+        {
+          "id": "machine-EQ-TR-01",
+          "w": 134,
+          "h": 225.015625
+        },
+        {
+          "id": "clear-selection",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "show-sheet",
+          "w": 304,
+          "h": 44
+        },
+        {
+          "id": "simulate-lock",
+          "w": 304,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "scroll": 768,
+      "map": {
+        "x": 22,
+        "y": 488.328125,
+        "right": 746,
+        "bottom": 1172.765625
+      },
+      "panel": {
+        "x": 22,
+        "y": 1264.765625
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 235.078125,
+          "h": 44
+        },
+        {
+          "id": "scenario",
+          "w": 236,
+          "h": 44
+        },
+        {
+          "id": "show-all",
+          "w": 161.90625,
+          "h": 44
+        },
+        {
+          "id": "machine-EQ-COM-03",
+          "w": 199.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-MEZ-01",
+          "w": 199.328125,
+          "h": 205.96875
+        },
+        {
+          "id": "machine-EQ-EXT-02",
+          "w": 199.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-PR-04",
+          "w": 199.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-ENV-01",
+          "w": 199.328125,
+          "h": 205.96875
+        },
+        {
+          "id": "machine-EQ-TR-01",
+          "w": 199.328125,
+          "h": 205.96875
+        },
+        {
+          "id": "clear-selection",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "show-sheet",
+          "w": 329,
+          "h": 44
+        },
+        {
+          "id": "simulate-lock",
+          "w": 682,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 834,
+      "scroll": 834,
+      "map": {
+        "x": 22,
+        "y": 488.328125,
+        "right": 812,
+        "bottom": 1158.796875
+      },
+      "panel": {
+        "x": 22,
+        "y": 1250.796875
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 235.078125,
+          "h": 44
+        },
+        {
+          "id": "scenario",
+          "w": 236,
+          "h": 44
+        },
+        {
+          "id": "show-all",
+          "w": 161.90625,
+          "h": 44
+        },
+        {
+          "id": "machine-EQ-COM-03",
+          "w": 221.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-MEZ-01",
+          "w": 221.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-EXT-02",
+          "w": 221.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-PR-04",
+          "w": 221.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-ENV-01",
+          "w": 221.328125,
+          "h": 205.96875
+        },
+        {
+          "id": "machine-EQ-TR-01",
+          "w": 221.328125,
+          "h": 205.96875
+        },
+        {
+          "id": "clear-selection",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "show-sheet",
+          "w": 362,
+          "h": 44
+        },
+        {
+          "id": "simulate-lock",
+          "w": 748,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "scroll": 1024,
+      "map": {
+        "x": 32,
+        "y": 417.890625,
+        "right": 992,
+        "bottom": 1082.390625
+      },
+      "panel": {
+        "x": 32,
+        "y": 1174.390625
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 235.078125,
+          "h": 44
+        },
+        {
+          "id": "scenario",
+          "w": 236,
+          "h": 44
+        },
+        {
+          "id": "show-all",
+          "w": 161.90625,
+          "h": 44
+        },
+        {
+          "id": "machine-EQ-COM-03",
+          "w": 270,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-MEZ-01",
+          "w": 270,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-EXT-02",
+          "w": 270,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-PR-04",
+          "w": 270,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-ENV-01",
+          "w": 270,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-TR-01",
+          "w": 270,
+          "h": 192
+        },
+        {
+          "id": "clear-selection",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "show-sheet",
+          "w": 299,
+          "h": 44
+        },
+        {
+          "id": "simulate-lock",
+          "w": 249,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "scroll": 1280,
+      "map": {
+        "x": 32,
+        "y": 423.5625,
+        "right": 900,
+        "bottom": 1106.03125
+      },
+      "panel": {
+        "x": 924,
+        "y": 423.5625
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 235.078125,
+          "h": 44
+        },
+        {
+          "id": "scenario",
+          "w": 236,
+          "h": 44
+        },
+        {
+          "id": "show-all",
+          "w": 161.90625,
+          "h": 44
+        },
+        {
+          "id": "machine-EQ-COM-03",
+          "w": 239.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-MEZ-01",
+          "w": 239.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-EXT-02",
+          "w": 239.34375,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-PR-04",
+          "w": 239.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-ENV-01",
+          "w": 239.328125,
+          "h": 209.96875
+        },
+        {
+          "id": "machine-EQ-TR-01",
+          "w": 239.34375,
+          "h": 192
+        },
+        {
+          "id": "clear-selection",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "show-sheet",
+          "w": 282,
+          "h": 44
+        },
+        {
+          "id": "simulate-lock",
+          "w": 282,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "scroll": 1440,
+      "map": {
+        "x": 32,
+        "y": 427.5,
+        "right": 1060,
+        "bottom": 1092
+      },
+      "panel": {
+        "x": 1084,
+        "y": 427.5
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 235.078125,
+          "h": 44
+        },
+        {
+          "id": "scenario",
+          "w": 236,
+          "h": 44
+        },
+        {
+          "id": "show-all",
+          "w": 161.90625,
+          "h": 44
+        },
+        {
+          "id": "machine-EQ-COM-03",
+          "w": 292.65625,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-MEZ-01",
+          "w": 292.671875,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-EXT-02",
+          "w": 292.65625,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-PR-04",
+          "w": 292.65625,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-ENV-01",
+          "w": 292.671875,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-TR-01",
+          "w": 292.65625,
+          "h": 192
+        },
+        {
+          "id": "clear-selection",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "show-sheet",
+          "w": 282,
+          "h": 44
+        },
+        {
+          "id": "simulate-lock",
+          "w": 282,
+          "h": 44
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "scroll": 1920,
+      "map": {
+        "x": 202,
+        "y": 427.5,
+        "right": 1370,
+        "bottom": 1092
+      },
+      "panel": {
+        "x": 1394,
+        "y": 427.5
+      },
+      "controls": [
+        {
+          "id": "reset-demo",
+          "w": 235.078125,
+          "h": 44
+        },
+        {
+          "id": "scenario",
+          "w": 236,
+          "h": 44
+        },
+        {
+          "id": "show-all",
+          "w": 161.90625,
+          "h": 44
+        },
+        {
+          "id": "machine-EQ-COM-03",
+          "w": 339.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-MEZ-01",
+          "w": 339.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-EXT-02",
+          "w": 339.34375,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-PR-04",
+          "w": 339.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-ENV-01",
+          "w": 339.328125,
+          "h": 192
+        },
+        {
+          "id": "machine-EQ-TR-01",
+          "w": 339.34375,
+          "h": 192
+        },
+        {
+          "id": "clear-selection",
+          "w": 44,
+          "h": 44
+        },
+        {
+          "id": "show-sheet",
+          "w": 282,
+          "h": 44
+        },
+        {
+          "id": "simulate-lock",
+          "w": 282,
+          "h": 44
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:<puerto>/mapa-planta.html"
+    }
+  ],
+  "html_sha256": "5e965bc82e233c8cea0badb8223d405d9b5169001402fb0d701d79bdf3a4eb9d",
+  "direct_file": "not_verified_managed_browser_policy",
+  "tests": 15,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 1
+}

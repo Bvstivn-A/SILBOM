@@ -1,0 +1,82 @@
+[
+  {
+    "element": "Texto principal",
+    "foreground": "#eff5f9",
+    "background": "#192b39",
+    "ratio": 13.21,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Texto secundario",
+    "foreground": "#b4c3cf",
+    "background": "#192b39",
+    "ratio": 8.06,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Estado rojo en tarjeta",
+    "foreground": "#ff8d93",
+    "background": "#203644",
+    "ratio": 5.67,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Estado verde en tarjeta",
+    "foreground": "#66ddb0",
+    "background": "#203644",
+    "ratio": 7.49,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Estado gris",
+    "foreground": "#bdcbd5",
+    "background": "#203644",
+    "ratio": 7.57,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Insignia roja",
+    "foreground": "#ff8d93",
+    "background": "#402c38",
+    "ratio": 5.8,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Insignia verde",
+    "foreground": "#66ddb0",
+    "background": "#193e37",
+    "ratio": 7.02,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Botón principal",
+    "foreground": "#0d2532",
+    "background": "#0cb7f2",
+    "ratio": 6.83,
+    "minimum": 4.5,
+    "passes": true
+  },
+  {
+    "element": "Contorno de control",
+    "foreground": "#718a9c",
+    "background": "#203644",
+    "ratio": 3.48,
+    "minimum": 3,
+    "passes": true
+  },
+  {
+    "element": "Foco",
+    "foreground": "#74d9ff",
+    "background": "#203644",
+    "ratio": 7.84,
+    "minimum": 3,
+    "passes": true
+  }
+]
