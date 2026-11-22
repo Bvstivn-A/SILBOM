@@ -2490,8 +2490,11 @@
           updateNativeQrUi('Máquina encontrada: ' + machine.id + ' · ' + machine.name + '.');
         } catch (err) {
           const message = err.message || 'No se pudo verificar la máquina.';
-          setOperationStatus(message, 'error');
-          updateNativeQrUi(message);
+          // Si el QR era válido, dejar claro que la lectura funcionó y el fallo vino después.
+          const detail = window.SilbomNfcCode.isValidCode(shown)
+            ? 'QR leído: ' + shown + '. ' + message : message;
+          setOperationStatus(detail, 'error');
+          updateNativeQrUi(detail);
         } finally {
           nativeQrProcessing = false;
           updateNativeQrUi();

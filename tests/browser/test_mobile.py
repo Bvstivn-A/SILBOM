@@ -573,7 +573,7 @@ class MobileTests(unittest.TestCase):
                 self.page.evaluate('window.__qrStarts = 0')
                 self.start_qr()
                 self.page.evaluate('(c) => window.SilbomQr.onRead(c)', code)
-                expect(self.page.locator('#qr-scan-status')).to_have_text(message)
+                expect(self.page.locator('#qr-scan-status')).to_have_text(f'QR leído: {code}. {message}')
                 expect(self.page.locator('#operation-status')).to_contain_text(message)
                 expect(self.page.locator('#tech-step-2')).to_be_hidden()
                 expect(self.page.locator('#btn-start-qr')).to_be_enabled()

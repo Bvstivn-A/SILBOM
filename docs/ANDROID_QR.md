@@ -1,6 +1,6 @@
 # SILBOM Android — Lector QR nativo (junto a NFC)
 
-Versión de la app: **1.2.0 (versionCode 3)** · paquete `cl.silbom.tecnico`
+Versión de la app: **1.2.1 (versionCode 4)** · paquete `cl.silbom.tecnico`
 
 El técnico puede identificar una máquina de tres formas equivalentes:
 
@@ -84,16 +84,32 @@ servidor (no se usan datos simulados).
 3. Mensaje: «Apunta la cámara al código QR de la máquina». Encuadrar el QR (15–30 cm).
 4. Al reconocerlo: «Código detectado: EQ-COM-03. Verificando máquina con SILBOM…».
 5. Si el servidor confirma: «Máquina encontrada: EQ-COM-03 · Compresor de Tornillo» y se abre la ficha.
-6. Continuar la intervención LOTO como siempre.
+6. Si falla después de leer, el mensaje lo indica: «QR leído: EQ-COM-03. No se pudo conectar con el servidor.».
+7. Continuar la intervención LOTO como siempre.
 
 Para salir sin escanear: botón **Cancelar y volver a SILBOM** o la tecla Atrás.
 Si se negó el permiso: *Ajustes → Aplicaciones → SILBOM Técnico → Permisos → Cámara*.
 
 ## 4. Configurar el servidor
 
-Igual que con NFC: en la app, **Configurar servidor** → origen del backend Spring Boot
-(por ejemplo `https://<host>` o, solo en laboratorio, `http://<ip-del-pc>:8080`) → *Probar conexión*.
-Ver `docs/ANDROID_NFC_PRUEBAS.md` y `docs/MANUAL_INSTALACION_Y_USO.md`.
+La app solo acepta **HTTPS**, o **HTTP en `localhost`** (regla de seguridad previa de SILBOM,
+para no enviar credenciales sin cifrar por el Wi-Fi). Una dirección `http://192.168.x.x:8080`
+se rechaza con «Usa HTTPS para conectar desde el teléfono». Usar `https://…:8080` tampoco
+funciona: Spring Boot atiende HTTP en el 8080.
+
+**Opción A: por cable USB (la más simple para probar y para la demo)**
+
+```bash
+java -jar target/silbom-backend-1.0.0.jar            # backend en el computador
+adb reverse tcp:8080 tcp:8080                        # el localhost:8080 del teléfono = el del PC
+```
+
+En la app: **⚙️ Servidor** → `http://localhost:8080` → *Guardar IP y Probar Conexión*.
+Funciona mientras el cable esté conectado. Hay que repetir `adb reverse` si se reconecta el teléfono.
+
+**Opción B: por Wi-Fi con HTTPS**: Caddy en el puerto 8443 delante de Spring Boot
+(`deploy/Caddyfile.local`, `docs/PRUEBAS_MOVILES.md`), con `https://<ip-del-pc>:8443`. El
+certificado debe ser de confianza para la WebView de la app.
 
 ## 5. Etiquetas QR
 
