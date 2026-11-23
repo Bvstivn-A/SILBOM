@@ -43,6 +43,7 @@ SILBOM tiene tres partes:
 
 ---
 
+
 ## Instalación y uso
 
 📘 **Manual completo:** [docs/MANUAL_INSTALACION_Y_USO.md](docs/MANUAL_INSTALACION_Y_USO.md). Incluye requisitos, pasos para Windows, macOS y Linux, datos de prueba, uso, app Android y fallas frecuentes.
