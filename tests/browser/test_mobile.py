@@ -227,6 +227,7 @@ class MobileTests(unittest.TestCase):
         self.state.demo_two_accounts=True
         self.page.goto(self.origin+'/index.html',wait_until='networkidle')
         self.assertTrue(self.page.evaluate('(s)=>performLogin("supervisor-test",s)',secrets.token_urlsafe(24)))
+        expect(self.page.locator('#role-interface-link')).to_be_hidden()
         self.page.evaluate('openTechManagementModal()')
         expect(self.page.locator('#supervisor-create-tech-form')).to_be_hidden()
         expect(self.page.locator('#supervisor-tech-table-body button').first).to_be_disabled()
