@@ -278,7 +278,7 @@ Para probar con un celular real y etiquetas NFC:
    - Windows: `ipconfig` (línea «Dirección IPv4»)
    - macOS: `ipconfig getifaddr en0`
    - Linux: `hostname -I`
-2. Instala la app: descarga `silbom-tecnico.apk` de la versión **[v0.9.1-beta](https://github.com/Bvstivn-A/Silbom/releases/tag/v0.9.1-beta)**, ábrelo en el celular y permite instalar apps de «orígenes desconocidos». Las versiones v0.10.x (con QR) necesitan HTTPS y un certificado instalado en el celular ([Pruebas móviles con HTTPS y QR](PRUEBAS_MOVILES.md)); no funcionan con estos pasos.
+2. Instala la app: descarga `silbom-tecnico.apk` de la versión **[v1.0.0](https://github.com/Bvstivn-A/Silbom/releases/tag/v1.0.0)**, ábrelo en el celular y permite instalar apps de «orígenes desconocidos». Las versiones v0.10.x (con QR) necesitan HTTPS y un certificado instalado en el celular ([Pruebas móviles con HTTPS y QR](PRUEBAS_MOVILES.md)); no funcionan con estos pasos.
 3. Revisa que el `.env` del PC tenga la línea `SILBOM_CORS_ORIGINS` del Paso 4 y que el firewall permita el puerto 8080 (ver [Fallas frecuentes](#6-fallas-frecuentes)).
 4. En la app, toca **⚙️ IP** (Conectar a IP del Servidor), escribe `http://IP-DEL-PC:8080` (por ejemplo `http://192.168.1.20:8080`) y toca **Guardar IP y Probar Conexión**. Debe aparecer **🟢 API Conectada**. Luego inicia sesión con `tecnico`.
 5. Escribe las etiquetas con la app gratuita **NFC Tools**: *Escribir → Añadir registro → Texto*, con **un solo registro** por etiqueta:
@@ -289,7 +289,7 @@ Para probar con un celular real y etiquetas NFC:
    | `EQ-COM-03` | Compresor de Tornillo |
    | `EQ-ENV-01` | Envasadora Rotativa Automática |
 
-6. Activa NFC en el celular, abre la app y acerca la etiqueta a la parte trasera del teléfono (en la v0.9.1-beta el NFC queda activo al abrir la app; en versiones nuevas primero toca **Escanear etiqueta NFC**). Si aparece la pantalla de Android «Nueva etiqueta escaneada», la app no estaba abierta en primer plano.
+6. Activa NFC en el celular, abre la app y acerca la etiqueta a la parte trasera del teléfono (en la v1.0.0 el NFC queda activo apenas se abre la app). Si aparece la pantalla de Android «Nueva etiqueta escaneada», la app no estaba abierta en primer plano.
 7. Toca **Activar Bloqueo LOTO**. Debe aparecer **«¡BLOQUEO LOTO #… REGISTRADO!»** y la máquina se pone roja en la consola del supervisor.
 
 ¿No tienes Android ni etiquetas? Desde el navegador de cualquier celular (también iPhone) entra a `http://IP-DEL-PC:8080/app/` y elige la máquina manualmente.
