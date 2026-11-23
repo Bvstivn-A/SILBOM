@@ -1929,13 +1929,13 @@
         anchor.parentElement.appendChild(link);
       }
       if (link) {
-        link.hidden = !session?.rol;
-        if (session?.rol) {
-          const url = new URL(session.rol === 'TECNICO' ? '/app/' : '/index.html',
-            AppState.serverOrigin || location.origin);
-          if (session.rol === 'TECNICO' && AppState.selectedMachineId) url.searchParams.set('maquina', AppState.selectedMachineId);
+        // Solo el técnico recibe un enlace a la interfaz técnica; el supervisor no ve enlace.
+        link.hidden = session?.rol !== 'TECNICO';
+        if (session?.rol === 'TECNICO') {
+          const url = new URL('/app/', AppState.serverOrigin || location.origin);
+          if (AppState.selectedMachineId) url.searchParams.set('maquina', AppState.selectedMachineId);
           link.href = url.href;
-          link.textContent = session.rol === 'TECNICO' ? 'Abrir interfaz técnica' : 'Abrir consola de supervisión';
+          link.textContent = 'Abrir interfaz técnica';
           link.title = 'La otra vista solicita iniciar sesión de nuevo; no se transfieren credenciales.';
         }
       }
