@@ -1830,6 +1830,7 @@
       if (link) {
         // Solo el técnico recibe un enlace a la interfaz técnica; el supervisor no ve enlace.
         link.hidden = session?.rol !== 'TECNICO';
+        link.style.display = link.hidden ? 'none' : 'inline-block'; // el estilo en línea anula [hidden]
         if (session?.rol === 'TECNICO') {
           const url = new URL('/app/', AppState.serverOrigin || location.origin);
           if (AppState.selectedMachineId) url.searchParams.set('maquina', AppState.selectedMachineId);
