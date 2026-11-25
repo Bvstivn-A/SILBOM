@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#17232e">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; font-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2317232e'/%3E%3Cpath d='M9 14h14v12H9zM12 14V9a4 4 0 018 0v5' fill='none' stroke='%230cb7f2' stroke-width='2'/%3E%3C/svg%3E">
+  <title>Mapa de planta · Prototipo SILBOM</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111c27;
+      --surface: #192b39;
+      --surface-raised: #203443;
+      --surface-soft: #142531;
+      --header: #17232e;
+      --ink: #eff5f9;
+      --muted: #b4c3cf;
+      --quiet: #93a9bb;
+      --border: #40596b;
+      --control-border: #718a9c;
+      --blue: #0cb7f2;
+      --blue-soft: #173e54;
+      --red: #ff8d93;
+      --red-bg: #402c38;
+      --green: #66ddb0;
+      --green-bg: #193e37;
+      --gray: #bdcbd5;
+      --gray-bg: #2b3c49;
+      --amber: #f6cd7c;
+      --amber-bg: #3b3528;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: 24px; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+    button, select { font: inherit; }
+    button, a, select { touch-action: manipulation; -webkit-tap-highlight-color: #0cb7f233; }
+    button { cursor: pointer; }
+    button:disabled { cursor: not-allowed; opacity: .55; }
+    :where(button, a, select, [tabindex]):focus-visible { outline: 3px solid #74d9ff; outline-offset: 4px; }
+    :where(button, a, select, [tabindex]) { scroll-margin-block: 24px; }
+    [hidden] { display: none !important; }
+    ::selection { color: #10232f; background: #9ae2fa; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { text-wrap: balance; }
+    h1 { font-size: clamp(26px, 2.4vw, 34px); line-height: 1.2; letter-spacing: -.025em; }
+    h2 { font-size: 19px; line-height: 1.35; letter-spacing: -.015em; }
+    h3 { font-size: 16px; }
+    a { color: #74d9ff; text-underline-offset: 4px; }
+    .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; vertical-align: middle; }
+    .skip { position: fixed; left: 16px; top: -90px; z-index: 20; background: var(--blue-soft); color: white; padding: 12px 18px; border-radius: 8px; }
+    .skip:focus { top: 14px; }
+    .topbar { background: var(--header); border-bottom: 1px solid var(--border); }
+    .topbar-inner { max-width: 1580px; margin: auto; padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark { color: var(--blue); width: 37px; height: 39px; }
+    .brand strong { font-size: 24px; font-weight: 800; letter-spacing: 1px; line-height: 1; }
+    .brand-context { border-left: 1px solid var(--border); margin-left: 10px; padding-left: 22px; color: var(--muted); font-size: 14px; }
+    .review-label { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 13px; }
+    .review-label .icon { color: var(--blue); }
+    .demo-notice { background: #29322f; border-bottom: 1px solid #60634d; color: #f4dfaa; }
+    .demo-notice-inner { max-width: 1580px; margin: auto; padding: 10px 32px; display: flex; flex-wrap: wrap; align-items: center; gap: 7px 12px; font-size: 13px; }
+    .demo-tag { background: #f6cd7c; color: #242c30; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: 800; letter-spacing: .5px; }
+    .demo-notice-inner .scope { margin-left: auto; color: #e5d7b5; }
+    main { max-width: 1580px; margin: auto; padding: 28px 32px 24px; }
+    .page-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; margin-bottom: 24px; }
+    .page-heading p { margin-top: 8px; max-width: 72ch; color: var(--muted); font-size: 14px; }
+    .button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border: 1px solid var(--control-border); border-radius: 9px; color: var(--ink); background: var(--surface); font-size: 14px; font-weight: 650; transition: background-color 150ms, border-color 150ms; }
+    .button:hover:not(:disabled) { background: #2a4355; border-color: #91b0c5; }
+    .button-primary { color: #0d2532; background: var(--blue); border-color: var(--blue); }
+    .button-primary:hover:not(:disabled) { color: #0d2532; background: #61d5fd; border-color: #61d5fd; }
+    .button-quiet { background: transparent; }
+    .button-block { width: 100%; }
+    .summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 22px; }
+    .summary article { padding: 17px 22px; border-left: 1px solid var(--border); }
+    .summary article:first-child { border: 0; }
+    .summary-label { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+    .summary-value { display: flex; align-items: baseline; gap: 10px; margin-top: 8px; font-size: 30px; line-height: 1.2; font-weight: 750; font-variant-numeric: tabular-nums; }
+    .summary-value.red { color: var(--red); }
+    .summary-value.green { color: var(--green); }
+    .summary-value span { font-size: 13px; color: var(--muted); font-weight: 400; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 16px; }
+    .toolbar-note { color: var(--muted); font-size: 13px; margin-top: 3px; }
+    .scenario { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .scenario label { font-size: 13px; color: var(--muted); }
+    select { min-height: 44px; max-width: 100%; padding: 8px 32px 8px 11px; background: var(--surface); color: var(--ink); border: 1px solid var(--control-border); border-radius: 9px; font-size: 16px; }
+    .workbench { display: grid; grid-template-columns: minmax(0, 1fr) 324px; gap: 24px; align-items: start; }
+    .map-column, .detail-panel { min-width: 0; }
+    .plant { position: relative; border: 2px solid #637d90; background: var(--surface-soft); border-radius: 15px; padding: 20px; overflow: hidden; }
+    .plant::before { content: ""; position: absolute; inset: 6px; border: 1px solid #40596b; border-radius: 9px; pointer-events: none; }
+    .plant-header { display: flex; justify-content: space-between; gap: 14px; align-items: center; padding: 0 4px 15px; font-size: 13px; color: var(--muted); }
+    .plant-header strong { color: #d9e5ee; font-weight: 600; }
+    .floor { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 26px; }
+    .zone { position: relative; min-width: 0; padding: 12px 8px 8px; background: #1a2d3a; border: 1px solid #40596b; border-radius: 7px; }
+    .zone-label { color: var(--muted); font-size: 13px; margin: 0 4px 12px; display: flex; align-items: center; gap: 7px; }
+    .zone-mark { width: 6px; height: 6px; background: #8da2b1; border-radius: 1px; flex: none; }
+    .machine { position: relative; width: 100%; min-height: 192px; padding: 12px; display: flex; flex-direction: column; align-items: stretch; text-align: left; color: var(--ink); background: #203644; border: 1px solid #718a9c; border-radius: 10px; transition: transform 150ms, border-color 150ms, background-color 150ms, box-shadow 150ms; }
+    .machine:hover { transform: translateY(-2px); border-color: #a4c6dc; box-shadow: 0 6px 14px #00000033; background: #294452; }
+    .machine[aria-pressed="true"] { border-color: var(--blue); box-shadow: inset 0 0 0 1px var(--blue); background: #173c50; }
+    .machine-topline { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+    .machine-code { font-size: 13px; font-weight: 650; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: .1px; }
+    .machine-count { display: inline-flex; align-items: center; justify-content: center; min-width: 27px; min-height: 25px; padding: 2px 6px; border-radius: 6px; background: var(--gray-bg); color: var(--gray); font-size: 13px; font-weight: 750; }
+    .asset-symbol { width: 100%; height: 76px; margin: 9px 0; color: #9ab6c9; fill: #294552; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .machine[aria-pressed="true"] .asset-symbol { color: #7ed7f5; fill: #224c60; }
+    .machine-name { font-size: 14px; font-weight: 650; line-height: 1.35; overflow-wrap: anywhere; margin-bottom: 11px; }
+    .machine-status { display: flex; align-items: flex-start; gap: 6px; margin-top: auto; font-size: 12px; line-height: 1.35; font-weight: 600; }
+    .machine-status .icon { width: 15px; height: 15px; }
+    .machine[data-state="locked"] .machine-status { color: var(--red); }
+    .machine[data-state="locked"] .machine-count { color: var(--red); background: var(--red-bg); }
+    .machine[data-state="free"] .machine-status { color: var(--green); }
+    .machine[data-state="free"] .machine-count { color: var(--green); background: var(--green-bg); }
+    .machine[data-state="unknown"] .asset-symbol { color: #8b9daa; fill: #2a3b46; }
+    .machine[data-state="unknown"] .machine-status { color: var(--gray); }
+    .aisle { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; min-height: 62px; gap: 14px; color: #b5c7d4; font-size: 12px; }
+    .aisle::before, .aisle::after { content: ""; flex: 1; border-top: 1px dashed #6c8394; }
+    .aisle .icon { width: 18px; height: 18px; color: #8da2b1; }
+    .plant-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 15px 4px 0; color: var(--muted); font-size: 12px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px 20px; margin-top: 16px; color: var(--muted); font-size: 13px; }
+    .legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .legend .icon { width: 17px; height: 17px; }
+    .red-icon { color: var(--red); }.green-icon { color: var(--green); }.gray-icon { color: var(--gray); }
+    .detail-panel { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+    .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 17px 20px; border-bottom: 1px solid var(--border); }
+    .panel-heading h2 { font-size: 15px; font-weight: 600; color: var(--muted); }
+    .icon-button { width: 44px; height: 44px; flex: none; border: 1px solid var(--control-border); border-radius: 9px; background: transparent; color: var(--ink); display: grid; place-items: center; }
+    .icon-button:hover { background: var(--surface-raised); }
+    .panel-body { padding: 22px 20px; }
+    .panel-code { color: #74d9ff; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 14px; font-weight: 650; margin-bottom: 8px; }
+    .panel-name { font-size: 25px; line-height: 1.2; letter-spacing: -.025em; overflow-wrap: anywhere; }
+    .pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid #7a8d9b; color: var(--gray); background: var(--gray-bg); padding: 8px 10px; border-radius: 7px; font-size: 13px; font-weight: 650; margin-top: 16px; }
+    .pill .icon { width: 17px; height: 17px; }
+    .pill[data-state="locked"] { background: var(--red-bg); color: var(--red); border-color: #b36d79; }
+    .pill[data-state="free"] { background: var(--green-bg); color: var(--green); border-color: #4c9c85; }
+    dl { margin: 23px 0; }
+    .datum { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; border-top: 1px solid var(--border); padding: 13px 0; font-size: 14px; }
+    dt { color: var(--muted); max-width: 45%; }
+    dd { margin: 0; text-align: right; font-weight: 550; max-width: 60%; overflow-wrap: anywhere; }
+    .mtbf-value { font-variant-numeric: tabular-nums; }
+    .small-note { font-size: 12px; color: var(--muted); margin: -10px 0 20px; line-height: 1.5; }
+    .simulator { padding: 18px 20px; background: var(--surface-soft); border-top: 1px solid var(--border); }
+    .simulator h3 { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-size: 14px; }
+    .simulator h3 .icon { color: var(--blue); }
+    .simulator p { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+    .empty-panel { padding: 36px 22px; text-align: center; }
+    .empty-panel .icon { width: 42px; height: 42px; color: var(--blue); margin-bottom: 18px; }
+    .empty-panel h3 { margin-bottom: 9px; }
+    .empty-panel p { color: var(--muted); font-size: 14px; }
+    .availability { display: flex; align-items: center; gap: 8px; margin-top: 13px; font-size: 13px; color: var(--muted); }
+    .availability .icon { color: var(--blue); width: 17px; height: 17px; }
+    .availability[data-available="false"] .icon { color: var(--gray); }
+    .feedback { color: var(--muted); font-size: 13px; margin-top: 16px; padding: 12px 16px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-soft); min-height: 44px; }
+    .feedback strong { color: var(--ink); }
+    .page-footer { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+    .safety-note { display: flex; gap: 9px; align-items: flex-start; max-width: 76ch; }
+    .safety-note .icon { color: #a4bbcc; width: 17px; height: 17px; }
+    dialog { color: var(--ink); background: var(--surface); padding: 0; border: 1px solid var(--control-border); border-radius: 16px; width: min(590px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain; box-shadow: 0 20px 60px #00000066; }
+    dialog::backdrop { background: #07131ecc; }
+    .sheet-head { padding: 22px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+    .sheet-head p { color: var(--muted); font-size: 13px; margin-top: 6px; }
+    .sheet-body { padding: 24px; }
+    .sheet-title { font-size: 27px; line-height: 1.25; margin: 6px 0 0; overflow-wrap: anywhere; }
+    .sheet-notice { background: var(--amber-bg); color: #f5dbac; border: 1px solid #8d7953; padding: 14px; border-radius: 8px; font-size: 13px; }
+    .sheet-actions { display: flex; justify-content: flex-end; margin-top: 22px; }
+    @media (min-width: 1201px) { .detail-panel { position: sticky; top: 24px; } }
+    @media (max-width: 1200px) {
+      .workbench { grid-template-columns: 1fr; }
+      .detail-panel { display: grid; grid-template-columns: 1fr 290px; }
+      .panel-heading { grid-column: 1 / -1; }
+      .panel-body { display: grid; grid-template-columns: minmax(170px, 1fr) minmax(200px, 1fr); gap: 0 30px; align-items: start; }
+      .panel-identity { grid-row: span 2; }
+      .panel-body dl { margin: 0 0 12px; }
+      .panel-body .small-note { grid-column: 2; margin: 0 0 16px; }
+      .panel-body > .button { grid-column: 2; }
+      .simulator { border-top: 0; border-left: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; }
+      .empty-panel { grid-column: 1 / -1; }
+    }
+    @media (max-width: 900px) {
+      .topbar-inner, .demo-notice-inner { padding-left: 22px; padding-right: 22px; }
+      main { padding: 24px 22px; }
+      .summary article { padding: 15px 16px; }
+      .summary-label { align-items: flex-start; }
+      .floor { gap: 0 18px; }
+      .plant { padding: 16px; }
+      .machine { padding: 10px; }
+      .detail-panel { display: block; }
+      .simulator { display: block; border-left: 0; border-top: 1px solid var(--border); }
+      .panel-body { gap: 0 24px; }
+      .review-label span { display: none; }
+    }
+    @media (max-width: 660px) {
+      .topbar-inner { padding-top: max(15px, env(safe-area-inset-top)); padding-bottom: 15px; }
+      .brand-context { display: none; }
+      .page-heading { align-items: flex-start; flex-wrap: wrap; gap: 15px; }
+      .page-heading .button { width: 100%; }
+      .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .summary article:nth-child(3) { border-left: 0; border-top: 1px solid var(--border); }
+      .summary article:nth-child(4) { border-top: 1px solid var(--border); }
+      .summary-value { font-size: 28px; }
+      .toolbar { align-items: flex-start; }
+      .scenario { width: 100%; justify-content: space-between; }
+      .floor { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+      .aisle { grid-column: auto; display: none; }
+      .zone-label { font-size: 12px; margin-bottom: 9px; gap: 5px; }
+      .zone { padding: 10px 6px 6px; }
+      .machine { min-height: 205px; padding: 9px; }
+      .machine-code { font-size: 12px; }
+      .machine-count { min-width: 23px; font-size: 12px; }
+      .machine-name { font-size: 13px; }
+      .asset-symbol { height: 66px; }
+      .plant-header { font-size: 12px; }
+      .plant-header span { max-width: 42%; text-align: right; }
+      .plant-footer .wide-label { display: none; }
+      .demo-notice-inner .scope { margin-left: 0; }
+      .plant { padding: 14px; }
+      .plant::before { inset: 5px; }
+      .panel-body { display: block; }
+      .panel-body dl { margin-top: 22px; }
+      .panel-body .small-note { margin: 0 0 18px; }
+      .page-footer { padding-bottom: env(safe-area-inset-bottom); }
+    }
+    @media (max-width: 380px) {
+      .topbar-inner, .demo-notice-inner { padding-left: 14px; padding-right: 14px; }
+      main { padding-left: 12px; padding-right: 12px; }
+      .floor { gap: 14px; }
+      .machine-topline { flex-wrap: wrap; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+      .machine:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al mapa de planta</a>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 36 40" fill="none" aria-hidden="true"><path d="M18 2 33 8v12c0 10-15 18-15 18S3 30 3 20V8L18 2Z" stroke="currentColor" stroke-width="1.8"/><path d="M12 18v-5a6 6 0 0 1 12 0v5M9 18h18v13H9z" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="24" r="1.8" fill="currentColor"/></svg>
+        <strong translate="no">SILBOM</strong>
+        <span class="brand-context">Prototipo de supervisión</span>
+      </div>
+      <div class="review-label"><span>Propuesta para Hito 3</span><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></div>
+    </div>
+  </header>
+  <div class="demo-notice">
+    <div class="demo-notice-inner">
+      <strong class="demo-tag">DEMO</strong>
+      <span>Datos y distribución ficticios. Ninguna acción opera sobre una planta real.</span>
+      <span class="scope">Solo en este navegador</span>
+    </div>
+  </div>
+  <main id="main" tabindex="-1">
+    <div class="page-heading">
+      <div><h1>Mapa de planta</h1><p>Selecciona un equipo para consultar sus registros digitales de bloqueo.</p></div>
+      <button class="button button-quiet" id="reset-demo" type="button"><span data-icon="reset"></span>Restablecer demostración</button>
+    </div>
+    <section class="summary" aria-label="Resumen de registros digitales de demostración">
+      <article><div class="summary-label"><span data-icon="machine"></span>Máquinas del catálogo</div><div class="summary-value" id="total-machines">—</div></article>
+      <article><div class="summary-label"><span data-icon="lock" class="red-icon"></span>Con bloqueos digitales</div><div class="summary-value red" id="locked-machines">—</div></article>
+      <article><div class="summary-label"><span data-icon="zero" class="green-icon"></span>Sin bloqueos registrados</div><div class="summary-value green" id="free-machines">—</div></article>
+      <article><div class="summary-label"><span data-icon="stack"></span>Bloqueos digitales activos</div><div class="summary-value" id="total-locks">—</div></article>
+    </section>
+    <div class="toolbar">
+      <div><h2 id="map-title" tabindex="-1">Distribución de equipos</h2><p class="toolbar-note">Vista superior · Selección con clic, toque o teclado</p></div>
+      <div class="scenario"><label for="scenario">Escenario demo</label><select id="scenario" name="scenario"><option value="available">Datos demo disponibles</option><option value="offline">Desconexión simulada</option><option value="stale">Datos desactualizados</option></select><button class="button button-quiet" id="show-all" type="button"><span data-icon="overview"></span>Mapa completo</button></div>
+    </div>
+    <div class="workbench">
+      <section class="map-column" aria-labelledby="map-title">
+        <div class="plant">
+          <div class="plant-header"><strong>Planta de demostración</strong><span>Distribución ficticia, no a escala</span></div>
+          <div class="floor" id="floor" role="group" aria-label="Seis posiciones ilustrativas de maquinaria"></div>
+          <div class="plant-footer"><span>Perímetro ilustrativo</span><span class="wide-label">Pasillos esquemáticos · Sin dimensiones reales</span></div>
+        </div>
+        <div class="legend" aria-label="Leyenda de estados digitales">
+          <span><span data-icon="lock" class="red-icon"></span>Con bloqueos digitales</span>
+          <span><span data-icon="zero" class="green-icon"></span>Sin bloqueos registrados</span>
+          <span><span data-icon="unknown" class="gray-icon"></span>Sin verificar</span>
+        </div>
+        <p class="availability" id="availability" data-available="true"><span data-icon="database"></span><span id="availability-text">Datos DEMO en memoria. No se consulta la API.</span></p>
+      </section>
+      <aside class="detail-panel" id="detail-panel" aria-labelledby="panel-heading">
+        <div class="panel-heading"><h2 id="panel-heading">Equipo seleccionado</h2><button class="icon-button" id="clear-selection" type="button" aria-label="Quitar selección y volver al mapa completo"><span data-icon="close"></span></button></div>
+        <div class="empty-panel" id="empty-panel" hidden><span data-icon="overview"></span><h3>Explora los seis equipos</h3><p>Selecciona una posición del mapa para ver su área, contador digital y MTBF de demostración.</p></div>
+        <div class="panel-body" id="panel-body">
+          <div class="panel-identity"><p class="panel-code" id="panel-code" translate="no"></p><h3 class="panel-name" id="panel-name"></h3><div class="pill" id="panel-status"></div></div>
+          <dl><div class="datum"><dt>Área</dt><dd id="panel-area"></dd></div><div class="datum"><dt>Bloqueos activos</dt><dd id="panel-count"></dd></div><div class="datum"><dt>MTBF</dt><dd id="panel-mtbf" class="mtbf-value"></dd></div></dl>
+          <p class="small-note">MTBF de ejemplo. No predice la próxima falla ni mide seguridad física.</p>
+          <button class="button button-primary button-block" id="show-sheet" type="button"><span data-icon="file"></span>Ver ficha completa</button>
+        </div>
+        <div class="simulator" id="simulator"><h3><span data-icon="simulation"></span>Simulación local</h3><p id="simulation-help">Añade un registro ficticio al equipo seleccionado. No instala un candado.</p><button class="button button-block" id="simulate-lock" type="button"><span data-icon="plus"></span>Simular bloqueo</button></div>
+      </aside>
+    </div>
+    <p class="feedback" id="feedback" role="status" aria-live="polite" aria-atomic="true">Seleccionada la envasadora de demostración. Sus dos registros ilustran Multi-LOTO.</p>
+    <footer class="page-footer"><p class="safety-note"><span data-icon="shield"></span>Los registros digitales no verifican aislamiento físico ni energía cero. El verde solo indica ausencia de bloqueos digitales registrados.</p><span>Prototipo independiente · Sin conexión al backend</span></footer>
+  </main>
+  <dialog id="sheet" aria-labelledby="sheet-heading" aria-describedby="sheet-description">
+    <div class="sheet-head"><div><h2 id="sheet-heading">Ficha de equipo</h2><p id="sheet-description">Detalle del catálogo de demostración.</p></div><button class="icon-button" id="close-sheet" type="button" aria-label="Cerrar ficha"><span data-icon="close"></span></button></div>
+    <div class="sheet-body"><p class="panel-code" id="sheet-code" translate="no"></p><h3 class="sheet-title" id="sheet-name"></h3><div class="pill" id="sheet-status"></div><dl><div class="datum"><dt>Identificador</dt><dd id="sheet-id" translate="no"></dd></div><div class="datum"><dt>Área</dt><dd id="sheet-area"></dd></div><div class="datum"><dt>Bloqueos digitales</dt><dd id="sheet-count"></dd></div><div class="datum"><dt>MTBF de ejemplo</dt><dd id="sheet-mtbf"></dd></div></dl><p class="sheet-notice">Ficha DEMO. Estos valores se conservan solo en memoria y no proceden de PostgreSQL. Abrir esta ficha no inicia ni libera un bloqueo.</p><div class="sheet-actions"><button class="button" id="back-to-map" type="button">Volver al mapa</button></div></div>
+  </dialog>
+  <noscript>Activa JavaScript para explorar este mapa de demostración. No se conecta a sistemas reales.</noscript>
+  <script>
+    (() => {
+      'use strict';
+      const $ = id => document.getElementById(id);
+      const ICONS = {
+        lock: 'M5 10h14v11H5zM8 10V6a4 4 0 0 1 8 0v4m-4 5v2',
+        zero: 'M9 12h6M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
+        unknown: 'M9.5 8a2.5 2.5 0 0 1 5 .5c0 2-2.5 2-2.5 4m0 4h.01M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0',
+        machine: 'M3 20V9l6 3V6l6 3V4h6v16H3zm4-4h1m4 0h1m4 0h1',
+        stack: 'm12 2 10 5-10 5L2 7l10-5ZM2 12l10 5 10-5M2 17l10 5 10-5',
+        overview: 'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5M8 8h8v8H8z',
+        close: 'm6 6 12 12M6 18 18 6',
+        reset: 'M3 10a9 9 0 1 1 2 8M3 4v6h6',
+        plus: 'M12 5v14M5 12h14',
+        file: 'M14 2H5v20h14V7l-5-5Zm0 0v5h5M8 12h8m-8 4h8',
+        shield: 'm12 2 9 4v6c0 6-9 10-9 10S3 18 3 12V6l9-4Zm0 5v6m0 4h.01',
+        database: 'M20 6c0 2-4 4-8 4S4 8 4 6s4-4 8-4 8 2 8 4Zm0 0v12c0 2-4 4-8 4s-8-2-8-4V6m0 6c0 2 4 4 8 4s8-2 8-4',
+        simulation: 'm7 3 10 0m-8 0v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3L15 9V3M7 15h10',
+        aisle: 'M3 8h18M3 16h18m-16-4h3m4 0h3m4 0h2'
+      };
+      function icon(name) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('class', 'icon');
+        svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('focusable', 'false');
+        const path = document.createElementNS(svg.namespaceURI, 'path');
+        path.setAttribute('d', ICONS[name] || ICONS.unknown); svg.append(path); return svg;
+      }
+      document.querySelectorAll('[data-icon]').forEach(node => node.replaceChildren(icon(node.dataset.icon)));
+
+      // Nombres y áreas del catálogo actual; posiciones, estados y MTBF ilustrativos.
+      const CATALOG = [
+        { id: 'EQ-COM-03', nombre: 'Compresor de Tornillo', area: 'Sala de Máquinas', zone: 'Servicios', shape: 'compressor', mtbf: 718.5, bloqueosActivos: 0 },
+        { id: 'EQ-MEZ-01', nombre: 'Mezclador Industrial de Cinta', area: 'Área de Preparación', zone: 'Preparación', shape: 'mixer', mtbf: 715, bloqueosActivos: 0 },
+        { id: 'EQ-EXT-02', nombre: 'Extrusora de Polímeros', area: 'Área de Moldeo', zone: 'Moldeo', shape: 'extruder', mtbf: 171.3, bloqueosActivos: 0 },
+        { id: 'EQ-PR-04', nombre: 'Prensa Hidráulica 200T', area: 'Área de Estampado', zone: 'Estampado', shape: 'press', mtbf: 356, bloqueosActivos: 1 },
+        { id: 'EQ-ENV-01', nombre: 'Envasadora Rotativa Automática', area: 'Línea de Envasado 1', zone: 'Envasado', shape: 'filler', mtbf: 233.8, bloqueosActivos: 2 },
+        { id: 'EQ-TR-01', nombre: 'Cinta Transportadora Principal', area: 'Logística y Despacho', zone: 'Despacho', shape: 'conveyor', mtbf: null, bloqueosActivos: 0 }
+      ];
+      const seed = () => CATALOG.map(({ id, nombre, area, mtbf, bloqueosActivos }) => ({ id, nombre, area, mtbf, bloqueosActivos, bloqueada: bloqueosActivos > 0 }));
+      const numbers = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 1 });
+      let rows = seed(), selected = 'EQ-ENV-01', scenario = 'available';
+      let lastTrigger = null;
+      const nodes = new Map();
+      let view = [];
+
+      function machineSymbol(shape) {
+        const drawings = {
+          compressor: '<rect x="30" y="20" width="120" height="60" rx="7"/><path d="M40 20v60m100-60v60M53 28v44m8-44v44m8-44v44m8-44v44"/><circle cx="109" cy="50" r="18"/><circle cx="109" cy="50" r="8"/><path d="M24 34h6m-6 32h6m120-32h7v32h-7M48 80v8h15v-8m57 0v8h15v-8"/>',
+          mixer: '<rect x="43" y="14" width="94" height="72" rx="24"/><rect x="35" y="32" width="8" height="36" rx="2"/><rect x="137" y="32" width="8" height="36" rx="2"/><path d="M90 14v72M60 28l60 44m-60 0 60-44"/><circle cx="90" cy="50" r="12"/><path d="M62 9h56m-56 82h56"/>',
+          extruder: '<rect x="49" y="33" width="104" height="34" rx="4"/><rect x="25" y="28" width="24" height="44" rx="5"/><path d="M25 36h24m-24 10h24m-24 10h24m-24 10h24M62 33l9 34m6-34 9 34m6-34 9 34m6-34 9 34m6-34 9 34m22-28h12v22h-12M68 18h28v15H68z"/>',
+          press: '<rect x="45" y="12" width="90" height="76" rx="4"/><path d="M59 12v76m62-76v76M59 30h62M59 70h62M90 12v22"/><rect x="70" y="34" width="40" height="12" rx="2"/><rect x="70" y="56" width="40" height="14" rx="2"/><path d="M45 20H33v17h12m90 26h12v17h-12"/>',
+          filler: '<circle cx="90" cy="50" r="34"/><circle cx="90" cy="50" r="19"/><circle cx="90" cy="50" r="6"/><path d="M90 16v15m34 19h-15M90 84V69M56 50h15M66 26l11 11m37-11-11 11m11 37-11-11m-37 11 11-11"/><rect x="26" y="42" width="30" height="16" rx="3"/><rect x="124" y="42" width="30" height="16" rx="3"/><path d="M72 9h36m-36 82h36"/>',
+          conveyor: '<rect x="24" y="27" width="132" height="46" rx="18"/><rect x="32" y="35" width="116" height="30" rx="13"/><path d="M47 35v30m17-30v30m17-30v30m17-30v30m17-30v30m17-30v30M47 20h86m-86 60h86"/>'
+        };
+        // Solo geometría estática propia; ningún contenido del catálogo se interpola como HTML.
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 180 100'); svg.setAttribute('class', 'asset-symbol');
+        svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('focusable', 'false');
+        svg.innerHTML = drawings[shape]; return svg;
+      }
+
+      function buildFloor() {
+        for (const [index, item] of CATALOG.entries()) {
+          if (index === 3) {
+            const aisle = document.createElement('div'); aisle.className = 'aisle'; aisle.setAttribute('aria-hidden', 'true');
+            const text = document.createElement('span'); text.textContent = 'Pasillo principal';
+            aisle.append(icon('aisle'), text); $('floor').append(aisle);
+          }
+          const zone = document.createElement('div'); zone.className = 'zone';
+          const label = document.createElement('p'); label.className = 'zone-label'; label.id = 'zone-' + item.id;
+          const mark = document.createElement('span'); mark.className = 'zone-mark'; mark.setAttribute('aria-hidden', 'true');
+          const zoneName = document.createElement('span'); zoneName.textContent = item.zone; label.append(mark, zoneName);
+          const button = document.createElement('button'); button.type = 'button'; button.className = 'machine';
+          button.dataset.machineId = item.id; button.id = 'machine-' + item.id;
+          button.setAttribute('aria-labelledby', 'name-' + item.id + ' code-' + item.id);
+          button.setAttribute('aria-describedby', 'status-' + item.id + ' zone-' + item.id);
+          const top = document.createElement('span'); top.className = 'machine-topline';
+          const code = document.createElement('span'); code.className = 'machine-code'; code.id = 'code-' + item.id;
+          code.setAttribute('translate', 'no'); code.textContent = item.id;
+          const count = document.createElement('span'); count.className = 'machine-count'; count.setAttribute('aria-hidden', 'true');
+          top.append(code, count);
+          const name = document.createElement('span'); name.className = 'machine-name'; name.id = 'name-' + item.id;
+          const status = document.createElement('span'); status.className = 'machine-status'; status.id = 'status-' + item.id;
+          button.append(top, machineSymbol(item.shape), name, status); zone.append(label, button); $('floor').append(zone);
+          nodes.set(item.id, { button, name, status, count });
+        }
+      }
+
+      function normalizeMachines(input, verified) {
+        const list = Array.isArray(input) ? input : [];
+        const seen = new Set(list.map(item => item?.id));
+        const complete = list.length === CATALOG.length && seen.size === CATALOG.length && CATALOG.every(item => seen.has(item.id));
+        return CATALOG.map(fallback => {
+          const item = list.find(candidate => candidate?.id === fallback.id) || {};
+          const validState = Number.isSafeInteger(item.bloqueosActivos) && item.bloqueosActivos >= 0
+            && typeof item.bloqueada === 'boolean' && item.bloqueada === (item.bloqueosActivos > 0);
+          const validText = typeof item.nombre === 'string' && item.nombre.trim() && typeof item.area === 'string' && item.area.trim();
+          return { id: fallback.id,
+            nombre: typeof item.nombre === 'string' && item.nombre.trim() ? item.nombre.trim() : fallback.nombre,
+            area: typeof item.area === 'string' && item.area.trim() ? item.area.trim() : fallback.area,
+            bloqueosActivos: validState ? item.bloqueosActivos : null,
+            bloqueada: validState ? item.bloqueada : null,
+            mtbf: typeof item.mtbf === 'number' && Number.isFinite(item.mtbf) && item.mtbf >= 0 ? item.mtbf : null,
+            verified: Boolean(verified && complete && validState && validText) };
+        });
+      }
+      function stateOf(item) { return !item.verified ? 'unknown' : item.bloqueosActivos > 0 ? 'locked' : 'free'; }
+      function stateText(item) {
+        if (!item.verified) return scenario === 'stale' ? 'Información desactualizada' : 'Información sin verificar';
+        const count = item.bloqueosActivos;
+        return count ? `${numbers.format(count)} bloqueo${count === 1 ? '' : 's'} LOTO activo${count === 1 ? '' : 's'}` : 'Sin bloqueos digitales';
+      }
+      function statusContents(item) {
+        const text = document.createElement('span'); text.textContent = stateText(item);
+        return [icon(stateOf(item) === 'locked' ? 'lock' : stateOf(item) === 'free' ? 'zero' : 'unknown'), text];
+      }
+      function mtbfText(item) { return !item.verified ? 'Sin verificar' : item.mtbf === null ? 'No calculable' : `${numbers.format(item.mtbf)} h`; }
+      function current() { return view.find(item => item.id === selected); }
+      function announce(message) { $('feedback').textContent = message; }
+      function updateSummary() {
+        const known = view.filter(item => item.verified), unknown = view.length - known.length;
+        $('total-machines').textContent = numbers.format(view.length);
+        $('locked-machines').textContent = unknown ? '—' : numbers.format(known.filter(item => item.bloqueosActivos > 0).length);
+        $('free-machines').textContent = unknown ? '—' : numbers.format(known.filter(item => item.bloqueosActivos === 0).length);
+        $('total-locks').textContent = unknown ? '—' : numbers.format(known.reduce((sum, item) => sum + item.bloqueosActivos, 0));
+        for (const id of ['locked-machines', 'free-machines', 'total-locks']) {
+          $(id).setAttribute('aria-label', unknown ? `Sin verificar: ${unknown} equipo(s) sin información vigente` : $(id).textContent);
+        }
+        $('availability').dataset.available = String(unknown === 0);
+        $('availability-text').textContent = unknown
+          ? `${unknown} equipo(s) sin verificar en esta simulación. Los guiones no representan cero bloqueos.`
+          : 'Datos DEMO en memoria. No se consulta la API.';
+      }
+      function updatePanel() {
+        const item = current(), hasItem = Boolean(item);
+        $('panel-body').hidden = !hasItem; $('simulator').hidden = !hasItem;
+        $('empty-panel').hidden = hasItem; $('clear-selection').hidden = !hasItem;
+        if (!item) return;
+        $('panel-code').textContent = item.id; $('panel-name').textContent = item.nombre;
+        $('panel-area').textContent = item.area;
+        $('panel-count').textContent = item.verified ? numbers.format(item.bloqueosActivos) : 'Sin verificar';
+        $('panel-mtbf').textContent = mtbfText(item);
+        $('panel-status').dataset.state = stateOf(item); $('panel-status').replaceChildren(...statusContents(item));
+        $('simulate-lock').disabled = !item.verified;
+        $('simulation-help').textContent = item.verified
+          ? 'Añade un registro ficticio al equipo seleccionado. No instala un candado.'
+          : 'Vuelve al escenario de datos demo disponibles para simular un registro. No se confirma ningún estado real.';
+      }
+      // Renderizador independiente del transporte. Este archivo siempre se identifica como DEMO.
+      function renderMachines(input, { verified = true } = {}) {
+        rows = Array.isArray(input) ? input.map(item => item && typeof item === 'object' ? { ...item } : item) : [];
+        view = normalizeMachines(rows, verified && scenario === 'available');
+        for (const item of view) {
+          const node = nodes.get(item.id);
+          node.name.textContent = item.nombre;
+          node.status.replaceChildren(...statusContents(item));
+          node.count.textContent = item.verified ? numbers.format(item.bloqueosActivos) : '—';
+          node.button.dataset.state = stateOf(item);
+          node.button.setAttribute('aria-pressed', String(selected === item.id));
+          node.button.title = `${item.nombre} · ${item.id} · ${stateText(item)}`;
+        }
+        updateSummary(); updatePanel(); if ($('sheet').open) updateSheet();
+      }
+      function updateHash() {
+        try { const url = new URL(location.href); url.hash = selected || ''; history.pushState(null, '', url); } catch { /* El render funciona igualmente al abrir file://. */ }
+      }
+      function selectMachine(id, updateUrl = true) {
+        if (!CATALOG.some(item => item.id === id)) return;
+        selected = id;
+        for (const [key, node] of nodes) node.button.setAttribute('aria-pressed', String(key === id));
+        updatePanel(); if (updateUrl) updateHash();
+        announce(`${current().nombre} seleccionada. ${stateText(current())}. Datos de demostración.`);
+      }
+      function clearSelection(fromPanel = false) {
+        selected = null;
+        for (const node of nodes.values()) node.button.setAttribute('aria-pressed', 'false');
+        updatePanel(); updateHash(); announce('Mapa completo. Selecciona uno de los seis equipos para consultar su ficha demo.');
+        if (fromPanel) $('map-title').focus();
+      }
+      function simulateLock() {
+        const item = current();
+        if (!item?.verified || item.bloqueosActivos >= Number.MAX_SAFE_INTEGER) return;
+        const changed = rows.map(row => row.id === item.id ? { ...row, bloqueada: true, bloqueosActivos: row.bloqueosActivos + 1 } : row);
+        renderMachines(changed);
+        announce(`Simulación local: ${item.id} muestra ${stateText(current())}. No se envió ninguna operación al backend.`);
+      }
+      function resetDemo() {
+        if ($('sheet').open) $('sheet').close();
+        selected = 'EQ-ENV-01'; scenario = 'available'; $('scenario').value = scenario;
+        renderMachines(seed()); updateHash();
+        announce(`Demostración restablecida: ${$('total-machines').textContent} máquinas, ${$('locked-machines').textContent} equipos con registros y ${$('total-locks').textContent} bloqueos digitales ficticios.`);
+      }
+      function updateSheet() {
+        const item = current(); if (!item) return;
+        $('sheet-code').textContent = item.id; $('sheet-id').textContent = item.id;
+        $('sheet-name').textContent = item.nombre; $('sheet-area').textContent = item.area;
+        $('sheet-count').textContent = item.verified ? numbers.format(item.bloqueosActivos) : 'Sin verificar';
+        $('sheet-mtbf').textContent = mtbfText(item);
+        $('sheet-status').dataset.state = stateOf(item); $('sheet-status').replaceChildren(...statusContents(item));
+      }
+      function openSheet() { if (!current()) return; lastTrigger = document.activeElement; updateSheet(); $('sheet').showModal(); }
+      $('floor').addEventListener('click', event => { const button = event.target.closest('[data-machine-id]'); if (button) selectMachine(button.dataset.machineId); });
+      $('simulate-lock').addEventListener('click', simulateLock);
+      $('reset-demo').addEventListener('click', resetDemo);
+      $('show-all').addEventListener('click', () => clearSelection());
+      $('clear-selection').addEventListener('click', () => clearSelection(true));
+      $('show-sheet').addEventListener('click', openSheet);
+      $('close-sheet').addEventListener('click', () => $('sheet').close());
+      $('back-to-map').addEventListener('click', () => $('sheet').close());
+      $('sheet').addEventListener('close', () => { if (lastTrigger?.isConnected && !lastTrigger.hidden) lastTrigger.focus(); });
+      $('sheet').addEventListener('keydown', event => {
+        if (event.key !== 'Tab') return;
+        const list = [...$('sheet').querySelectorAll('button:not(:disabled)')].filter(node => node.getClientRects().length);
+        if (event.shiftKey && document.activeElement === list[0]) { event.preventDefault(); list.at(-1).focus(); }
+        else if (!event.shiftKey && document.activeElement === list.at(-1)) { event.preventDefault(); list[0].focus(); }
+      });
+      $('scenario').addEventListener('change', event => {
+        scenario = event.target.value;
+        renderMachines(rows);
+        announce(scenario === 'available' ? 'Se restauró la disponibilidad de los datos demo locales. No se consultó la API.'
+          : scenario === 'stale' ? 'Escenario demo: información desactualizada. Estados y contadores sin verificar.'
+          : 'Escenario demo: desconexión simulada. Estados y contadores sin verificar.');
+      });
+      function machineFromHash() {
+        try { return decodeURIComponent(location.hash.slice(1)); } catch { return ''; }
+      }
+      window.addEventListener('popstate', () => {
+        const id = machineFromHash();
+        if (CATALOG.some(item => item.id === id)) selectMachine(id, false);
+        else if (!id) { selected = null; for (const node of nodes.values()) node.button.setAttribute('aria-pressed', 'false'); updatePanel(); }
+      });
+      buildFloor();
+      const initial = machineFromHash();
+      if (CATALOG.some(item => item.id === initial)) selected = initial;
+      renderMachines(seed());
+      announce(`${current().nombre} seleccionada. ${stateText(current())}. Datos de demostración.`);
+      window.SilbomPlantMap = Object.freeze({
+        renderMachines,
+        snapshot: () => JSON.parse(JSON.stringify({ machines: view, selected, scenario }))
+      });
+    })();
+  </script>
+</body>
+</html>
